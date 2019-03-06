@@ -75,6 +75,58 @@ namespace HelloWindowsIot
             ShowBusy(false);
         }
 
+        private async void GetPhotosAndImagesFromFolder(object sender, RoutedEventArgs e)
+        {
+            Exception error = null;
+            ItemInfoResponse folder = null;
+            ItemInfoResponse rootfolder = null;
+            IList<ItemInfoResponse> children = null;
+
+            //// Initialize Graph client
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+            ShowBusy(true);
+
+            try
+            {
+                rootfolder = await graphService.GetAppRoot();
+                folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
+                children = await graphService.PopulateChildren(folder);
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+            }
+
+            if (error != null)
+            {
+                var dialog = new MessageDialog(error.Message, "Error!");
+                await dialog.ShowAsync();
+                ShowBusy(false);
+                return;
+            }
+
+            foreach(ItemInfoResponse iir in children)
+            {
+                if (iir.Image != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Image.Name);
+                }
+            }
+
+            //DisplayHelper.ShowContent(
+            //    "SHOW FOLDER ++++++++++++++++++++++",
+            //    folder,
+            //    children,
+            //    async message =>
+            //    {
+            //        var dialog = new MessageDialog(message);
+            //        await dialog.ShowAsync();
+            //    });
+
+            ShowBusy(false);
+        }
+
         /// <summary>
         /// Call AcquireTokenAsync - to acquire a token requiring user to sign-in
         /// </summary>
@@ -151,6 +203,11 @@ namespace HelloWindowsIot
         {
             Progress.IsActive = isBusy;
             PleaseWaitCache.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void GoToDesktopClick(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(Desktop));
         }
     }
 }

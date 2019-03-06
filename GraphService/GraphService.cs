@@ -17,8 +17,8 @@ namespace MSGraph
     public class GraphService
     {
         //Hello Graph
-        private static readonly string graphEndpoint = "https://graph.microsoft.com/"+graphVersion;
-        private static readonly string graphVersion = "v1.0/me/"; //beta
+        private static readonly string graphEndpoint = "https://graph.microsoft.com/";
+        private static readonly string graphVersion = "v1.0/me"; //beta
         
 
         private readonly string accessToken = string.Empty;
@@ -179,6 +179,16 @@ namespace MSGraph
 
         }
 
+        public async Task<ItemInfoResponse> GetPhotosAndImagesFromFolder(string path)
+        {
+            //https://docs.microsoft.com/en-us/graph/api/resources/onedrive?view=graph-rest-1.0
+            ///me/drive/root:/path/to/folder
+            //https://graph.microsoft.com/v1.0/me/drive/root:/Bilder/Karneval2019
+            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/root:{path}");
+            var sf = JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
+            return sf;
+        }
+
         public async Task<IList<ItemInfoResponse>> PopulateChildren(ItemInfoResponse info)
         {
             var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children");
@@ -204,9 +214,11 @@ namespace MSGraph
             }
         }
 
-        public async Task<DriveItem> GetOneDriveItemAsync(string siteId, string itemPath)
+        public async Task<DriveItem> GetOneDriveItemAsync(string itemId)
         {
-            var response = await MakeGraphCall(HttpMethod.Get, $"/sites/{siteId}/drive/{itemPath}");
+            //https://docs.microsoft.com/en-us/graph/api/driveitem-get?view=graph-rest-1.0
+            // /me/drive/items/{item-id}
+            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{itemId}");
             return JsonConvert.DeserializeObject<DriveItem>(await response.Content.ReadAsStringAsync());
         }
 
@@ -428,6 +440,8 @@ namespace MSGraph
                 // Serialize the body
                 payload = JsonConvert.SerializeObject(body, jsonSettings);
             }
+
+            System.Diagnostics.Debug.WriteLine("Graph Request URL :" + graphEndpoint + version + uri + "");
 
             //if (logger != null)
             //{

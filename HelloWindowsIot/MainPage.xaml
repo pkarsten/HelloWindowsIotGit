@@ -13,8 +13,16 @@
                 <Button Content="Get Special Folder Photos"
                         Click="GetAppRootFolder"
                         />
+                <Button Content="Get Photos From Path"
+                    Click="GetPhotosAndImagesFromFolder"
+                        HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
+                        />
                 <Button Content="Get Calendar View"
-                        Click="GetFirstCalenderView_CLick"
+                    Click="GetFirstCalenderView_CLick"
+                        HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
+                        />
+                <Button Content="Go To Desktop"
+                        Click="GoToDesktopClick"
                         />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="CallGraphButton" Content="Call Microsoft Graph API" HorizontalAlignment="Right" Padding="5" Click="CallGraphButton_Click" Margin="5" FontFamily="Segoe Ui"/>

@@ -24,7 +24,7 @@ namespace HelloWindowsIot
     {
         /// <summary>
         /// Initialisiert das Singletonanwendungsobjekt. Dies ist die erste Zeile von erstelltem Code
-        /// und daher das logische Äquivalent von main() bzw. WinMain().
+        /// und daher das logische Äquivalent von main() bzw. WinMain()....
         /// </summary>
         public App()
         {

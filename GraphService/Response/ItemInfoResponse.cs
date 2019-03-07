@@ -13,7 +13,8 @@ namespace MSGraph.Response
             set;
         }
 
-        [JsonProperty("@content.downloadUrl")]
+        //[JsonProperty("@content.downloadUrl")]
+        [JsonProperty("@microsoft.graph.downloadUrl")]
         public string DownloadUrl
         {
             get;

@@ -18,6 +18,8 @@ using MSGraph.Response;
 using Windows.UI.Xaml.Media.Imaging;
 using MSGraph;
 using Windows.UI.Popups;
+using MSGraph.Helpers;
+using Windows.Storage.Streams;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -50,8 +52,10 @@ namespace HelloWindowsIot
                 try
                 {
                     rootfolder = await graphService.GetAppRoot();
-                    folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
-                    children = await graphService.PopulateChildren(folder);
+                //folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
+                folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/WindowsIotApp" +
+                    "");
+                children = await graphService.PopulateChildren(folder);
                 }
                 catch (Exception ex)
                 {
@@ -67,17 +71,25 @@ namespace HelloWindowsIot
                 }
 
             ItemInfoResponse iri = new ItemInfoResponse();
-            iri = children.First();
+            // iri = children.First();
 
-                foreach (ItemInfoResponse iir in children)
+            foreach (ItemInfoResponse iir in children)
                 {
                     if (iir.Image != null)
                     {
                         System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
                     iri = iir;
+                    } else
+                    {
+                        children.Remove(iir);
                     }
                 }
-                await LoadImageForDesktop(iri);
+
+            Random _random = new Random(DateTime.Now.Millisecond);
+            iri = children[_random.Next(0, children.Count)];
+            //iri =  MSGraph.Helpers.RandomHelper.GetRandom(children);
+
+            await LoadImageForDesktop(iri);
 
             //DisplayHelper.ShowContent(
             //    "SHOW FOLDER ++++++++++++++++++++++",
@@ -128,7 +140,17 @@ namespace HelloWindowsIot
                     return;
                 } else
                 {
-                    System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + "Id: " + item.Id);
+                    System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + "Id: " + item.Id + item.DownloadUrl);
+
+                   DisplayHelper.ShowContent(
+                   "SHOW Properties ++++++++++++++++++++++",
+                   item,
+                   null,
+                   async message =>
+                   {
+                       var dialog = new MessageDialog(message);
+                       await dialog.ShowAsync();
+                   });
                 }
 
                 // Get the file's content
@@ -154,29 +176,8 @@ namespace HelloWindowsIot
                 ShowBusy(false);
                 return;
             }
-            //https://stackoverflow.com/questions/44451650/download-large-files-from-onedrive-using-microsoft-graph-sdk ??
-            using (var targetStream = await bitmapimage.re.OpenStreamForWriteAsync())
-            {
-                using (var writer = new BinaryWriter(targetStream))
-                {
-                    contentStream.Position = 0;
 
-                    using (var reader = new BinaryReader(contentStream))
-                    {
-                        byte[] bytes;
-
-                        do
-                        {
-                            bytes = reader.ReadBytes(1024);
-                            writer.Write(bytes);
-                        }
-                        while (bytes.Length == 1024);
-                    }
-                }
-            }
-
-                /*
-                // Save the retrieved stream to the local drive
+                // Save the retrieved stream 
                 var memoryStream = contentStream as MemoryStream;
 
                 if (memoryStream != null)
@@ -188,7 +189,6 @@ namespace HelloWindowsIot
                     System.Diagnostics.Debug.WriteLine("memoryStream != null");
                     //await item.Image.Bitmap.SetSourceAsync(memoryStream.AsRandomAccessStream());
                     await bitmapimage.SetSourceAsync(memoryStream.AsRandomAccessStream());
-                    BGImage.Source = bitmapimage;
                     System.Diagnostics.Debug.WriteLine("awaited memory stream != null");
 
                 }
@@ -199,13 +199,39 @@ namespace HelloWindowsIot
                         await contentStream.CopyToAsync(memoryStream);
                         memoryStream.Position = 0;
                         System.Diagnostics.Debug.WriteLine("using (memoryStream = new MemoryStream()");
-                        await item.Image.Bitmap.SetSourceAsync(memoryStream.AsRandomAccessStream());
+                        await bitmapimage.SetSourceAsync(memoryStream.AsRandomAccessStream());
                     }
                 }
                 System.Diagnostics.Debug.WriteLine("must set bgimage");
-                BGImage.Source = item.Image.Bitmap;
-                */
-            }
+            
+            //bitmapimage = new BitmapImage(new Uri(item.DownloadUrl)); -> Works too
+
+            BGImage.Source = bitmapimage;
+
+            // Save the retrieved stream to the local drive
+            // For instance when you have your photo stored as a byte[] array you can use the stream to convert it to image:
+            ////https://stackoverflow.com/questions/44451650/download-large-files-from-onedrive-using-microsoft-graph-sdk ??
+            //using (var targetStream = await bitmapimage.re.OpenStreamForWriteAsync())
+            //{
+            //    using (var writer = new BinaryWriter(targetStream))
+            //    {
+            //        contentStream.Position = 0;
+
+            //        using (var reader = new BinaryReader(contentStream))
+            //        {
+            //            byte[] bytes;
+
+            //            do
+            //            {
+            //                bytes = reader.ReadBytes(1024);
+            //                writer.Write(bytes);
+            //            }
+            //            while (bytes.Length == 1024);
+            //        }
+            //    }
+            //}
+
+        }
 
         /// <summary>
         /// Handle Fullscreen Click
@@ -223,6 +249,7 @@ namespace HelloWindowsIot
             {
                 view.TryEnterFullScreenMode();
             }
+            LoadImagesFromOneDrive();
         }
         //Handle Progress loading Ring 
         private void ShowBusy(bool isBusy)

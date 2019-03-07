@@ -22,6 +22,7 @@ namespace MSGraph.Helpers
             Debug.WriteLine($"Size: {item.SizeInBytes.ConvertSize()}");
             Debug.WriteLine($"Id: {item.Id}");
             Debug.WriteLine($"Web URL: {item.WebUrl}");
+            Debug.WriteLine($"Download URL: {item.DownloadUrl}");
 
             if (item.Folder != null)
             {
@@ -44,6 +45,8 @@ namespace MSGraph.Helpers
             {
                 Debug.WriteLine("----");
                 Debug.WriteLine($"Child name: {child.Name}");
+                Debug.WriteLine($"Id: {child.Id}");
+                Debug.WriteLine($"Id: {child.ParentId}");
                 Debug.WriteLine($"Created on: {child.CreatedDateTime}");
                 Debug.WriteLine($"Modified on: {child.LastModifiedDateTime}");
                 Debug.WriteLine($"Size: {child.SizeInBytes.ConvertSize()}");
@@ -91,3 +94,4 @@ namespace MSGraph.Helpers
         }
     }
 }
+

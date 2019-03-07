@@ -230,16 +230,24 @@ namespace MSGraph
         {
             //https://docs.microsoft.com/en-us/graph/api/driveitem-get?view=graph-rest-1.0
             // /me/drive/items/{item-id}
+            //get Item graph Uri : https://api.onedrive.com/v1.0/drive/root:/Bilder/Karneval/IMG_4463.JPG
             var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{itemId}");
-            return JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ItemInfoResponse>(json);
         }
 
         public async Task<Stream> RefreshAndDownloadContent(ItemInfoResponse model,bool refreshFirst)
         {
-            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{model.Id}");
+            //var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{model.DownloadUrl}");
+            //var stream = await response.Content.ReadAsStreamAsync();
+            //return stream;
+            System.Diagnostics.Debug.WriteLine($"RefreshAndDownloadContent: {model.DownloadUrl}");
+            var response = await httpClient.GetAsync(model.DownloadUrl);
             var stream = await response.Content.ReadAsStreamAsync();
             return stream;
         }
+
+       
 
         //public async Task<DriveItem> GetTeamOneDriveFolderAsync(string teamId, string folderName)
         //{

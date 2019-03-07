@@ -113,6 +113,16 @@ namespace HelloWindowsIot
                 }
             }
 
+            DisplayHelper.ShowContent(
+               "SHOW Item Properties ++++++++++++++++++++++",
+               folder,
+               children,
+               async message =>
+               {
+                   var dialog = new MessageDialog(message);
+                   await dialog.ShowAsync();
+               });
+
             ShowBusy(false);
         }
 

@@ -10,7 +10,7 @@
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Top">
             <Button Click="SetFullScreenCLick" Content="Fullscreen"></Button>
-            <Image x:Name="BGImage"  Height="640" Width="800" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <Image x:Name="BGImage"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
         </StackPanel>
         <Rectangle Fill="#77000000"
                    x:Name="PleaseWaitCache"

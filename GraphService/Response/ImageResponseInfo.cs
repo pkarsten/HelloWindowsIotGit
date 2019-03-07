@@ -43,18 +43,14 @@ namespace MSGraph.Response
 
         public string Id
         {
-            get
-            {
-                return this.DriveItem == null ? null : this.DriveItem.Id;
-            }
+            get;
+            set;
         }
 
         public string Name
         {
-            get
-            {
-                return this.DriveItem.Name;
-            }
+            get;
+            set;
         }
 
         //INotifyPropertyChanged members

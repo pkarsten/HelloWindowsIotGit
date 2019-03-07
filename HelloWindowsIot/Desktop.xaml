@@ -12,14 +12,5 @@
             <Button Click="SetFullScreenCLick" Content="Fullscreen"></Button>
             <Image x:Name="BGImage"  Height="640" Width="800" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         </StackPanel>
-        <Rectangle Fill="#77000000"
-                   x:Name="PleaseWaitCache"
-                   Visibility="Collapsed" />
-
-        <ProgressRing x:Name="Progress"
-                      VerticalAlignment="Center"
-                      HorizontalAlignment="Center"
-                      Width="40"
-                      Height="40" />
     </Grid>
 </Page>

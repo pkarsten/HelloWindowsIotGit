@@ -11,7 +11,6 @@ using MSGraph.Response;
 using MSGraph.Request;
 using Microsoft.Identity.Client;
 using System.Linq;
-using System.IO;
 
 namespace MSGraph
 {
@@ -26,9 +25,6 @@ namespace MSGraph
         private HttpClient httpClient = null;
         private readonly JsonSerializerSettings jsonSettings =
             new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-
-        // Hot examples:
-        //https://csharp.hotexamples.com/examples/-/Microsoft.Graph/-/php-microsoft.graph-class-examples.html
 
         //This sample app implements Azure functions designed to be invoked via Microsoft Flow to provision a Microsoft Team when a new flight is added to a master list in SharePoint.The sample uses Microsoft Graph to do the following provisioning tasks:
         //https://github.com/microsoftgraph/contoso-airlines-azure-functions-sample/tree/master/create-flight-team
@@ -224,21 +220,6 @@ namespace MSGraph
             // /me/drive/items/{item-id}
             var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{itemId}");
             return JsonConvert.DeserializeObject<DriveItem>(await response.Content.ReadAsStringAsync());
-        }
-
-        public async Task<ItemInfoResponse> GetItem(string itemId)
-        {
-            //https://docs.microsoft.com/en-us/graph/api/driveitem-get?view=graph-rest-1.0
-            // /me/drive/items/{item-id}
-            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{itemId}");
-            return JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
-        }
-
-        public async Task<Stream> RefreshAndDownloadContent(ItemInfoResponse model,bool refreshFirst)
-        {
-            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{model.Id}");
-            var stream = await response.Content.ReadAsStreamAsync();
-            return stream;
         }
 
         //public async Task<DriveItem> GetTeamOneDriveFolderAsync(string teamId, string folderName)

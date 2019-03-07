@@ -26,6 +26,7 @@ namespace HelloWindowsIot
         //Set the scope for API call to user.read
         string[] scopes = new string[] { "user.read", "Files.Read", "Calendars.Read" };
 
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -109,9 +110,19 @@ namespace HelloWindowsIot
             {
                 if (iir.Image != null)
                 {
-                    System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
+                    System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Image.Name);
                 }
             }
+
+            //DisplayHelper.ShowContent(
+            //    "SHOW FOLDER ++++++++++++++++++++++",
+            //    folder,
+            //    children,
+            //    async message =>
+            //    {
+            //        var dialog = new MessageDialog(message);
+            //        await dialog.ShowAsync();
+            //    });
 
             ShowBusy(false);
         }
@@ -196,7 +207,6 @@ namespace HelloWindowsIot
 
         private void GoToDesktopClick(object sender, RoutedEventArgs e)
         {
-
             this.Frame.Navigate(typeof(Desktop));
         }
     }

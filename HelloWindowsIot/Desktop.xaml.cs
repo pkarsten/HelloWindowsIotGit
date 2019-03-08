@@ -20,6 +20,9 @@ using MSGraph;
 using Windows.UI.Popups;
 using MSGraph.Helpers;
 using Windows.Storage.Streams;
+using Windows.System.Threading;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
@@ -33,9 +36,27 @@ namespace HelloWindowsIot
         public Desktop()
         {
             this.InitializeComponent();
+            var view = ApplicationView.GetForCurrentView();
+            if (view.IsFullScreenMode)
+            {
+                view.ExitFullScreenMode();
+            }
+            else
+            {
+                view.TryEnterFullScreenMode();
+            }
             LoadImagesFromOneDrive();
+            GetCalendarView();
 
         }
+
+        private async void GetCalendarView()
+        {
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+            CalendarText.Text = await graphService.GetCalendarView();
+        }
+
 
         private async void LoadImagesFromOneDrive()
         {
@@ -85,11 +106,31 @@ namespace HelloWindowsIot
                     }
                 }
 
-            Random _random = new Random(DateTime.Now.Millisecond);
-            iri = children[_random.Next(0, children.Count)];
-            //iri =  MSGraph.Helpers.RandomHelper.GetRandom(children);
+            Random _random1 = new Random(DateTime.Now.Millisecond);
+            var iri1 = children[_random1.Next(0, children.Count)];
+            await LoadImageForDesktop(iri1);
+            ShowBusy(false);
 
-            await LoadImageForDesktop(iri);
+            TimeSpan period = TimeSpan.FromSeconds(20);
+            // display neew images every five seconds
+            ThreadPoolTimer PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(
+                async (source) =>
+                {
+                    Random _random = new Random(DateTime.Now.Millisecond);
+                    iri = children[_random.Next(0, children.Count)];
+                    if (iri != null)
+                    {
+                        // we have to update UI in UI thread only
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                        async() =>
+                        {
+                            //ShowBusy(true);
+                            // create and load bitmap
+                            await LoadImageForDesktop(iri);
+                        }
+                        );
+                    }
+                }, period);
 
             //DisplayHelper.ShowContent(
             //    "SHOW FOLDER ++++++++++++++++++++++",
@@ -124,7 +165,7 @@ namespace HelloWindowsIot
             ItemInfoResponse foundFile = null;
             Stream contentStream = null;
 
-            ShowBusy(true);
+            //ShowBusy(true);
             //// Initialize Graph client
             var accessToken = await GraphService.GetTokenForUserAsync();
             var graphService = new GraphService(accessToken);
@@ -142,15 +183,6 @@ namespace HelloWindowsIot
                 {
                     System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + "Id: " + item.Id + item.DownloadUrl);
 
-                   DisplayHelper.ShowContent(
-                   "SHOW Properties ++++++++++++++++++++++",
-                   item,
-                   null,
-                   async message =>
-                   {
-                       var dialog = new MessageDialog(message);
-                       await dialog.ShowAsync();
-                   });
                 }
 
                 // Get the file's content
@@ -208,29 +240,6 @@ namespace HelloWindowsIot
 
             BGImage.Source = bitmapimage;
 
-            // Save the retrieved stream to the local drive
-            // For instance when you have your photo stored as a byte[] array you can use the stream to convert it to image:
-            ////https://stackoverflow.com/questions/44451650/download-large-files-from-onedrive-using-microsoft-graph-sdk ??
-            //using (var targetStream = await bitmapimage.re.OpenStreamForWriteAsync())
-            //{
-            //    using (var writer = new BinaryWriter(targetStream))
-            //    {
-            //        contentStream.Position = 0;
-
-            //        using (var reader = new BinaryReader(contentStream))
-            //        {
-            //            byte[] bytes;
-
-            //            do
-            //            {
-            //                bytes = reader.ReadBytes(1024);
-            //                writer.Write(bytes);
-            //            }
-            //            while (bytes.Length == 1024);
-            //        }
-            //    }
-            //}
-
         }
 
         /// <summary>
@@ -249,7 +258,6 @@ namespace HelloWindowsIot
             {
                 view.TryEnterFullScreenMode();
             }
-            LoadImagesFromOneDrive();
         }
         //Handle Progress loading Ring 
         private void ShowBusy(bool isBusy)

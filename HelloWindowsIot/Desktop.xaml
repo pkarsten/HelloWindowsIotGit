@@ -10,7 +10,8 @@
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Top">
             <Button Click="SetFullScreenCLick" Content="Fullscreen"></Button>
-            <Image x:Name="BGImage"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <Image x:Name="BGImage"  VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"/>
+            <TextBlock x:Name="CalendarText" FontSize="50" HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Top" Foreground="Red"/>
         </StackPanel>
         <Rectangle Fill="#77000000"
                    x:Name="PleaseWaitCache"

@@ -112,12 +112,14 @@
     <Compile Include="Request\RequestLinkInfo.cs" />
     <Compile Include="Request\SpecialFolder.cs" />
     <Compile Include="Response\AudioResponseInfo.cs" />
+    <Compile Include="Response\CalendarEventItemResponse.cs" />
     <Compile Include="Response\FileResponseInfo.cs" />
     <Compile Include="Response\FolderResponseInfo.cs" />
     <Compile Include="Response\ImageResponseInfo.cs" />
     <Compile Include="Response\ItemInfo.cs" />
     <Compile Include="Response\ItemInfoResponse.cs" />
     <Compile Include="Response\LinkResponseInfo.cs" />
+    <Compile Include="Response\ParseCalendarEventResponse.cs" />
     <Compile Include="Response\ParseChildrenResponse.cs" />
     <Compile Include="Response\PhotoResponseInfo.cs" />
     <Compile Include="Response\VideoResponseInfo.cs" />

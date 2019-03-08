@@ -1,14 +1,9 @@
-﻿
-using System.ComponentModel;
-using System.Linq;
-using Windows.UI.Xaml.Media.Imaging;
-
-namespace MSGraph.Response
+﻿namespace MSGraph.Response
 {
-    public class ImageResponseInfo : INotifyPropertyChanged
+    public class ImageResponseInfo
     {
-        private BitmapSource bitmap;
-        public DriveItem DriveItem { get; private set; }
+        //private BitmapSource bitmap;
+        //public DriveItem DriveItem { get; private set; }
 
 
         public int Height
@@ -23,46 +18,46 @@ namespace MSGraph.Response
             set;
         }
 
-        public ImageResponseInfo(DriveItem item)
-        {
-            this.DriveItem = item;
-        }
+        //public ImageResponseInfo(DriveItem item)
+        //{
+        //    this.DriveItem = item;
+        //}
 
-        public BitmapSource Bitmap
-        {
-            get
-            {
-                return this.bitmap;
-            }
-            set
-            {
-                this.bitmap = value;
-                OnPropertyChanged("Bitmap");
-            }
-        }
+        //public BitmapSource Bitmap
+        //{
+        //    get
+        //    {
+        //        return this.bitmap;
+        //    }
+        //    set
+        //    {
+        //        this.bitmap = value;
+        //        OnPropertyChanged("Bitmap");
+        //    }
+        //}
 
-        public string Id
-        {
-            get;
-            set;
-        }
+        //public string Id
+        //{
+        //    get;
+        //    set;
+        //}
 
-        public string Name
-        {
-            get;
-            set;
-        }
+        //public string Name
+        //{
+        //    get;
+        //    set;
+        //}
 
-        //INotifyPropertyChanged members
-        public event PropertyChangedEventHandler PropertyChanged;
+        ////INotifyPropertyChanged members
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string name)
-        {
-            if (null != PropertyChanged)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
+        //protected void OnPropertyChanged(string name)
+        //{
+        //    if (null != PropertyChanged)
+        //    {
+        //        PropertyChanged(this, new PropertyChangedEventArgs(name));
+        //    }
+        //}
 
 
     }

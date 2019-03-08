@@ -200,7 +200,7 @@ namespace MSGraph
             return l.Value;
         }
 
-        public async Task<string> GetCalendarView()
+        public async Task<string> GetCalendarViewTest()
         {
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
@@ -215,6 +215,22 @@ namespace MSGraph
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        public async Task<IList<CalendarEventItem>> GetCalendarEvents()
+        {
+            //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
+            try
+            {
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End");
+                var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
+                return calendarevents.Value;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error in GetCalendarEvents" + ex.Message);
+                return null;
             }
         }
 

@@ -36,25 +36,37 @@ namespace HelloWindowsIot
         public Desktop()
         {
             this.InitializeComponent();
-            var view = ApplicationView.GetForCurrentView();
-            if (view.IsFullScreenMode)
-            {
-                view.ExitFullScreenMode();
-            }
-            else
-            {
-                view.TryEnterFullScreenMode();
-            }
             LoadImagesFromOneDrive();
             GetCalendarView();
 
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = new TimeSpan(0, 0, 1);
+            Timer.Start();
+
+
+        }
+
+        DispatcherTimer Timer = new DispatcherTimer();
+
+        private void Timer_Tick(object sender, object e)
+        {
+            MyTime.Text = DateTime.Now.ToString("h:mm:ss tt");
         }
 
         private async void GetCalendarView()
         {
             var accessToken = await GraphService.GetTokenForUserAsync();
             var graphService = new GraphService(accessToken);
-            CalendarText.Text = await graphService.GetCalendarView();
+            //CalendarText.Text = await graphService.GetCalendarViewTest();
+            string s = "";
+            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            foreach (CalendarEventItem ce in myevents)
+            {
+                string d = String.Format("{0:dd.MM/yyyy}", ce.StartDateTime.dateTime);  // "03/09/2008"
+                s = s + d + ": " + ce.Subject + " \n";
+                System.Diagnostics.Debug.WriteLine(s);
+            }
+            MyEvents.Text = s;
         }
 
 
@@ -145,7 +157,6 @@ namespace HelloWindowsIot
             ShowBusy(false);
         }
         
-        public ImageResponseInfo GlobItem { get; set; }
         /// <summary>
         /// Loads the detail view for the specified item.
         /// </summary>
@@ -156,10 +167,6 @@ namespace HelloWindowsIot
             BitmapImage bitmapimage = new BitmapImage();
 
             // Only load a detail view image for image items. Initialize the bitmap from the image content stream.
-            if (item.Image == null)
-            {
-                item.Image.Bitmap = new BitmapImage();
-            }
 
             Exception error = null;
             ItemInfoResponse foundFile = null;

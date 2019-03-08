@@ -36,8 +36,9 @@ namespace HelloWindowsIot
         public Desktop()
         {
             this.InitializeComponent();
-            LoadImagesFromOneDrive();
             GetCalendarView();
+            LoadImagesFromOneDrive();
+            
 
             Timer.Tick += Timer_Tick;
             Timer.Interval = new TimeSpan(0, 0, 1);
@@ -50,7 +51,7 @@ namespace HelloWindowsIot
 
         private void Timer_Tick(object sender, object e)
         {
-            MyTime.Text = DateTime.Now.ToString("h:mm:ss tt");
+            MyTime.Text = DateTime.Now.ToString("HH:mm:ss tt");
         }
 
         private async void GetCalendarView()
@@ -80,7 +81,7 @@ namespace HelloWindowsIot
                 //// Initialize Graph client
                 var accessToken = await GraphService.GetTokenForUserAsync();
                 var graphService = new GraphService(accessToken);
-                ShowBusy(true);
+                //ShowBusy(true);
 
                 try
                 {
@@ -106,22 +107,23 @@ namespace HelloWindowsIot
             ItemInfoResponse iri = new ItemInfoResponse();
             // iri = children.First();
 
-            foreach (ItemInfoResponse iir in children)
+            //https://gunnarpeipman.com/csharp/foreach/
+            foreach (ItemInfoResponse iir in children.ToList())
                 {
                     if (iir.Image != null)
                     {
                         System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
-                    iri = iir;
+                        iri = iir;
                     } else
                     {
                         children.Remove(iir);
                     }
                 }
 
-            Random _random1 = new Random(DateTime.Now.Millisecond);
-            var iri1 = children[_random1.Next(0, children.Count)];
-            await LoadImageForDesktop(iri1);
-            ShowBusy(false);
+            //Random _random1 = new Random(DateTime.Now.Millisecond);
+            //var iri1 = children[_random1.Next(0, children.Count)];
+            //await LoadImageForDesktop(iri1);
+            //ShowBusy(false);
 
             TimeSpan period = TimeSpan.FromSeconds(20);
             // display neew images every five seconds

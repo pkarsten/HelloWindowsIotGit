@@ -195,9 +195,17 @@ namespace MSGraph
 
         public async Task<IList<ItemInfoResponse>> PopulateChildren(ItemInfoResponse info)
         {
-            var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children");
-            var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
-            return l.Value;
+            try
+            {
+                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id&select=image"); //get only the id's add "?select=id" at end 
+                var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
+                return l.Value;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error in PopulateChildren" + ex.Message);
+                return null;
+            }
         }
 
         public async Task<string> GetCalendarViewTest()
@@ -223,7 +231,9 @@ namespace MSGraph
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
             {
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End");
+                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
+                string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(60));  // "2018-03-09""
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}&enddatetime={xdays}&$select=subject,Start,End");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }

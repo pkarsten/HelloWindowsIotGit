@@ -68,6 +68,16 @@ namespace HelloWindowsIot
                 System.Diagnostics.Debug.WriteLine(s);
             }
             MyEvents.Text = s;
+
+            string tc = "";
+            IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
+            foreach (CalendarEventItem ce in myeventstoday)
+            {
+                string d = String.Format("{0:dd.MM/yyyy}", ce.StartDateTime.dateTime);  // "03/09/2008"
+                tc = tc + d + ": " + ce.Subject + " \n";
+                System.Diagnostics.Debug.WriteLine(tc);
+            }
+            MyEventsToday.Text = tc;
         }
 
 
@@ -104,7 +114,7 @@ namespace HelloWindowsIot
                     return;
                 }
 
-            ItemInfoResponse iri = new ItemInfoResponse();
+            //ItemInfoResponse iri = new ItemInfoResponse();
             // iri = children.First();
 
             //https://gunnarpeipman.com/csharp/foreach/
@@ -113,38 +123,16 @@ namespace HelloWindowsIot
                     if (iir.Image != null)
                     {
                         System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
-                        iri = iir;
+                        //iri = iir;
                     } else
                     {
                         children.Remove(iir);
                     }
                 }
 
-            //Random _random1 = new Random(DateTime.Now.Millisecond);
-            //var iri1 = children[_random1.Next(0, children.Count)];
-            //await LoadImageForDesktop(iri1);
-            //ShowBusy(false);
+            await GetPicRandom(children);
 
-            TimeSpan period = TimeSpan.FromSeconds(20);
-            // display neew images every five seconds
-            ThreadPoolTimer PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(
-                async (source) =>
-                {
-                    Random _random = new Random(DateTime.Now.Millisecond);
-                    iri = children[_random.Next(0, children.Count)];
-                    if (iri != null)
-                    {
-                        // we have to update UI in UI thread only
-                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                        async() =>
-                        {
-                            //ShowBusy(true);
-                            // create and load bitmap
-                            await LoadImageForDesktop(iri);
-                        }
-                        );
-                    }
-                }, period);
+           
 
             //DisplayHelper.ShowContent(
             //    "SHOW FOLDER ++++++++++++++++++++++",
@@ -157,6 +145,41 @@ namespace HelloWindowsIot
             //    });
 
             ShowBusy(false);
+        }
+
+        private async Task GetPicRandom(IList<ItemInfoResponse> mylist)
+        {
+            IList<ItemInfoResponse> currList  = mylist;
+            var i = 0;
+            TimeSpan period = TimeSpan.FromSeconds(20);
+            // display neew images every five seconds
+            ThreadPoolTimer PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(
+                async (source) =>
+                {
+                    Random _random = new Random(DateTime.Now.Millisecond);
+                    ItemInfoResponse iri = new ItemInfoResponse();
+                    iri = currList[_random.Next(0, currList.Count)];
+                    if (iri != null)
+                    {
+                        // we have to update UI in UI thread only
+                        await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                        async () =>
+                        {
+                            //ShowBusy(true);
+                            // create and load bitmap
+                            await LoadImageForDesktop(iri);
+                            currList.Remove(iri);
+                            System.Diagnostics.Debug.WriteLine("Changed " + i+1);
+                            if (currList.Count == 0)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Reset List ");
+                                currList = mylist;
+                                i = 0;
+                            }
+                        }
+                        );
+                    }
+                }, period);
         }
         
         /// <summary>

@@ -18,7 +18,9 @@
                 </Border.Background>
                 <StackPanel>
                 <TextBlock x:Name="MyTime" Text="22:11:33" FontSize="36" FontFamily="Cambria"></TextBlock>
-                <TextBlock Text="Nächste Termine:" FontSize="20" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Heute" FontSize="20" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock x:Name="MyEventsToday" Text="Datum Subject " FontSize="12" FontFamily="Segoe UI" TextWrapping="Wrap"></TextBlock>
+                    <TextBlock Text="Nächste Termine:" FontSize="20" FontFamily="Segoe UI"></TextBlock>
                 <TextBlock x:Name="MyEvents" Text="Datum Subject " FontSize="12" FontFamily="Segoe UI" TextWrapping="Wrap"></TextBlock>
                 </StackPanel>
             </Border>

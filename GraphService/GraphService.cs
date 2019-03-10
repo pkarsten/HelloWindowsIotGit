@@ -231,9 +231,27 @@ namespace MSGraph
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
             {
-                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
-                string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(60));  // "2018-03-09""
+                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1));  // "2018-03-09""
+                string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1).AddDays(60));  // "2018-03-09""
                 var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}&enddatetime={xdays}&$select=subject,Start,End");
+                var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
+                return calendarevents.Value;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error in GetCalendarEvents" + ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<IList<CalendarEventItem>> GetTodayCalendarEvents()
+        {
+            //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
+            // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-03-10T10:05:30.014Z&enddatetime=2019-03-17T10:05:30.014Z
+            try
+            {
+                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00&enddatetime={today}T23:59:00&$select=subject,Start,End");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }

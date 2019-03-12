@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="HelloWindowsIot.GraphDemo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:HelloWindowsIot"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Dark"
+    >
+    <Grid >
+        <ScrollViewer>
+            <StackPanel Background="Azure">
+                <Button Content="Get Special Folder Photos"
+                        Click="GetAppRootFolder"
+                        Foreground="Black"
+                        />
+                <Button Content="Get Photos From Path"
+                    Click="GetPhotosAndImagesFromFolder"
+                        HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
+                        Foreground="Black"
+                        />
+                <Button Content="Get Calendar View"
+                    Click="GetFirstCalenderView_CLick"
+                        HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
+                        Foreground="Black"
+                        />
+                <Button Content="Go To Desktop"
+                        Click="GoToDesktopClick"
+                        Foreground="Black"
+                        />
+                <Button x:Name="Retrieve" Content="Retrieve" Click="Retrieve_Click" Foreground="Black" Background="Yellow"/>
+                <Button x:Name="Add" Content="Add" Click="Add_Click" Foreground="Black" Background="Red"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="CallGraphButton" Content="Call Microsoft Graph API" HorizontalAlignment="Right" Padding="5" Click="CallGraphButton_Click" Margin="5" FontFamily="Segoe Ui" Foreground="Black"/>
+                    <Button x:Name="SignOutButton" Content="Sign-Out" HorizontalAlignment="Right" Padding="5" Click="SignOutButton_Click" Margin="5" Visibility="Collapsed" FontFamily="Segoe Ui" Foreground="Black"/>
+                </StackPanel>
+                <TextBlock Text="API Call Results" Margin="2,0,0,-5" FontFamily="Segoe Ui" />
+                <TextBox x:Name="ResultText" TextWrapping="Wrap" MinHeight="120" Margin="5" FontFamily="Segoe Ui"/>
+                <TextBox x:Name="CalendarText" TextWrapping="Wrap" MinHeight="120" Margin="5" FontFamily="Segoe Ui"/>
+                <TextBlock Text="Token Info" Margin="2,0,0,-5" FontFamily="Segoe Ui" />
+                <TextBox x:Name="TokenInfoText" TextWrapping="Wrap" MinHeight="70" Margin="5" FontFamily="Segoe Ui"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Your text will appear here" VerticalAlignment="Top" Width="177" Foreground="Black"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter your text here" VerticalAlignment="Top" Width="165" Foreground="Black"/>
+
+            </StackPanel>
+        </ScrollViewer>
+        <Rectangle Fill="#77000000"
+                   x:Name="PleaseWaitCache"
+                   Visibility="Collapsed" />
+
+        <ProgressRing x:Name="Progress"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Width="40"
+                      Height="40" />
+    </Grid>
+</Page>

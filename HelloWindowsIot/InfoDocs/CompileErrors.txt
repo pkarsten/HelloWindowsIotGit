@@ -1,0 +1,22 @@
+﻿1. F6 (Neu erstellen) -> Metadatendatei \bin\x64\Release\RWPBGTasks.winmd" wurde nicht gefunden: 
+	- Check Ausgabe (RWPBGTasks.BackgroundTaskConfig' contains externally visible constant field)
+2. (Debug Ausführen F5) Fehler beim registrieren der App 0x80073CF9. Eine Registrierungsanforderung von AppxBundleManifext.xml wurde abgelehnt, da die Manifestdatei nicht im Paketstammverzeichnis vorhanden ist
+	- (Datenbank in Paket Verzeichnis löschen) 
+3. Fehler	CS1061	"StartPage" enthält keine Definition für "ChangeWPTaskProgress", und es konnte keine ChangeWPTaskProgress-Erweiterungsmethode gefunden werden, 
+	die ein erstes Argument vom Typ "StartPage" akzeptiert (möglicherweise fehlt eine using-Direktive oder ein Assemblyverweis).	
+	RandomWallpapers	D:\Visual Studio 2015 UAP\RandomWallpapers\RandomWallpapers\obj\ARM\Release\Views\StartPage.g.cs	87	Aktiv
+	- Ein XAML Element wurde entfernt. Gucken für welche Ausgabe Fehlgeschlagen ist (X86, X64, oder ARM) dann Ziel Bereinigen, und neu Erstellen Debuggen 
+4. DEP0700: Fehler beim registrieren der App (0x80073CF6 Interner Fehler 0x80073D05)
+	- bin/ Verzeichnis Inhalte löschen
+	- Projektmappe bereinigen
+	- Visual STudio neu starten
+5. DEP0700: Fehler beim Registrieren der App. [0x80073CF9] Ein anderer Benutzer hat bereits eine verpackte Version dieser App installiert. 
+Diese kann nicht durch eine unverpackte Version ersetzt werden. Das in Konflikt stehende Paket ist "47503PeterKarsten.RandomRatedWallpapers" 
+und wurde von "CN=9CCAB24B-9A58-49BB-92DD-448BF526AB43" veröffentlich.	RandomWallpapers			
+
+6. Beheben von Lizenzierungsfehlern in Apps
+	Möglicherweise wird ein Aktivierungsfehler mit dem Text "Fehler beim Starten der App aufgrund eines Lizenzproblems" angezeigt. Probieren Sie die folgenden Problemumgehungen aus:
+    Klicken Sie im Menü Erstellen auf Projektmappe bereinigen,öffnen Sie den Projektmappenordner im Datei-Explorer und löschen Sie die Ordner bin und obj. Klicken Sie anschließend auf Erstellen, Projektmappe neu erstellen. Beim erneuten Erstellen der Projektmappe werden die entsprechenden Ordner neu erstellt.
+    Wählen Sie die App im Startbildschirm aus und klicken Sie in der App-Leiste auf "Deinstallieren". Bereinigen Sie Ihre Projektmappe und erstellen Sie diese anschließend erneut.
+    Verwenden Sie PowerShell-Befehle in einer Eingabeaufforderung mit Admin-Berechtigungen, um Ihre Entwicklerlizenz zu entfernen und neu zu installieren. Bereinigen Sie Ihre Projektmappe und erstellen Sie diese anschließend erneut. Siehe 
+

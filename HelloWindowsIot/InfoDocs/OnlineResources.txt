@@ -1,0 +1,40 @@
+﻿- Segoe MDL2 Assets Cheatsheet (Glyphs, Icons) 
+	http://modernicons.io/segoe-mdl2/cheatsheet/
+- For Glyphs Converting (Used in List<Scenario> topScenarios)
+	http://stackoverflow.com/questions/34724792/how-to-programmatically-create-textblock-using-segoe-mdl2-assets-font-in-wpf
+- JumpList
+	https://docs.microsoft.com/en-us/uwp/api/windows.ui.startscreen.jumplist
+	Sample: https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/JumpList
+	Sample and Implementation: http://jamescroft.co.uk/blog/uwp/developing-for-windows-10-implementing-jump-lists/
+- System.SimpleRating
+	https://msdn.microsoft.com/de-de/library/windows/desktop/bb787564.aspx
+	https://msdn.microsoft.com/library/windows/desktop/bb787554.aspx
+	GroupByRating: https://docs.microsoft.com/en-us/uwp/api/windows.storage.search.commonfolderquery
+- in App Käufe und Testversionen
+	https://docs.microsoft.com/de-de/windows/uwp/monetize/in-app-purchases-and-trials#testing-apps-that-use-the-windows-services-store-namespace
+	Sample: https://github.com/Microsoft/Windows-appsample-coloringbook
+	https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/Store
+	Get Licence Info: https://docs.microsoft.com/de-de/windows/uwp/monetize/get-license-info-for-apps-and-add-ons
+- Localization
+	http://www.codeproject.com/Articles/862152/Localization-in-Windows-Universal-Apps
+    or http://stackoverflow.com/questions/36840231/how-to-use-resources-resw-in-class-library-project-in-uwp
+	- Multilingual App Toolkit: https://docs.microsoft.com/de-de/windows/uwp/design/globalizing/use-mat
+	 https://marketplace.visualstudio.com/items?itemName=MultilingualAppToolkit.MultilingualAppToolkit-18308
+- Show Thumbnails 
+    https://blogs.msdn.microsoft.com/amar/2015/01/14/show-file-thumbnails-in-your-windows-store-app/
+	https://www.janaks.com.np/getting-thumbnail-from-file-in-uwp-app/
+	Current Desktop Wallpaper? https://www.whitebyte.info/programming/why-being-a-programmer-ist-great-or-how-to-get-the-current-windows-wallpaper-in-c#
+	List: http://stackoverflow.com/questions/40234054/async-binding-thumbnail-image-in-uwp
+- Extending Photo Apps Win7
+	https://msdn.microsoft.com/de-de/library/windows/apps/ff817010(v=vs.105).aspx
+- Zahlungen aus dem Windows Store
+	https://blogs.msdn.microsoft.com/windowsstore_de/2012/08/09/zahlungen-aus-dem-windows-store/
+	https://docs.microsoft.com/de-de/windows/uwp/publish/setting-up-your-payout-account-and-tax-forms#paying_taxes
+- Windows BG Task Checklist
+	https://docs.microsoft.com/en-us/windows/uwp/launch-resume/guidelines-for-background-tasks
+	http://stackoverflow.com/questions/35530192/wait-for-backgroundtask-to-complete
+	http://www.damirscorner.com/blog/posts/20160227-GetNotifiedWhenABackgroundTaskCompletes.html
+- SQLIte WIndows10 IOT: http://blog.chrisbriggsy.com/Using-SQLITE-in-Windows-10-IoT-Core-Insider-Preview/
+
+	
+

@@ -12,7 +12,7 @@
     <DefaultLanguage>de-DE</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -158,6 +158,10 @@
     <ProjectReference Include="..\AppSettings\AppSettings.csproj">
       <Project>{e6d45a58-fb42-4df9-abff-af92537862f9}</Project>
       <Name>AppSettings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GraphService\GraphService.csproj">
+      <Project>{9d16c80d-1c21-4a1f-81b5-b47092bfe462}</Project>
+      <Name>GraphService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -1,0 +1,11 @@
+﻿1. Add new Page to the App:
+	- Create Blank Page in Folder Views (Check for correct Namespace)
+	- Go to AppConfiguration.cs -> List<Scenario> topScenarios and add the New Scenario
+	- Page will automatically listed to the Menu
+2. Add new Sqlite DB Table
+	- Create public sealed class under /Models in BackgroundTasks
+	- register Tables in dataAccessLayer.cs CreateDatabase()
+3. Localisation Code Behind:
+	- AppcFuncs.GetLanguage("StringNameInResourceFile");
+
+	

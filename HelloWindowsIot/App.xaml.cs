@@ -1,10 +1,13 @@
-﻿using System;
+﻿using RWPBGTasks;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -33,12 +36,32 @@ namespace HelloWindowsIot
         }
 
         /// <summary>
+        /// Initialize the App launch.
+        /// </summary>
+        /// <returns>The AppShell of the app.</returns>
+        private async Task Initialize()
+        {
+
+            Dal.CreateDatabase();
+            //TODO: BackgroundTask? await BackgroundTaskConfig.CheckForRegisteredTasks();
+        }
+
+        /// <summary>
         /// Wird aufgerufen, wenn die Anwendung durch den Endbenutzer normal gestartet wird. Weitere Einstiegspunkte
         /// werden z. B. verwendet, wenn die Anwendung gestartet wird, um eine bestimmte Datei zu öffnen.
         /// </summary>
         /// <param name="e">Details über Startanforderung und -prozess.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+            await Initialize();
+
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // App-Initialisierung nicht wiederholen, wenn das Fenster bereits Inhalte enthält.
@@ -68,8 +91,16 @@ namespace HelloWindowsIot
                     // übergeben werden
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
+                else
+                {
+                    var page = rootFrame.Content as MainPage;
+                    page?.OnLaunchedEvent(e.Arguments);
+                }
+
                 // Sicherstellen, dass das aktuelle Fenster aktiv ist
                 Window.Current.Activate();
+
+                //TODO:Dal.SaveLogEntry(LogType.Info, "Application Launched");
             }
         }
 
@@ -80,7 +111,8 @@ namespace HelloWindowsIot
         /// <param name="e">Details über den Navigationsfehler</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            //throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            throw new Exception(String.Format(AppSettings.AppResourceMap.GetValue("resourcename", ResourceContext.GetForCurrentView()).ValueAsString, e.SourcePageType.FullName));
         }
 
         /// <summary>

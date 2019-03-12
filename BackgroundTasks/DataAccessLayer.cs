@@ -74,8 +74,8 @@ namespace RWPBGTasks
                 var msinfo = db.GetMapping(typeof(Message));
 
             }
-            CheckSetupData();
-            CheckPicFilterData();
+            //CheckSetupData();
+            //CheckPicFilterData();
         }
         #endregion
 
@@ -335,6 +335,43 @@ namespace RWPBGTasks
                     SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                 }
             }
+        }
+        #endregion
+
+        #region Message
+        public static void SaveMessage(string message)
+        {
+                try
+                {
+                    // Create a new connection
+                    using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                    {
+                        // New
+                        db.Insert(new Message()
+                        {
+                            Content = message
+                        });
+                    System.Diagnostics.Debug.WriteLine("Message Inserted");
+                    }
+                }
+                catch (Exception ex)
+                {
+                //SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error Message Inserted");
+            }
+        }
+
+        public static IList<Message> GetMessages()
+        {
+            IList<Message> messages;
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                messages = (from p in db.Table<Message>()
+                        select p).OrderByDescending(d => d.Id).ToList();
+            }
+
+            return messages;
         }
         #endregion
 

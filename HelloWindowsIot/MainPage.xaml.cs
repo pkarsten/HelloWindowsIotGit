@@ -1,218 +1,193 @@
-﻿using Microsoft.Identity.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using MSGraph.Response;
-using MSGraph.Request;
-using Windows.UI.Popups;
-using MSGraph.Helpers;
-using MSGraph;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.ViewManagement; //ApplicationView
+using Windows.ApplicationModel.Core; //CoreApplicationViewTitleBar
+using Windows.ApplicationModel.Background; //BackgroundTasks
+using Windows.Media.Playback; //BackgroundMediaPlayer
+using System.Threading.Tasks; //Tasks
+using Windows.UI.Popups; //Messagebox MessageDialog
+using RWPBGTasks;
+using Windows.UI.Core;
+using Windows.Storage;
+using Windows.ApplicationModel;
+using System.Windows.Input;
+using Windows.Globalization;
 
 namespace HelloWindowsIot
 {
+
     public sealed partial class MainPage : Page
     {
-        //Set the API Endpoint to Graph 'me' endpoint // Hallo // Hallo2 sdfg dsg asdf 
-        string graphAPIEndpoint = "https://graph.microsoft.com/v1.0/me";
-        //5
-        // http://thewindowsupdate.com/2019/01/29/exploring-microsoft-the-graph-sdk-on-net/
+        #region Variables
+        // A pointer to the ApplicationTrigger so we can signal it later
+        public static MainPage Current;
+        public List<Scenario> TopScenarios
+        {
+            get { return this.topScenarios; }
+        }
+        public List<Scenario> BottomScenarios
+        {
+            get { return this.bottomScenarios; }
+        }
 
-        private const string RequestRootFolder = "/drive/root";
-        private const string RequestSpecialFolder = "/drive/special/Photos";
 
-        //Set the scope for API call to user.read
-        string[] scopes = new string[] { "user.read", "Files.Read", "Calendars.Read" };
 
+        #endregion
+
+        #region Constructor
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+
+            // This is a static public property that allows downstream pages to get a handle to the MainPage instance
+            // in order to call methods that are in this class.
+            Current = this;
+            Header.Text = AppInfos.ApplicationName + " " + AppInfos.ApplicationVersion;
+
+            //TODO: Remove Test Language 
+            //ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
         }
-
-        private async void GetAppRootFolder(object sender, RoutedEventArgs e)
-        {
-
-            Exception error = null;
-            ItemInfoResponse folder = null;
-            IList<ItemInfoResponse> children = null;
-
-            //// Initialize Graph client
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-            ShowBusy(true);
-
-            try
-            {
-                folder = await graphService.GetSpecialFolder(SpecialFolder.Photos);
-                children = await graphService.PopulateChildren(folder);
-            }
-            catch (Exception ex)
-            {
-                error = ex;
-            }
-
-            if (error != null)
-            {
-                var dialog = new MessageDialog(error.Message, "Error!");
-                await dialog.ShowAsync();
-                ShowBusy(false);
-                return;
-            }
-
-            DisplayHelper.ShowContent(
-                "SHOW ROOT FOLDER ++++++++++++++++++++++",
-                folder,
-                children,
-                async message =>
-                {
-                    var dialog = new MessageDialog(message);
-                    await dialog.ShowAsync();
-                });
-
-            ShowBusy(false);
-        }
-
-        private async void GetPhotosAndImagesFromFolder(object sender, RoutedEventArgs e)
-        {
-            Exception error = null;
-            ItemInfoResponse folder = null;
-            ItemInfoResponse rootfolder = null;
-            IList<ItemInfoResponse> children = null;
-
-            //// Initialize Graph client
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-            ShowBusy(true);
-
-            try
-            {
-                rootfolder = await graphService.GetAppRoot();
-                folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
-                children = await graphService.PopulateChildren(folder);
-            }
-            catch (Exception ex)
-            {
-                error = ex;
-            }
-
-            if (error != null)
-            {
-                var dialog = new MessageDialog(error.Message, "Error!");
-                await dialog.ShowAsync();
-                ShowBusy(false);
-                return;
-            }
-
-            foreach(ItemInfoResponse iir in children)
-            {
-                if (iir.Image != null)
-                {
-                    System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
-                }
-            }
-
-            DisplayHelper.ShowContent(
-               "SHOW Item Properties ++++++++++++++++++++++",
-               folder,
-               children,
-               async message =>
-               {
-                   var dialog = new MessageDialog(message);
-                   await dialog.ShowAsync();
-               });
-
-            ShowBusy(false);
-        }
+        #endregion
 
         /// <summary>
-        /// Call AcquireTokenAsync - to acquire a token requiring user to sign-in
+        /// Used to display messages to the user
         /// </summary>
-        private async void CallGraphButton_Click(object sender, RoutedEventArgs e)
+        /// <param name="strMessage"></param>
+        /// <param name="type"></param>
+        public void NotifyUser(string strMessage, NotifyType type)
         {
-            AuthenticationResult authResult = await GraphService.GetAuthResult();
-            ResultText.Text = string.Empty;
-            TokenInfoText.Text = string.Empty;
-
-            if (authResult != null)
+            switch (type)
             {
-                ResultText.Text = await GraphService.GetHttpContentWithToken(graphAPIEndpoint, authResult.AccessToken);
-                DisplayBasicTokenInfo(authResult);
-                this.SignOutButton.Visibility = Visibility.Visible;
+                case NotifyType.StatusMessage:
+                    StatusBorder.Background = new SolidColorBrush(Windows.UI.Colors.Green);
+                    break;
+                case NotifyType.ErrorMessage:
+                    StatusBorder.Background = new SolidColorBrush(Windows.UI.Colors.Red);
+                    break;
             }
-        }
+            StatusBlock.Text = strMessage;
 
-        private async void GetFirstCalenderView_CLick(object sender, RoutedEventArgs e)
-        {
-            //// Initialize Graph client
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-            //CalendarText.Text = await graphService.GetCalendarViewTest();
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-            foreach (CalendarEventItem ce in myevents)
+            // Collapse the StatusBlock if it has no text to conserve real estate.
+            StatusBorder.Visibility = (StatusBlock.Text != String.Empty) ? Visibility.Visible : Visibility.Collapsed;
+            if (StatusBlock.Text != String.Empty)
             {
-                System.Diagnostics.Debug.WriteLine("Date : " + ce.StartDateTime.dateTime + " Subject: " + ce.Subject);
-            }
-        }
-
-
-        /// <summary>
-        /// Sign out the current user
-        /// </summary>
-        private async void SignOutButton_Click(object sender, RoutedEventArgs e)
-        {
-            //IEnumerable<IAccount> accounts = await App.PublicClientApp.GetAccountsAsync();
-            //IAccount firstAccount = accounts.FirstOrDefault();
-            //try
-            //{
-            //    await App.PublicClientApp.RemoveAsync(firstAccount);
-            //    this.ResultText.Text = "User has signed-out";
-            //    this.CallGraphButton.Visibility = Visibility.Visible;
-            //    this.SignOutButton.Visibility = Visibility.Collapsed;
-            //}
-            //catch (MsalException ex)
-            //{
-            //    ResultText.Text = $"Error signing-out user: {ex.Message}";
-            //}
-
-            if (await GraphService.SignOut() == true)
-            {
-                this.ResultText.Text = "User has signed-out";
-                this.CallGraphButton.Visibility = Visibility.Visible;
-                this.SignOutButton.Visibility = Visibility.Collapsed;
+                StatusBorder.Visibility = Visibility.Visible;
+                StatusPanel.Visibility = Visibility.Visible;
             }
             else
             {
-                ResultText.Text = $"Error signing-out user: ";
+                StatusBorder.Visibility = Visibility.Collapsed;
+                StatusPanel.Visibility = Visibility.Collapsed;
             }
-
         }
 
+        #region scenarios
         /// <summary>
-        /// Display basic information contained in the token
+        /// Called whenever the user changes selection in the scenarios list.  This method will navigate to the respective
+        /// sample scenario page.
         /// </summary>
-        private void DisplayBasicTokenInfo(AuthenticationResult authResult)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScenarioControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TokenInfoText.Text = "";
-            if (authResult != null)
+            // Clear the status block when navigating scenarios.
+            NotifyUser(String.Empty, NotifyType.StatusMessage);
+
+            ListBox scenarioListBox = sender as ListBox;
+            Scenario s = scenarioListBox.SelectedItem as Scenario;
+            if (s != null)
             {
-                TokenInfoText.Text += $"User Name: {authResult.Account.Username}" + Environment.NewLine;
-                TokenInfoText.Text += $"Token Expires: {authResult.ExpiresOn.ToLocalTime()}" + Environment.NewLine;
-                TokenInfoText.Text += $"Access Token: {authResult.AccessToken}" + Environment.NewLine;
+                ScenarioFrame.Navigate(s.ClassType);
+                if (Window.Current.Bounds.Width < 640)
+                {
+                    Splitter.IsPaneOpen = false;
+                }
+                FooterControl.SelectedItem = null;
+                ScenarioControl.SelectedItem = scenarioListBox.SelectedItem;
             }
         }
 
-        private void ShowBusy(bool isBusy)
+         private void FooterControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+         {
+                    ListBox scenarioListBox = sender as ListBox;
+                    Scenario s = scenarioListBox.SelectedItem as Scenario;
+                    if (s != null)
+                    {
+                        ScenarioFrame.Navigate(s.ClassType);
+                        if (Window.Current.Bounds.Width < 640)
+                        {
+                            Splitter.IsPaneOpen = false;
+                        }
+                        ScenarioControl.SelectedItem = null;
+                        FooterControl.SelectedItem = scenarioListBox.SelectedItem;
+                    }
+
+
+         }
+
+        async void Footer_Click(object sender, RoutedEventArgs e)
         {
-            Progress.IsActive = isBusy;
-            PleaseWaitCache.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
+            //await Windows.System.Launcher.LaunchUriAsync(new Uri(((HyperlinkButton)sender).Tag.ToString()));
         }
 
-        private void GoToDesktopClick(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            this.Frame.Navigate(typeof(Desktop));
+            Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
         }
+        #endregion
+
+        #region Navigate
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // Populate the scenario list from the AppConfiguration.cs file
+            // Scenarios for Top in Hamburger Menu
+            ScenarioControl.ItemsSource = topScenarios;
+            ScenarioControl.SelectedIndex = 0;
+
+            // Scenarios for Bottom in Hamburger Menu
+            FooterControl.ItemsSource = bottomScenarios;
+            FooterControl.SelectedIndex = -1;
+
+            if (e.Parameter != null)
+            {
+                var launchEvent = e.Parameter.ToString();
+                this.OnLaunchedEvent(launchEvent);
+            }
+
+        }
+        #endregion
+
+        public async void OnLaunchedEvent(string arguments)
+        {
+            switch (arguments.ToLower())
+            {
+                case "changewp":
+                    Dal.SaveLogEntry(LogType.Info, "ChangeWallPaper Called from JumpList");
+                    ScenarioControl.SelectedIndex = 0;
+                    await LaunchChangeWallpaper();
+                    Application.Current.Exit();//PKA041018 CLose App after Change Wallpaper Over JumpList 
+                    break;
+            }
+        }
+
+        #region Jumplist
+        private async Task LaunchChangeWallpaper()
+        {
+            await TaskFunctions.ChangeWallpaperAsync(false);
+        }
+
+        #endregion
     }
 }

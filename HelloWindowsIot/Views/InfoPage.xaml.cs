@@ -20,6 +20,8 @@ using Windows.Services.Store;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.ApplicationModel.Resources.Core;
+using UwpSqliteDal;
+using AppSettings;
 
 namespace HelloWindowsIot
 {

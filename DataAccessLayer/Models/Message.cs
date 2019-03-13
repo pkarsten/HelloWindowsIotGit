@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SQLite.Net.Attributes;
 
-namespace RWPBGTasks
+namespace UwpSqliteDal
 {
     public class Message
     {

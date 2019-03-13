@@ -19,6 +19,7 @@ using Windows.Storage.FileProperties;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Search;
 using Windows.UI.Xaml.Media;
+using UwpSqliteDal;
 
 namespace HelloWindowsIot
 {

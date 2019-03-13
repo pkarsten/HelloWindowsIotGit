@@ -245,6 +245,10 @@
       <Project>{c97cae29-5961-421f-9a43-3334d016ae68}</Project>
       <Name>BackgroundTasks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{28fc5d9b-de40-4328-aad1-abe4c4a94f57}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GraphService\GraphService.csproj">
       <Project>{9d16c80d-1c21-4a1f-81b5-b47092bfe462}</Project>
       <Name>GraphService</Name>

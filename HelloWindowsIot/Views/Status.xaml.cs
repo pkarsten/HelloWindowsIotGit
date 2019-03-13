@@ -14,6 +14,8 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using Windows.System;
+using UwpSqliteDal;
+using AppSettings;
 
 namespace HelloWindowsIot
 {

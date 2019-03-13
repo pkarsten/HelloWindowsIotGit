@@ -3,7 +3,7 @@ using SQLite.Net.Attributes;
 using System;
 using Windows.Storage;
 
-namespace RWPBGTasks
+namespace UwpSqliteDal
 {
     public sealed class TaskStatus
     {

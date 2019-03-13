@@ -18,10 +18,12 @@ using Windows.ApplicationModel.Background; //BackgroundTasks
 using Windows.Media.Playback; //BackgroundMediaPlayer
 using System.Threading.Tasks; //Tasks
 using Windows.UI.Popups; //Messagebox MessageDialog
-using RWPBGTasks;
+using UwpSqliteDal;
 using Windows.UI.Core;
 using Windows.Storage;
 using System.Collections.ObjectModel;
+using AppSettings;
+using RWPBGTasks;
 
 namespace HelloWindowsIot
 {

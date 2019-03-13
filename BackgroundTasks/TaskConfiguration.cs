@@ -5,6 +5,8 @@ using Windows.Foundation.Collections;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.UI.Xaml.Data;
+using UwpSqliteDal;
+using AppSettings;
 
 namespace RWPBGTasks
 {
@@ -246,7 +248,7 @@ namespace RWPBGTasks
                 var ts = Dal.GetTaskStatusByTaskName(s);
                 if (ts == null)
                 {
-                    RWPBGTasks.TaskStatus t = new RWPBGTasks.TaskStatus();
+                    UwpSqliteDal.TaskStatus t = new UwpSqliteDal.TaskStatus();
                     t.TaskName = s;
                     t.CurrentRegisteredStatus = false;
                     t.LastTimeRun = "";

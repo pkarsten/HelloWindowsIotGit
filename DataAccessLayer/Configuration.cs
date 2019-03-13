@@ -1,4 +1,4 @@
-﻿namespace RWPBGTasks
+﻿namespace UwpSqliteDal
 {
 
     /// <summary>
@@ -7,7 +7,7 @@
     public sealed class Configuration
     {
         public static string PicFileNameInAppDataFolder { get; } = "mybgpicture";
-        public static string DatabaseName { get;} = "Storage.WPTDB";
+        public static string DatabaseName { get; } = "Storage.WPTDB";
         public static Setup InitialSetupConfig { get; } = new Setup
         {
             Id = 1,

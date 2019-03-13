@@ -24,6 +24,7 @@ using Windows.Storage;
 using Windows.ApplicationModel;
 using System.Windows.Input;
 using Windows.Globalization;
+using UwpSqliteDal;
 
 namespace HelloWindowsIot
 {

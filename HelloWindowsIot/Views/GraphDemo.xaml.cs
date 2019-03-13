@@ -11,7 +11,7 @@ using Windows.UI.Popups;
 using MSGraph.Helpers;
 using MSGraph;
 using RWPBGTasks;
-
+using UwpSqliteDal;
 
 namespace HelloWindowsIot
 {

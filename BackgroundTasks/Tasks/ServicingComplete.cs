@@ -1,7 +1,9 @@
-﻿using System;
+﻿using AppSettings;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using UwpSqliteDal;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
@@ -155,7 +157,7 @@ namespace RWPBGTasks
                 //
                 settings.Values[key] = (Progress < 100) ? "Canceled" : "Completed";
 
-                TaskStatus ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                UwpSqliteDal.TaskStatus ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                 ts.LastTimeRun = DateTime.Now.ToString();
                 ts.AdditionalStatus = settings.Values[key].ToString();
                 Dal.UpdateTaskStatus(ts);

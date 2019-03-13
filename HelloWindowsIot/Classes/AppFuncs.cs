@@ -9,6 +9,8 @@ using Windows.Services.Store;
 using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using RWPBGTasks;
+using UwpSqliteDal;
+using AppSettings;
 
 namespace HelloWindowsIot
 {

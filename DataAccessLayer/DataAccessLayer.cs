@@ -11,8 +11,9 @@ using SQLite.Net.Platform.WinRT;
 using System.Diagnostics;
 using Windows.ApplicationModel.Background;
 using SQLite.Net;
+using AppSettings;
 
-namespace RWPBGTasks
+namespace UwpSqliteDal
 {
     /// <summary>
     /// Data Access Layer for Save in Sqlite DB 
@@ -20,7 +21,7 @@ namespace RWPBGTasks
     public static class Dal
     {
         private static string dbPath = string.Empty;
-        
+
         #region Database Connection and Create
         /// <summary>
         /// Path where SQLITE DB will saved 
@@ -154,8 +155,8 @@ namespace RWPBGTasks
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
-                sconfig = (from p in db.Table<Setup>()select p).FirstOrDefault();
-                
+                sconfig = (from p in db.Table<Setup>() select p).FirstOrDefault();
+
                 //Save Initial Setup Data if Table hasn't entry 
                 if (sconfig == null)
                 {
@@ -178,7 +179,7 @@ namespace RWPBGTasks
                 {
                     sconfig = (from p in db.Table<Setup>() where p.Id == 1 select p).FirstOrDefault();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -201,7 +202,7 @@ namespace RWPBGTasks
                     SaveLogEntry(LogType.Info, "Setup Config Updated");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 SaveLogEntry(LogType.Exception, "UpdateSetup() Exception: " + ex.Message);
             }
@@ -219,7 +220,7 @@ namespace RWPBGTasks
                 {
                     Setup sconfig = GetSetup();
                     sconfig.EnableLogging = enable;
-                    if(enable==false)
+                    if (enable == false)
                         SaveLogEntry(LogType.Info, "Disable Logging");
                     db.Update(sconfig);
                     if (enable == true)
@@ -240,7 +241,7 @@ namespace RWPBGTasks
             switch (taskname)
             {
                 case Settings.ChangeWallpaperTaskName:
-                    minutesForTrigger=  (uint)s.IntervalForChangeWallPaper;
+                    minutesForTrigger = (uint)s.IntervalForChangeWallPaper;
                     break;
                 case Settings.SearchPicturesTaskName:
                     minutesForTrigger = (uint)s.IntervalForSearchPictures;
@@ -312,7 +313,7 @@ namespace RWPBGTasks
 #if DEBUG
             n.EnableLogging = true;
 #endif
-            if ((ltype == LogType.Error) || (ltype == LogType.Exception) || (n.EnableLogging == true) || ltype ==LogType.AppInfo)
+            if ((ltype == LogType.Error) || (ltype == LogType.Exception) || (n.EnableLogging == true) || ltype == LogType.AppInfo)
             {
                 try
                 {
@@ -341,21 +342,21 @@ namespace RWPBGTasks
         #region Message
         public static void SaveMessage(string message)
         {
-                try
+            try
+            {
+                // Create a new connection
+                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
                 {
-                    // Create a new connection
-                    using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                    // New
+                    db.Insert(new Message()
                     {
-                        // New
-                        db.Insert(new Message()
-                        {
-                            Content = message
-                        });
+                        Content = message
+                    });
                     System.Diagnostics.Debug.WriteLine("Message Inserted");
-                    }
                 }
-                catch (Exception ex)
-                {
+            }
+            catch (Exception ex)
+            {
                 //SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                 System.Diagnostics.Debug.WriteLine("Error Message Inserted");
             }
@@ -368,7 +369,7 @@ namespace RWPBGTasks
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 messages = (from p in db.Table<Message>()
-                        select p).OrderByDescending(d => d.Id).ToList();
+                            select p).OrderByDescending(d => d.Id).ToList();
             }
 
             return messages;
@@ -449,7 +450,7 @@ namespace RWPBGTasks
                     if (viewedPics.Count == 0)
                     {
                         var upPics = (from p in db.Table<FavoritePic>()
-                                          select p).Where(v => v.Viewed == true).ToList();
+                                      select p).Where(v => v.Viewed == true).ToList();
 
                         foreach (FavoritePic p in upPics)
                         {
@@ -459,7 +460,7 @@ namespace RWPBGTasks
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 SaveLogEntry(LogType.Error, "Exception in CheckForViewed Pictures " + ex.Message);
             }
@@ -588,7 +589,7 @@ namespace RWPBGTasks
                         SaveLogEntry(LogType.Info, "DB Save TaskStatus " + ts.TaskName + " Current Status: " + ts.CurrentRegisteredStatus);
                     }
 
-                    
+
                 }
             }
             catch (Exception ex)
@@ -597,7 +598,7 @@ namespace RWPBGTasks
             }
             finally
             {
-                
+
             }
         }
 

@@ -8,7 +8,7 @@ using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.Storage.Search;
 
-namespace RWPBGTasks
+namespace AppSettings
 {
     public static class Settings
     {

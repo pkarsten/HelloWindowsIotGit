@@ -2,7 +2,7 @@
 using System;
 using Windows.Storage;
 
-namespace RWPBGTasks
+namespace UwpSqliteDal
 {
     /// <summary>
     /// Represents a Rated Picture 

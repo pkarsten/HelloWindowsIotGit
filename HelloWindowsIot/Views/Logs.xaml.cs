@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using System.Threading.Tasks; //Tasks
 using Windows.UI.Xaml.Navigation;
-using RWPBGTasks;
+using UwpSqliteDal;
 using System.Collections.ObjectModel;
 
 // https://microsoft-programmierer.de/Details?d=1347&a=9&f=181&l=0&t=UWP,-XAML,-C

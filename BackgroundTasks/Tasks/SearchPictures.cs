@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UwpSqliteDal;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -192,7 +193,7 @@ namespace RWPBGTasks
                     // Write to LocalSettings to indicate that this background task ran.
                     //
                     settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                    TaskStatus ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                    UwpSqliteDal.TaskStatus ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                     ts.LastTimeRun = DateTime.Now.ToString();
                     ts.AdditionalStatus = settings.Values[key].ToString();
                     Dal.UpdateTaskStatus(ts);

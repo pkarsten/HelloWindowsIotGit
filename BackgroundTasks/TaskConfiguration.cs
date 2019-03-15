@@ -109,6 +109,9 @@ namespace RWPBGTasks
                 case Settings.ChangeWallpaperTaskName:
                     Settings.ChangeWallpaperTaskRegistered = registered;
                     break;
+                case Settings.CreateMessageTaskName:
+                    Settings.CreateMessageTaskRegistered = registered;
+                    break;
             }
             var ts = Dal.GetTaskStatusByTaskName(name);
             if (ts != null)
@@ -148,6 +151,9 @@ namespace RWPBGTasks
                 case Settings.ChangeWallpaperTaskName:
                     registered = Settings.ChangeWallpaperTaskRegistered;
                     break;
+                case Settings.CreateMessageTaskName:
+                    registered = Settings.CreateMessageTaskRegistered;
+                    break;
             }
 
             var status = registered ? "Registered" : "Unregistered";
@@ -186,7 +192,7 @@ namespace RWPBGTasks
         /// <param name="name">Name of background task to query background access requirement.</param>
         public static bool TaskRequiresBackgroundAccess(String name)
         {
-            if ((name == Settings.ChangeWallpaperTaskName) || (name == Settings.SearchPicturesTaskName) || name == Settings.ServicingCompleteTaskName)
+            if ((name == Settings.ChangeWallpaperTaskName) || (name == Settings.SearchPicturesTaskName) || name == Settings.ServicingCompleteTaskName || name == Settings.CreateMessageTaskName)
             {
                 Dal.SaveLogEntry(LogType.Info, name + "requires Background access");
                 return true;
@@ -220,6 +226,11 @@ namespace RWPBGTasks
                 if ((tstatus.TaskName == Settings.ChangeWallpaperTaskName) && tstatus.CurrentRegisteredStatus == true)
                 {
                     var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
+                }
+
+                if ((tstatus.TaskName == Settings.CreateMessageTaskName) && tstatus.CurrentRegisteredStatus == true)
+                {
+                    var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint, Settings.CreateMessageTaskName, Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName), null);
                 }
 
                 //if ((tstatus.TaskName == Configuration.ServicingCompleteTaskName) && tstatus.CurrentRegisteredStatus == true)
@@ -271,6 +282,10 @@ namespace RWPBGTasks
                 {
                     UpdateBackgroundTaskRegistrationStatus(Settings.ServicingCompleteTaskName, true);
                 }
+                if (task.Value.Name == Settings.CreateMessageTaskName)
+                {
+                    UpdateBackgroundTaskRegistrationStatus(Settings.CreateMessageTaskName, true);
+                }
             }
 
             // Register Servicing Complete Task if there is not registered
@@ -298,6 +313,16 @@ namespace RWPBGTasks
                                                                             Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
                                                                            null);
             }
+
+            if ((Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).CurrentRegisteredStatus == true) && Settings.CreateMessageTaskRegistered == false)
+            {
+                // Register SearchPictures Task if is not registered but Status iN DB say it must be registered
+                var task = await RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint,
+                                                                           Settings.CreateMessageTaskName,
+                                                                            Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName),
+                                                                           null);
+            }
+
             return true;
 
         }

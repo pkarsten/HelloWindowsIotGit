@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using UwpSqliteDal;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources.Core;
@@ -42,7 +43,7 @@ namespace HelloWindowsIot
         private async Task Initialize()
         {
 
-            //Dal.CreateDatabase();
+            Dal.CreateDatabase();
             UwpSqliteDal.Dal.CreateDatabase();
             await BackgroundTaskConfig.CheckForRegisteredTasks();
         }

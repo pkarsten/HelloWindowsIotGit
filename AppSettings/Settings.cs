@@ -40,16 +40,23 @@ namespace AppSettings
         public static string SearchPicturesTaskProgress = "";
         public static bool SearchPicturesTaskRegistered = false;
 
+        public const string CreateMessageTaskEntryPoint = "RWPBGTasks.CreateMessage";
+        public const string CreateMessageTaskName = "CreateMessageTask";
+        public static string CreateMessageTaskResult = "";
+        public static string CreateMessageTaskProgress = "";
+        public static bool CreateMessageTaskRegistered = false;
+
         public static List<string> TaskList { get; } = new List<string>
             {
                 Settings.SearchPicturesTaskName,
                 Settings.ChangeWallpaperTaskName,
                 Settings.ServicingCompleteTaskName,
+                Settings.CreateMessageTaskName
             };
         #endregion
 
         // Settings are saved in DB and 
-        //public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
+        // public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
         #region UI
         public const string APP_NAME = "Random Rated Wallpapers";

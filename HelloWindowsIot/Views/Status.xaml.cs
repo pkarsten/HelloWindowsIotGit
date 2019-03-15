@@ -53,6 +53,10 @@ namespace HelloWindowsIot
                 {
                     AttachServicingCompleteProgressAndCompletedHandlers(task.Value);
                 }
+                if (task.Value.Name == Settings.CreateMessageTaskName)
+                {
+                    AttachCreateMessageProgressAndCompletedHandlers(task.Value);
+                }
             }
             UpdateUI();
         }
@@ -84,6 +88,16 @@ namespace HelloWindowsIot
                     ChangeWPOverviewLastRun.Text = "";
                 ChangeWPOverviewProgress.Text = Settings.ChangeWallpaperTaskProgress;
                 ChangeWPOverviewResult.Text = Settings.ChangeWallpaperTaskResult;
+
+                //CreateMessageTask 
+                CreateMessageOverviewName.Text = "Name: " + Settings.CreateMessageTaskName;
+                CreateMessageOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.CreateMessageTaskName);
+                if (!String.IsNullOrEmpty(Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).LastTimeRun))
+                    CreateMessageOverviewLastRun.Text = AppcFuncs.GetLanguage("txtLastRun") + " " + Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).LastTimeRun;
+                else
+                    CreateMessageOverviewLastRun.Text = "";
+                CreateMessageOverviewProgress.Text = Settings.CreateMessageTaskProgress;
+                CreateMessageOverviewResult.Text = Settings.CreateMessageTaskResult;
 
                 //ServiceOverviewTitle from resources
                 ServiceOverviewName.Text = Settings.ServicingCompleteTaskName;
@@ -201,6 +215,146 @@ namespace HelloWindowsIot
             UpdateUI();
         }
 
+        #endregion
+
+        #region CreateMessageTask Eventhandler
+        
+        /// <summary>
+        /// Attach progress and completed handers to a background task.
+        /// </summary>
+        /// <param name="task">The task to attach progress and completed handlers to.</param>
+        private void AttachCreateMessageProgressAndCompletedHandlers(IBackgroundTaskRegistration task)
+        {
+            task.Progress += new BackgroundTaskProgressEventHandler(OnProgressCreateMessage);
+            task.Completed += new BackgroundTaskCompletedEventHandler(OnCompletedCreateMessage);
+        }
+        /// <summary>
+        /// Handle background task completion.
+        /// </summary>
+        /// <param name="task">The task that is reporting completion.</param>
+        /// <param name="e">Arguments of the completion report.</param>
+        private async void OnCompletedCreateMessage(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
+        {
+            UpdateUI();
+        }
+        /// <summary>
+        /// Handle background task progress.
+        /// </summary>
+        /// <param name="task">The task that is reporting progress.</param>
+        /// <param name="e">Arguments of the progress report.</param>
+        private void OnProgressCreateMessage(IBackgroundTaskRegistration task, BackgroundTaskProgressEventArgs args)
+        {
+            var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                var progress = "Progress: " + args.Progress + "%";
+                Settings.CreateMessageTaskProgress = progress;
+                UpdateUI();
+            });
+        }
+        #endregion
+
+        #region Un/Register Buttons
+        /// <summary>
+        /// Register a SampleBackgroundTask.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterSearchPictureTask(object sender, RoutedEventArgs e)
+        {
+            var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
+                                                                          Settings.SearchPicturesTaskName,
+                                                                          Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
+                                                                          null);
+            AttachSearchPictureProgressAndCompletedHandlers(task);
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Unregister a SampleBackgroundTask.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnRegisterSearchPictureTask(object sender, RoutedEventArgs e)
+        {
+            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.SearchPicturesTaskName);
+            UpdateUI();
+        }
+        /// <summary>
+        /// Register a ChangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterCHangeWPTask(object sender, RoutedEventArgs e)
+        {
+            var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint,
+                                                                          Settings.ChangeWallpaperTaskName,
+                                                                          Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName),
+                                                                          null);
+            AttachChangeWallpaperProgressAndCompletedHandlers(task);
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Unregister a CHangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnRegisterCHangeWPTask(object sender, RoutedEventArgs e)
+        {
+            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.ChangeWallpaperTaskName);
+            UpdateUI();
+        }
+        /// <summary>
+        /// Register a ChangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterCreateMessageTask(object sender, RoutedEventArgs e)
+        {
+            var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint,
+                                                                          Settings.CreateMessageTaskName,
+                                                                          Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName),
+                                                                          null);
+            AttachCreateMessageProgressAndCompletedHandlers(task);
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Unregister a CHangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnRegisterCreateMessageTask(object sender, RoutedEventArgs e)
+        {
+            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.CreateMessageTaskName);
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Register a ChangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void RegisterServiceTask(object sender, RoutedEventArgs e)
+        {
+            var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ServicingCompleteTaskEntryPoint,
+                                                                          Settings.ServicingCompleteTaskName,
+                                                                          Dal.GetTimeIntervalForTask(Settings.ServicingCompleteTaskName),
+                                                                          null);
+            AttachServicingCompleteProgressAndCompletedHandlers(task);
+            UpdateUI();
+        }
+
+        /// <summary>
+        /// Unregister a CHangeWP.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnRegisterServiceTask(object sender, RoutedEventArgs e)
+        {
+            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.ServicingCompleteTaskName);
+            UpdateUI();
+        }
         #endregion
     }
 }

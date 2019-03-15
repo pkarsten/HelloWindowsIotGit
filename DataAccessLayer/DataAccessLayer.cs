@@ -56,8 +56,8 @@ namespace UwpSqliteDal
             using (var db = DbConnection)
             {
                 // Create the tables if it does not exist
-                //var c = db.CreateTable<FavoritePic>();
-                //var info = db.GetMapping(typeof(FavoritePic));
+                var c = db.CreateTable<FavoritePic>();
+                var info = db.GetMapping(typeof(FavoritePic));
 
                 var l = db.CreateTable<LogEntry>();
                 var linfo = db.GetMapping(typeof(LogEntry));
@@ -68,15 +68,15 @@ namespace UwpSqliteDal
                 var s = db.CreateTable<Setup>();
                 var sinfo = db.GetMapping(typeof(Setup));
 
-                //var pf = db.CreateTable<PicFilter>();
-                //var pfinfo= db.GetMapping(typeof(PicFilter));
+                var pf = db.CreateTable<PicFilter>();
+                var pfinfo= db.GetMapping(typeof(PicFilter));
 
                 var ms = db.CreateTable<Message>();
                 var msinfo = db.GetMapping(typeof(Message));
 
             }
-            //CheckSetupData();
-            //CheckPicFilterData();
+            CheckSetupData();
+            CheckPicFilterData();
         }
         #endregion
 

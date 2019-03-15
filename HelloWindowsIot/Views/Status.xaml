@@ -47,6 +47,10 @@
                         <TextBlock x:Name="SearchPicOverviewLastRun" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Zuletzt ausgeführt: 2017-04-03 11:15</TextBlock>
                         <TextBlock x:Name="SearchPicOverviewProgress"  FontSize="12" Foreground="Silver" Text="" Style="{StaticResource HyperlinTextkStyle}"/>
                         <TextBlock x:Name="SearchPicOverviewResult"   FontSize="12" Text=""  Foreground="Silver"/>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                            <Button x:Name="RegisterButton1" Content="Register" Click="RegisterSearchPictureTask" Height="25" FontSize="9"/>
+                            <Button x:Name="UnregisterButton1" Content="Unregister" Click="UnRegisterSearchPictureTask"  Height="25" FontSize="9"/>
+                        </StackPanel>
                     </StackPanel>
                     
                     <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,20,0,0">
@@ -56,16 +60,36 @@
                         <TextBlock x:Name="ChangeWPOverviewLastRun" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Zuletzt ausgeführt: 2017-04-03 11:15</TextBlock>
                         <TextBlock x:Name="ChangeWPOverviewProgress" FontSize="12" Text=""  Foreground="Silver"/>
                         <TextBlock x:Name="ChangeWPOverviewResult"    FontSize="12" Text=""  Foreground="Silver"/>
-                        
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                            <Button x:Name="RegisterButton2" Content="Register" Click="RegisterCHangeWPTask" Height="25" FontSize="9"/>
+                            <Button x:Name="UnregisterButton2" Content="Unregister" Click="UnRegisterCHangeWPTask"  Height="25" FontSize="9"/>
+                        </StackPanel>                        
                     </StackPanel>
-                    
-                    <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,20,0,0" Visibility="Collapsed">
+
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,20,0,0">
+                        <TextBlock x:Uid="CreateMessageOverviewTitle" VerticalAlignment="Top" FontSize="12">Create Message</TextBlock>
+                        <TextBlock x:Name="CreateMessageOverviewName" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}" >Name: Create Message Task</TextBlock>
+                        <TextBlock x:Name="CreateMessageOverviewStatus" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Status: registered</TextBlock>
+                        <TextBlock x:Name="CreateMessageOverviewLastRun" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Zuletzt ausgeführt: 2017-04-03 11:15</TextBlock>
+                        <TextBlock x:Name="CreateMessageOverviewProgress" FontSize="12" Text=""  Foreground="Silver"/>
+                        <TextBlock x:Name="CreateMessageOverviewResult"    FontSize="12" Text=""  Foreground="Silver"/>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                            <Button x:Name="RegisterButton3" Content="Register" Click="RegisterCreateMessageTask" Height="25" FontSize="9"/>
+                            <Button x:Name="UnregisterButton3" Content="Unregister" Click="UnRegisterCreateMessageTask"  Height="25" FontSize="9"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,20,0,0">
                         <TextBlock x:Uid="ServiceOverviewTitle" VerticalAlignment="Top" FontSize="12">Update Service</TextBlock>
                         <TextBlock x:Name="ServiceOverviewName" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}" >Name: ServicingCompleteTask</TextBlock>
                         <TextBlock x:Name="ServiceOverviewStatus" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Status: Registered</TextBlock>
                         <TextBlock x:Name="ServiceOverviewLastRun" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Zuletzt ausgeführt: 2017-04-03 11:15</TextBlock>
                         <TextBlock x:Name="ServiceOverviewProgress"   FontSize="12" Text=""  Foreground="Silver"/>
                         <TextBlock x:Name="ServiceOverviewResult"    FontSize="12" Text=""  Foreground="Silver"/>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                            <Button x:Name="RegisterButton4" Content="Register" Click="RegisterServiceTask" Height="25" FontSize="9"/>
+                            <Button x:Name="UnregisterButton4" Content="Unregister" Click="UnRegisterServiceTask"  Height="25" FontSize="9"/>
+                        </StackPanel>                        
                     </StackPanel>
                     <!--
                     <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,10,0,0">

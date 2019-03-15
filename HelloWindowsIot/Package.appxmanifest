@@ -28,6 +28,7 @@
         </Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="RWPBGTasks.SearchPictures">
           <BackgroundTasks>
+            <Task Type="systemEvent" />
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
@@ -46,5 +47,6 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="picturesLibrary" />
   </Capabilities>
 </Package>

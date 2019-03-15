@@ -137,6 +137,11 @@ namespace RWPBGTasks
                         var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
                     }
 
+                    if ((tstatus.TaskName == Settings.CreateMessageTaskName) && tstatus.CurrentRegisteredStatus == true)
+                    {
+                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint, Settings.CreateMessageTaskName, Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName), null);
+                    }
+
                     if ((tstatus.TaskName == Settings.ServicingCompleteTaskName) && tstatus.CurrentRegisteredStatus == true)
                     {
                         var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ServicingCompleteTaskEntryPoint,

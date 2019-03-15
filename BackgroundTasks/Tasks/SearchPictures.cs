@@ -193,7 +193,7 @@ namespace RWPBGTasks
                     // Write to LocalSettings to indicate that this background task ran.
                     //
                     settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                    UwpSqliteDal.TaskStatus ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                    UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                     ts.LastTimeRun = DateTime.Now.ToString();
                     ts.AdditionalStatus = settings.Values[key].ToString();
                     Dal.UpdateTaskStatus(ts);

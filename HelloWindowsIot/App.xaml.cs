@@ -1,4 +1,5 @@
-﻿using RWPBGTasks;
+﻿using AppSettings;
+using RWPBGTasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -126,6 +127,12 @@ namespace HelloWindowsIot
         /// <param name="e">Details zur Anhalteanforderung.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            // Unregister BackgroundTasks
+            foreach (var taskname in Settings.TaskList)
+            {
+                BackgroundTaskConfig.UnregisterBackgroundTasks(taskname);
+            }
+
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
             deferral.Complete();

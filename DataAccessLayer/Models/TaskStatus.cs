@@ -5,7 +5,7 @@ using Windows.Storage;
 
 namespace UwpSqliteDal
 {
-    public sealed class TaskStatus
+    public sealed class BGTask
     {
         /// <summary>
         /// Gets or sets the TaskStatus.

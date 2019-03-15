@@ -91,7 +91,8 @@ namespace HelloWindowsIot
 
                 //CreateMessageTask 
                 CreateMessageOverviewName.Text = "Name: " + Settings.CreateMessageTaskName;
-                CreateMessageOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.CreateMessageTaskName);
+                //CreateMessageOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.CreateMessageTaskName);
+                CreateMessageOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.CreateMessageTaskName) + " S2: " + BackgroundTaskConfig.GetBackgroundRegisteredTaskStatus(Settings.CreateMessageTaskName);
                 if (!String.IsNullOrEmpty(Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).LastTimeRun))
                     CreateMessageOverviewLastRun.Text = AppcFuncs.GetLanguage("txtLastRun") + " " + Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).LastTimeRun;
                 else

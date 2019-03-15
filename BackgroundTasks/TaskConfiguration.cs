@@ -91,6 +91,7 @@ namespace RWPBGTasks
             UpdateBackgroundTaskRegistrationStatus(name, false);
         }
 
+
         /// <summary>
         /// Store the registration status of a background task with a given name.
         /// </summary>
@@ -98,6 +99,7 @@ namespace RWPBGTasks
         /// <param name="registered">TRUE if registered, FALSE if unregistered.</param>
         public static void UpdateBackgroundTaskRegistrationStatus(String name, bool registered)
         {
+            
             switch (name)
             {
                 case Settings.SearchPicturesTaskName:
@@ -259,7 +261,7 @@ namespace RWPBGTasks
                 var ts = Dal.GetTaskStatusByTaskName(s);
                 if (ts == null)
                 {
-                    UwpSqliteDal.TaskStatus t = new UwpSqliteDal.TaskStatus();
+                    UwpSqliteDal.BGTask t = new UwpSqliteDal.BGTask();
                     t.TaskName = s;
                     t.CurrentRegisteredStatus = false;
                     t.LastTimeRun = "";

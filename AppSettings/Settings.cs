@@ -53,10 +53,55 @@ namespace AppSettings
                 Settings.ServicingCompleteTaskName,
                 Settings.CreateMessageTaskName
             };
-        #endregion
-
         // Settings are saved in DB and 
         // public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
+
+        public  static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
+        {
+            new BGTaskModel{Name ="ServicingCompleteTask",EntryPoint="RWPBGTasks.ServicingComplete",Registered=false},
+            new BGTaskModel{Name ="ChangeWallpaperTask",EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
+            new BGTaskModel{Name ="SearchPicturesTask",EntryPoint="RWPBGTasks.SearchPictures",Registered=false},
+            new BGTaskModel{Name ="CreateMessageTask",EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
+        };
+
+        public static void UpdateTaskRegisteredSettings(string taskname, bool taskregistered)
+        {
+            int index = ListBgTasks.FindIndex(m => m.Name == taskname);
+            if (index >= 0)
+            {
+                ListBgTasks[index].Registered = taskregistered;
+            }
+        }
+        public static void UpdateTaskResultSettings(string taskname, string taskresult)
+        {
+            int index = ListBgTasks.FindIndex(m => m.Name == taskname);
+            if (index >= 0)
+            {
+                ListBgTasks[index].Result = taskresult;
+            }
+        }
+        public static void UpdateTaskProgressSettings(string taskname, string taskprogress)
+        {
+            int index = ListBgTasks.FindIndex(m => m.Name == taskname);
+            if (index >= 0)
+            {
+                ListBgTasks[index].Progress = taskprogress;
+            }
+        }
+
+        public static BGTaskModel TaskSettings(string taskname)
+        {
+            BGTaskModel myTask = null;
+            int index = ListBgTasks.FindIndex(m => m.Name == taskname);
+            if (index >= 0)
+            {
+                myTask = ListBgTasks[index];
+            }
+            return myTask;
+        }
+
+        #endregion
+
 
         #region UI
         public const string APP_NAME = "Random Rated Wallpapers";
@@ -107,5 +152,15 @@ namespace AppSettings
         };
         #endregion
 
+    }
+
+    public class BGTaskModel
+    {
+
+        public string Name { get; set; }
+        public string EntryPoint { get; set; }
+        public string Result { get; set; }
+        public string Progress { get; set; }
+        public bool Registered { get; set; }
     }
 }

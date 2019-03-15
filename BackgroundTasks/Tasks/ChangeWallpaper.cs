@@ -57,7 +57,7 @@ namespace RWPBGTasks
                 }
                 
                 await TaskFunctions.ChangeWallpaperAsync(true);
-                TaskStatus ts = Dal.GetTaskStatusByTaskName(taskInstance.Task.Name);
+                BGTask ts = Dal.GetTaskStatusByTaskName(taskInstance.Task.Name);
                 ts.LastTimeRun = DateTime.Now.ToString();
                 Dal.UpdateTaskStatus(ts);
             }

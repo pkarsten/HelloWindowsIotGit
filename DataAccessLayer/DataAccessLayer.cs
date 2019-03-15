@@ -48,7 +48,7 @@ namespace UwpSqliteDal
         }
 
         /// <summary>
-        /// Creates DB and Tables
+        /// Creates DB and Tables if not existent
         /// </summary>
         public static void CreateDatabase()
         {
@@ -62,8 +62,8 @@ namespace UwpSqliteDal
                 var l = db.CreateTable<LogEntry>();
                 var linfo = db.GetMapping(typeof(LogEntry));
 
-                var ts = db.CreateTable<TaskStatus>();
-                var tsinfo = db.GetMapping(typeof(TaskStatus));
+                var ts = db.CreateTable<BGTask>();
+                var tsinfo = db.GetMapping(typeof(BGTask));
 
                 var s = db.CreateTable<Setup>();
                 var sinfo = db.GetMapping(typeof(Setup));
@@ -552,12 +552,12 @@ namespace UwpSqliteDal
             }
         }
 
-        public static TaskStatus GetTaskStatusByTaskName(string tName)
+        public static BGTask GetTaskStatusByTaskName(string tName)
         {
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
-                TaskStatus t = (from p in db.Table<TaskStatus>()
+                BGTask t = (from p in db.Table<BGTask>()
                                 where p.TaskName == tName
                                 select p).FirstOrDefault();
                 return t;
@@ -570,7 +570,7 @@ namespace UwpSqliteDal
             return ts.LastTimeRun;
         }
 
-        public static void UpdateTaskStatus(TaskStatus ts)
+        public static void UpdateTaskStatus(BGTask ts)
         {
             try
             {
@@ -602,22 +602,22 @@ namespace UwpSqliteDal
             }
         }
 
-        public static TaskStatus SetCurrentRegistrationStatus(string taskname, bool registered)
+        public static BGTask SetCurrentRegistrationStatus(string taskname, bool registered)
         {
-            TaskStatus ts = GetTaskStatusByTaskName(taskname);
+            BGTask ts = GetTaskStatusByTaskName(taskname);
             ts.CurrentRegisteredStatus = registered;
             return ts;
         }
 
-        public static IList<TaskStatus> GetAllTaskStatus()
+        public static IList<BGTask> GetAllTaskStatus()
         {
-            IList<TaskStatus> mlist;
+            IList<BGTask> mlist;
 
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
 
-                mlist = (from p in db.Table<TaskStatus>()
+                mlist = (from p in db.Table<BGTask>()
                          select p).ToList();
             }
 

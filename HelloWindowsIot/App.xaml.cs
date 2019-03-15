@@ -44,7 +44,7 @@ namespace HelloWindowsIot
 
             //Dal.CreateDatabase();
             UwpSqliteDal.Dal.CreateDatabase();
-            //TODO: BackgroundTask? await BackgroundTaskConfig.CheckForRegisteredTasks();
+            await BackgroundTaskConfig.CheckForRegisteredTasks();
         }
 
         /// <summary>

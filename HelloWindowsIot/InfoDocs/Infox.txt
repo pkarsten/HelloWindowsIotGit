@@ -7,5 +7,7 @@
 	- register Tables in dataAccessLayer.cs CreateDatabase()
 3. Localisation Code Behind:
 	- AppcFuncs.GetLanguage("StringNameInResourceFile");
+4. Add BackgroundTask
+	- Deklaration im app-Manifest(Datei Package.appxmanifest->Deklarationen->Hintergrundaufgaben)
 
 	

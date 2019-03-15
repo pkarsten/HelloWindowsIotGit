@@ -34,6 +34,7 @@
 	https://docs.microsoft.com/en-us/windows/uwp/launch-resume/guidelines-for-background-tasks
 	http://stackoverflow.com/questions/35530192/wait-for-backgroundtask-to-complete
 	http://www.damirscorner.com/blog/posts/20160227-GetNotifiedWhenABackgroundTaskCompletes.html
+	Background TASK sample: https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/BackgroundTask
 - SQLIte WIndows10 IOT: http://blog.chrisbriggsy.com/Using-SQLITE-in-Windows-10-IoT-Core-Insider-Preview/
 
 	

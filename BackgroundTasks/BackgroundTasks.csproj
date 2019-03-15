@@ -125,6 +125,7 @@
     <Compile Include="TaskConfiguration.cs" />
     <Compile Include="TaskFunctions.cs" />
     <Compile Include="Tasks\ChangeWallpaper.cs" />
+    <Compile Include="Tasks\CreateMessage.cs" />
     <Compile Include="Tasks\SearchPictures.cs" />
     <Compile Include="Tasks\ServicingComplete.cs" />
     <EmbeddedResource Include="Properties\BackgroundTasks.rd.xml" />

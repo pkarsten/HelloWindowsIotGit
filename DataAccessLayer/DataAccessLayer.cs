@@ -12,6 +12,8 @@ using System.Diagnostics;
 using Windows.ApplicationModel.Background;
 using SQLite.Net;
 using AppSettings;
+using MSGraph.Response;
+using MSGraph;
 
 namespace UwpSqliteDal
 {
@@ -423,13 +425,13 @@ namespace UwpSqliteDal
             return models;
         }
 
-        public static FavoritePic GetRandomPicture()
+        public static async Task<FavoritePic> GetRandomPicture()
         {
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 var m = (from p in db.Table<FavoritePic>()
-                         select p).Where(v => v.Viewed == false).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive==true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
 
                 if (m == null)
                     m = (from p in db.Table<FavoritePic>() select p).FirstOrDefault();
@@ -530,7 +532,7 @@ namespace UwpSqliteDal
         }
         #endregion
 
-        #region TaskStatus
+        #region BGTasks
         public static void DeleteAllTaskStatus()
         {
             try
@@ -626,5 +628,81 @@ namespace UwpSqliteDal
 
 
         #endregion
+
+        #region MS Graph
+        public static FavoritePic GetRandomInfoItemResponse()
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                var m = (from p in db.Table<FavoritePic>()
+                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive ==true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+
+                if (m == null)
+                    m = (from p in db.Table<FavoritePic>() select p).FirstOrDefault();
+
+                return m;
+            }
+            
+        }
+
+        public static async Task LoadImagesFromOneDriveInDBTable()
+        {
+            Exception error = null;
+            ItemInfoResponse folder = null;
+            ItemInfoResponse rootfolder = null;
+            IList<ItemInfoResponse> children = null;
+
+            //// Initialize Graph client
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+
+            try
+            {
+                rootfolder = await graphService.GetAppRoot();
+                //folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
+                folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/WindowsIotApp" +
+                    "");
+                children = await graphService.PopulateChildren(folder);
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+            }
+
+            if (error != null)
+            {
+                SaveLogEntry(LogType.Error, error.Message);
+                return;
+            }
+
+            //https://gunnarpeipman.com/csharp/foreach/
+            foreach (ItemInfoResponse iir in children.ToList())
+            {
+                if (iir.Image != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
+                    //iri = iir;
+                }
+                else
+                {
+                    children.Remove(iir);
+                }
+            }
+            foreach (var iri in children)
+            {
+                var fp = new FavoritePic();
+
+                fp.DownloadedFromOneDrive = true;
+                fp.Viewed = false;
+                fp.DownloadUrl = iri.DownloadUrl;
+                fp.Name = iri.Name;
+                fp.OneDriveId = iri.Id;
+                SavePicture(fp);
+            }
+
+        }
+        #endregion
+
     }
 }

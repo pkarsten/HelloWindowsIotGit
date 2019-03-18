@@ -32,5 +32,11 @@ namespace UwpSqliteDal
         public bool Viewed { get; set; }
 
         public bool IsCurrentWallPaper { get; set; }
+
+        public bool DownloadedFromOneDrive { get; set; }
+
+        public string OneDriveId { get; set; }
+
+        public string DownloadUrl { get; set; }
     }
 }

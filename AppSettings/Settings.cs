@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +46,8 @@ namespace AppSettings
         public static string CreateMessageTaskProgress = "";
         public static bool CreateMessageTaskRegistered = false;
 
+        public static BitmapImage DashBoardImage { get; set; }
+
         public static List<string> TaskList { get; } = new List<string>
             {
                 Settings.SearchPicturesTaskName,
@@ -58,11 +60,14 @@ namespace AppSettings
 
         public  static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
         {
-            new BGTaskModel{Name ="ServicingCompleteTask",EntryPoint="RWPBGTasks.ServicingComplete",Registered=false},
-            new BGTaskModel{Name ="ChangeWallpaperTask",EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
-            new BGTaskModel{Name ="SearchPicturesTask",EntryPoint="RWPBGTasks.SearchPictures",Registered=false},
-            new BGTaskModel{Name ="CreateMessageTask",EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
+            new BGTaskModel{Name =Settings.ServicingCompleteTaskName,EntryPoint="RWPBGTasks.ServicingComplete",Registered=false},
+            new BGTaskModel{Name =Settings.ChangeWallpaperTaskName,EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
+            new BGTaskModel{Name =Settings.SearchPicturesTaskName,EntryPoint="RWPBGTasks.SearchPictures",Registered=false},
+            new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
         };
+
+        public static bool RegisterAllBackgroundTasks { get; } = true;
+        public static bool RegisterSystemTriggerBackgroundTasks{ get; } = false;
 
         public static void UpdateTaskRegisteredSettings(string taskname, bool taskregistered)
         {

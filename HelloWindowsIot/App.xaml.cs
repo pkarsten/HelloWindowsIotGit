@@ -46,7 +46,6 @@ namespace HelloWindowsIot
 
             Dal.CreateDatabase();
             UwpSqliteDal.Dal.CreateDatabase();
-            await BackgroundTaskConfig.CheckForRegisteredTasks();
         }
 
         /// <summary>
@@ -127,12 +126,6 @@ namespace HelloWindowsIot
         /// <param name="e">Details zur Anhalteanforderung.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            // Unregister BackgroundTasks
-            foreach (var taskname in Settings.TaskList)
-            {
-                BackgroundTaskConfig.UnregisterBackgroundTasks(taskname);
-            }
-
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
             deferral.Complete();

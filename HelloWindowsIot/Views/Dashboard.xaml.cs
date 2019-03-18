@@ -1,109 +1,74 @@
-﻿using System;
+﻿using MSGraph.Response;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.Storage;
-using RWPBGTasks;
-using Windows.ApplicationModel.Background;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Navigation;
-using System.Threading.Tasks;
-using Windows.System;
-using System.Windows.Input;
-using Windows.Storage.FileProperties;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Storage.Search;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using UwpSqliteDal;
+using Windows.UI.Xaml.Navigation;
+
+// Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
 
 namespace HelloWindowsIot
 {
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
-    public sealed partial class Dashboard : Page
+    public sealed partial class DashBoard : Page
     {
-        //Prepare image to display on dashboard
-        BitmapImage CurrBitmapImage = new BitmapImage();
+        /// <summary>
+        /// Gets or sets the DashBoardData . 
+        /// </summary>
+        public DashboardData MyDataSet { get; private set; }
 
-        public Dashboard()
+        public ObservableCollection<CalendarEventItem> CalendarEvents
+        {
+            get;private set;
+        }
+
+
+        public DashBoard()
         {
             this.InitializeComponent();
         }
 
         /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
+        /// Loads the saved Dashboard data on first navigation, and 
+        /// attaches a Geolocator.StatusChanged event handler. 
         /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.  The Parameter
-        /// property is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            Dal.SaveLogEntry(LogType.Info, "Navigated To DashBoard");
-            await GetThumbnailFromCurrentWallpaper();
-            if (PicDBContainsPictures() == false) { }
+            base.OnNavigatedTo(e);
 
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                // Load location data from storage if it exists;
+                // otherwise, load sample location data.
+                var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
+                MyDataSet = dashboarddata;
+                //var locations = await LocationDataStore.GetLocationDataAsync();
+                //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();
+                //foreach (var location in locations) this.Locations.Add(location);
+
+                // Start handling Geolocator and network status changes after loading the data 
+                // so that the view doesn't get refreshed before there is something to show.
+                //LocationHelper.Geolocator.StatusChanged += Geolocator_StatusChanged;
+                //NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+            }
         }
 
-        #region functions
-        private async Task GetThumbnailFromCurrentWallpaper()
+        private Task GetSampleDashBoardDataAsync()
         {
-            try
-            {
-                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                var filenames = Directory.GetFiles(localFolder.Path).Select(f => Path.GetFileName(f)).Where(fn => fn.StartsWith("mybgpicture"));
-                if (filenames != null)
-                {
-                    var mybgpicfile = filenames.FirstOrDefault();
-                    if (mybgpicfile != null)
-                    {
-                        StorageFile mybgpicturefile = await localFolder.GetFileAsync(mybgpicfile.ToString());
-                        Dal.SaveLogEntry(LogType.Info, mybgpicturefile.Path);
-
-                        // Get image thumbnails!!
-                        // Thumbnail = await mybgpicture.GetThumbnailAsync(ThumbnailMode.SingleItem);
-                        using (StorageItemThumbnail thumbnail = await mybgpicturefile.GetThumbnailAsync(ThumbnailMode.SingleItem))
-                        {
-                            if (thumbnail != null)
-                            {
-
-
-                                CurrBitmapImage.SetSource(thumbnail);
-                                dashBoardImage.Source = CurrBitmapImage;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //txtThumbInfo.Visibility = Visibility.Visible;
-                        //txtThumbInfo.Text = AppcFuncs.GetLanguage("ImageNotSetByApp");
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Exception, "Exception in GetThumbnailFromCurrentWallpaper in DashBoard" + ex.Message);
-            }
+            throw new NotImplementedException();
         }
-
-        private bool PicDBContainsPictures()
-        {
-            bool b = true;
-            //Can't Launch ChangeWallpaper if :
-            // Favorite Pics in DB are not 0 
-            if (Dal.GetAllPictures().Count == 0)
-            {
-                return false;
-            }
-
-            return b;
-        }
-
-        #endregion
     }
 }

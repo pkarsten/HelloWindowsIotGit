@@ -178,6 +178,9 @@ namespace RWPBGTasks
                         //Dal.SaveLogEntry(LogType.Info, String.Format("Searched for Pictures, total Files Found: {0}. Files Processed: {1}", totalFiles, filesProcessed));
                         Dal.SaveLogEntry(LogType.AppInfo, String.Format("Searched for Pictures, total Files Found: {0}.", totalFiles));
                     }
+                    Dal.DeleteAllPictures();
+                    await Dal.LoadImagesFromOneDriveInDBTable();
+
                     _progress = 100;
                 }
                 catch (Exception ex)

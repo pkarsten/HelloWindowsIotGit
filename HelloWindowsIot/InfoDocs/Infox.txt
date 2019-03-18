@@ -8,6 +8,7 @@
 3. Localisation Code Behind:
 	- AppcFuncs.GetLanguage("StringNameInResourceFile");
 4. Add BackgroundTask
+	- Create Class in Backgroundtasks->Tasks. 
 	- Deklaration im app-Manifest(Datei Package.appxmanifest->Deklarationen->Hintergrundaufgaben)
 	- List Tasks via Powershell : Get-AppBackgroundTask -PackageFamilyName "HelloWindowsIot_a2km3ky84g8y6"
 	- Task Library muss Komponente für WIndows RUntime Sein!! 

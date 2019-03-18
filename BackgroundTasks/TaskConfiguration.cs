@@ -7,6 +7,7 @@ using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using UwpSqliteDal;
 using AppSettings;
+using System.Linq;
 
 namespace RWPBGTasks
 {
@@ -99,22 +100,10 @@ namespace RWPBGTasks
         /// <param name="registered">TRUE if registered, FALSE if unregistered.</param>
         public static void UpdateBackgroundTaskRegistrationStatus(String name, bool registered)
         {
+            var til = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
+            til.Registered = registered;
+
             
-            switch (name)
-            {
-                case Settings.SearchPicturesTaskName:
-                    Settings.SearchPicturesTaskRegistered = registered;
-                    break;
-                case Settings.ServicingCompleteTaskName:
-                    Settings.ServicingCompleteTaskRegistered = registered;
-                    break;
-                case Settings.ChangeWallpaperTaskName:
-                    Settings.ChangeWallpaperTaskRegistered = registered;
-                    break;
-                case Settings.CreateMessageTaskName:
-                    Settings.CreateMessageTaskRegistered = registered;
-                    break;
-            }
             var ts = Dal.GetTaskStatusByTaskName(name);
             if (ts != null)
             {
@@ -142,21 +131,8 @@ namespace RWPBGTasks
         public static String GetBackgroundTaskStatus(String name)
         {
             var registered = false;
-            switch (name)
-            {
-                case Settings.SearchPicturesTaskName:
-                    registered = Settings.SearchPicturesTaskRegistered;
-                    break;
-                case Settings.ServicingCompleteTaskName:
-                    registered = Settings.ServicingCompleteTaskRegistered;
-                    break;
-                case Settings.ChangeWallpaperTaskName:
-                    registered = Settings.ChangeWallpaperTaskRegistered;
-                    break;
-                case Settings.CreateMessageTaskName:
-                    registered = Settings.CreateMessageTaskRegistered;
-                    break;
-            }
+            var ts = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
+            registered = ts.Registered;
 
             var status = registered ? "Registered" : "Unregistered";
 
@@ -194,54 +170,15 @@ namespace RWPBGTasks
         /// <param name="name">Name of background task to query background access requirement.</param>
         public static bool TaskRequiresBackgroundAccess(String name)
         {
-            if ((name == Settings.ChangeWallpaperTaskName) || (name == Settings.SearchPicturesTaskName) || name == Settings.ServicingCompleteTaskName || name == Settings.CreateMessageTaskName)
-            {
+            var ts = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
+            if (ts.Name == name)
+            { 
                 Dal.SaveLogEntry(LogType.Info, name + "requires Background access");
                 return true;
             }
             else
             {
                 return false;
-            }
-        }
-        private static async Task InternalReRegisterTasks()
-        {
-            Dal.SaveLogEntry(LogType.Info, "Re Register Tasks) ");
-            foreach (var cur in BackgroundTaskRegistration.AllTasks)
-            {
-                if (cur.Value.Name != Settings.ServicingCompleteTaskName)
-                {
-                    cur.Value.Unregister(true);
-                    Dal.SaveLogEntry(LogType.Info, "Unregister BackgroundTask for RE Register " + cur.Value.Name);
-                }
-            }
-            foreach (var tstatus in Dal.GetAllTaskStatus())
-            {
-                if ((tstatus.TaskName == Settings.SearchPicturesTaskName) && tstatus.CurrentRegisteredStatus == true)
-                {
-                    Settings.SearchPicturesTaskResult = "";
-                    var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
-                                                                           Settings.SearchPicturesTaskName,
-                                                                            Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
-                                                                           null);
-                }
-                if ((tstatus.TaskName == Settings.ChangeWallpaperTaskName) && tstatus.CurrentRegisteredStatus == true)
-                {
-                    var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
-                }
-
-                if ((tstatus.TaskName == Settings.CreateMessageTaskName) && tstatus.CurrentRegisteredStatus == true)
-                {
-                    var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint, Settings.CreateMessageTaskName, Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName), null);
-                }
-
-                //if ((tstatus.TaskName == Configuration.ServicingCompleteTaskName) && tstatus.CurrentRegisteredStatus == true)
-                //{
-                //    var t = await BackgroundTaskConfig.RegisterBackgroundTask(Configuration.ServicingCompleteTaskEntryPoint,
-                //                                                 Configuration.ServicingCompleteTaskName,
-                //                                                 new SystemTrigger(SystemTriggerType.ServicingComplete, false),
-                //                                                 null);
-                //}
             }
         }
 
@@ -256,73 +193,50 @@ namespace RWPBGTasks
         private static async Task<bool> InternalCheckForRegisteredTasks()
         {
             // First Check if Task Table is Filled 
-            foreach (string s in Settings.TaskList)
+            foreach(BGTaskModel bgt in Settings.ListBgTasks)
             {
-                var ts = Dal.GetTaskStatusByTaskName(s);
+                var ts = Dal.GetTaskStatusByTaskName(bgt.Name);
                 if (ts == null)
                 {
                     UwpSqliteDal.BGTask t = new UwpSqliteDal.BGTask();
-                    t.TaskName = s;
+                    t.TaskName = ts.TaskName;
                     t.CurrentRegisteredStatus = false;
                     t.LastTimeRun = "";
                     t.AdditionalStatus = "";
                     Dal.UpdateTaskStatus(t);
                 }
             }
+
             // Look for running Tasks and Set the Status 
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            foreach (BGTaskModel bgt in Settings.ListBgTasks)
             {
-                if (task.Value.Name == Settings.SearchPicturesTaskName)
-                {
-                    UpdateBackgroundTaskRegistrationStatus(Settings.SearchPicturesTaskName, true);
-                }
-                if (task.Value.Name == Settings.ChangeWallpaperTaskName)
-                {
-                    UpdateBackgroundTaskRegistrationStatus(Settings.ChangeWallpaperTaskName, true);
-                }
-                if (task.Value.Name == Settings.ServicingCompleteTaskName)
-                {
-                    UpdateBackgroundTaskRegistrationStatus(Settings.ServicingCompleteTaskName, true);
-                }
-                if (task.Value.Name == Settings.CreateMessageTaskName)
-                {
-                    UpdateBackgroundTaskRegistrationStatus(Settings.CreateMessageTaskName, true);
-                }
-            }
-
-            // Register Servicing Complete Task if there is not registered
-            if (Settings.ServicingCompleteTaskRegistered == false)
-            {
-                var servicetask = await RegisterBackgroundTask(Settings.ServicingCompleteTaskEntryPoint,
-                                                                    Settings.ServicingCompleteTaskName,
-                                                                    new SystemTrigger(SystemTriggerType.ServicingComplete, false),
-                                                                    null);
+                UpdateBackgroundTaskRegistrationStatus(bgt.Name, true);
             }
 
 
-            if ((Dal.GetTaskStatusByTaskName(Settings.ChangeWallpaperTaskName).CurrentRegisteredStatus == true) && Settings.ChangeWallpaperTaskRegistered == false)
+            // Check if must Register Background Tasks
+            foreach (BGTaskModel bgt in Settings.ListBgTasks)
             {
-                // Register ChangeWallpaper Task if is not registered but Status iN DB say it must be registered
-                var changeWPTask = await RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
-            }
-
-
-            if ((Dal.GetTaskStatusByTaskName(Settings.SearchPicturesTaskName).CurrentRegisteredStatus == true) && Settings.SearchPicturesTaskRegistered == false)
-            {
-                // Register SearchPictures Task if is not registered but Status iN DB say it must be registered
-                var searchPicTask = await RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
-                                                                           Settings.SearchPicturesTaskName,
-                                                                            Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
-                                                                           null);
-            }
-
-            if ((Dal.GetTaskStatusByTaskName(Settings.CreateMessageTaskName).CurrentRegisteredStatus == true) && Settings.CreateMessageTaskRegistered == false)
-            {
-                // Register SearchPictures Task if is not registered but Status iN DB say it must be registered
-                var task = await RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint,
-                                                                           Settings.CreateMessageTaskName,
-                                                                            Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName),
-                                                                           null);
+                switch (bgt.Name)
+                {
+                    case Settings.ServicingCompleteTaskName:
+                        // Normally Servicing Complete  Task must always Registered because it makes Some Things when App will be an update
+                        // TODO: Servicing Complete not needed in HellWindowsIOT App so set RegisterSystemTriggerBackgroundTasks = false in Settings:
+                        //SystemTrigger
+                        if (Settings.RegisterSystemTriggerBackgroundTasks == true)
+                        {
+                            var task = await RegisterBackgroundTask(bgt.EntryPoint, bgt.Name, new SystemTrigger(SystemTriggerType.ServicingComplete, false), null);
+                        }
+                        break;
+                    default:
+                        // Register Time Triggered Tasks if is not registered but Status iN DB say it must be registered or if Settings Register All Tasks 
+                        if (((Dal.GetTaskStatusByTaskName(bgt.Name).CurrentRegisteredStatus == true) && bgt.Registered == false) || (Settings.RegisterAllBackgroundTasks == true))
+                        {
+                            // TimeTrigger
+                            var task = await RegisterBackgroundTask(bgt.EntryPoint, bgt.Name, Dal.GetTimeIntervalForTask(bgt.Name), null);
+                        }
+                        break;
+                }
             }
 
             return true;

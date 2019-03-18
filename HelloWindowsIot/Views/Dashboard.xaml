@@ -1,12 +1,61 @@
 ﻿<Page
-    x:Class="HelloWindowsIot.Dashboard"
+    x:Class="HelloWindowsIot.DashBoard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:HelloWindowsIot"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Image x:Name="dashBoardImage"  Height="640" Width="480" />
+    mc:Ignorable="d"
+    xmlns:dashdata="using:HelloWindowsIot"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+       
+        <!-- This DataTemplate provides the UI for the calendar data that appears in the list. This UI appears 
+             where the ContentPresenter is shown in the ListViewItem control template above. This DataTemplate 
+             also declares the editor as an attached flyout, which appears near the item being edited. -->
+        <DataTemplate x:Key="LocationTemplate" x:DataType="dashdata:DashboardData">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="{x:Bind Name, Mode=OneWay, TargetNullValue=''}" TextWrapping="Wrap"/>
+                    <TextBlock Text="{x:Bind Address, Mode=OneWay, TargetNullValue=''}" FontSize="9" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,4">
+                    <TextBlock Text="{x:Bind FormattedCurrentTravelDistance, Mode=OneWay, TargetNullValue=''}" Grid.Row="0" Grid.Column="1" FontSize="10" Margin="0,0,0,-2" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{x:Bind FormattedCurrentTravelTime, Mode=OneWay, TargetNullValue=''}" Grid.Row="1" Grid.Column="1" FontSize="22" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{x:Bind FormattedTimeStamp, Mode=OneWay, TargetNullValue=''}" Grid.Row="2" Grid.Column="1" FontSize="10" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+            <Image x:Name="BGImage"  Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding DashImage, Mode=OneWay}"/>
+        
+        <!-- This ListView is customized using three external resources: 
+               * The LocationsViewItemStyle declares the app-bar buttons at the bottom of an item when it is selected.
+               * The LocationTemplate declares the UI for the location data that appears in each list item.
+               * The ListView itself implicitly uses an altered version of the default ListView control style.
+                 This style is declared in the App.xaml file, and enables the user to manipulate the area of
+                 the map shown below the list. For more info, see App.xaml. -->
+        <ListView x:Name="LocationsView" Grid.Row="1" Margin="10,10,0,0" Width="277" HorizontalAlignment="Left"
+            SelectionMode="Single" 
+            ItemsSource="{x:Bind CalendarEvents}" 
+            ItemTemplate="{StaticResource LocationTemplate}" 
+            ItemContainerStyle="{StaticResource LocationsViewItemStyle}" />
+
     </Grid>
 </Page>

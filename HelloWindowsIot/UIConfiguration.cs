@@ -61,7 +61,8 @@ namespace HelloWindowsIot
     {
         List<Scenario> topScenarios = new List<Scenario>
         {
-            new Scenario() { Title=AppcFuncs.GetLanguage("TitleSettings"), ClassType=typeof(GraphDemo), GlyphChar="\xE713"},
+            new Scenario() { Title="Dashboard", ClassType=typeof(DashBoard), GlyphChar="\xE713"},
+            new Scenario() { Title="Desktop", ClassType=typeof(GraphDemo), GlyphChar="\xE713"},
             new Scenario() { Title=AppcFuncs.GetLanguage("TitleStartPage"), ClassType=typeof(StartPage), GlyphChar="\xE80F"}, // use "\xE713" instead of " &#xE713;"
             new Scenario() { Title=AppcFuncs.GetLanguage("TitleSettings"), ClassType=typeof(SettingsPage), GlyphChar="\xE713"},
             new Scenario() { Title=AppcFuncs.GetLanguage("TitlePictureFilter"), ClassType=typeof(PicturesFilter), GlyphChar="\xE71C"},

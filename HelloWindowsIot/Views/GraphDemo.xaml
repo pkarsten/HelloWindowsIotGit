@@ -29,6 +29,11 @@
                         Click="GoToDesktopClick"
                         Foreground="Black"
                         />
+                <Button Content="Get Purchase ToDO Task"
+                    Click="GetPurchList_Click"
+                        HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
+                        Foreground="Black"
+                        />
                 <Button x:Name="Retrieve" Content="Retrieve" Click="Retrieve_Click" Foreground="Black" Background="Yellow"/>
                 <Button x:Name="Add" Content="Add" Click="Add_Click" Foreground="Black" Background="Red"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

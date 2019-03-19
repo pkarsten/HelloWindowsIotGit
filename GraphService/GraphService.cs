@@ -20,7 +20,7 @@ namespace MSGraph
     {
         //Hello Graph
         private static readonly string graphEndpoint = "https://graph.microsoft.com/";
-        private static readonly string graphVersion = "v1.0/me"; //beta
+        private static readonly string graphVersion = "beta/me";//"v1.0/me"; //beta
         
 
         private readonly string accessToken = string.Empty;
@@ -45,12 +45,12 @@ namespace MSGraph
         //   - for any Work or School accounts, or Microsoft personal account, use common
         //   - for Microsoft Personal account, use consumers
 
-        private static string ClientId = "0b8b0665-bc13-4fdc-bd72-e0227b9fc011";
+        private static string ClientId = "cba8344a-8cbb-41be-a414-4da940902ad7";//"0b8b0665-bc13-4fdc-bd72-e0227b9fc011";
         private static string Tenant = "common";
         public static PublicClientApplication PublicClientApp { get; } = new PublicClientApplication(ClientId, $"https://login.microsoftonline.com/{Tenant}");
         public static string TokenForUser = null;
         public static DateTimeOffset Expiration;
-        public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read" };
+        public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read","Tasks.Read" };
 
         //private TraceWriter logger = null;
 
@@ -292,7 +292,29 @@ namespace MSGraph
             return stream;
         }
 
-       
+        #region Tasks ToDO
+        public async Task<string> GetPurchaseList()
+        {
+            //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
+            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
+            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
+
+            try
+            {
+                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')");
+                //var json = await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync();//JsonConvert.DeserializeObject<string>(json);
+
+
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        #endregion
+
+
 
         //public async Task<DriveItem> GetTeamOneDriveFolderAsync(string teamId, string folderName)
         //{

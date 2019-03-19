@@ -171,6 +171,7 @@
     <Content Include="InfoDocs\ChangeLog.txt" />
     <Content Include="InfoDocs\CompileErrors.txt" />
     <Content Include="InfoDocs\Infox.txt" />
+    <Content Include="InfoDocs\MS.txt" />
     <Content Include="InfoDocs\OnlineResources.txt" />
     <Content Include="InfoDocs\ToDo.txt" />
     <Content Include="Properties\Default.rd.xml" />

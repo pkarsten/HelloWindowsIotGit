@@ -29,12 +29,23 @@ namespace HelloWindowsIot
         private const string RequestSpecialFolder = "/drive/special/Photos";
 
         //Set the scope for API call to user.read
-        string[] scopes = new string[] { "user.read", "Files.Read", "Calendars.Read" };
+        string[] scopes = new string[] { "user.read", "Files.Read", "Calendars.Read","Tasks.Read" };
 
         public GraphDemo()
         {
             this.InitializeComponent();
         }
+
+        private async Task GetPurchList()
+        {
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+            //CalendarText.Text = await graphService.GetCalendarViewTest();
+            string s = "";
+            var mylist = await graphService.GetPurchaseList();
+            System.Diagnostics.Debug.WriteLine("My Purch List"  + mylist);
+        }
+
         private async void GetAppRootFolder(object sender, RoutedEventArgs e)
         {
 
@@ -232,6 +243,11 @@ namespace HelloWindowsIot
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             Dal.SaveMessage(textBox.Text);
+        }
+
+        private async void GetPurchList_Click(object sender, RoutedEventArgs e)
+        {
+            await GetPurchList();
         }
     }
 }

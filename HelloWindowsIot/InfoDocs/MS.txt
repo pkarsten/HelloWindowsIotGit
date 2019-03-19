@@ -1,0 +1,5 @@
+﻿Apps Portals
+
+https://partner.microsoft.com/en-us/dashboard/windows/overview
+https://apps.dev.microsoft.com/?referrer=https%3a%2f%2fauth0.com%2fdocs%2fconnections%2fsocial%2fmicrosoft-account#/appList
+https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade

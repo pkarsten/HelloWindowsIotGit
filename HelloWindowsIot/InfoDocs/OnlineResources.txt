@@ -37,5 +37,7 @@
 	Background TASK sample: https://github.com/Microsoft/Windows-universal-samples/tree/master/Samples/BackgroundTask
 - SQLIte WIndows10 IOT: http://blog.chrisbriggsy.com/Using-SQLITE-in-Windows-10-IoT-Core-Insider-Preview/
 
+- http://blog.harisaltaf.com/682/image-resize-losing-aspect-ratio-c-net/
+
 	
 

@@ -29,6 +29,7 @@ using System.Runtime.Serialization;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace HelloWindowsIot
@@ -36,8 +37,32 @@ namespace HelloWindowsIot
     /// <summary>
     /// Represents a saved location for use in tracking travel time, distance, and routes. 
     /// </summary>
-    public class DashboardData : BindableBase
+    public class DashBoardViewModel : BindableBase
     {
+        private DispatcherTimer _timer = new DispatcherTimer();
+
+        public DateTime CurrentTime { get { return DateTime.Now; } }
+
+
+        public DashBoardViewModel()
+        {
+            _timer.Tick += Timer_Tick;
+            _timer.Interval =  new TimeSpan(0, 0, 1);
+            _timer.Start();
+        }
+
+        private void Timer_Tick(object sender, object e)
+        {
+            this.OnPropertyChanged("CurrentTime");
+        }
+
+        private string nextButtonText;
+        public string NextButtonText
+        {
+            get { return this.nextButtonText; }
+            set { this.SetProperty(ref this.nextButtonText, value); }
+        }
+
         private string name;
         /// <summary>
         /// Gets or sets the name of the location.
@@ -69,11 +94,10 @@ namespace HelloWindowsIot
             set { this.SetProperty(ref this.calendarEvents, value); }
         }
 
-
         /***************************************************/
 
 
-    private string address;
+        private string address;
         /// <summary>
         /// Gets or sets the address of the location.
         /// </summary>
@@ -275,9 +299,9 @@ namespace HelloWindowsIot
         /// Return a new LocationData with the same property values as the current one.
         /// </summary>
         /// <returns>The new LocationData instance.</returns>
-        public DashboardData Clone()
+        public DashBoardViewModel Clone()
         {
-            var location = new DashboardData();
+            var location = new DashBoardViewModel();
             location.Copy(this);
             return location;
         }
@@ -286,7 +310,7 @@ namespace HelloWindowsIot
         /// Copies the property values of the specified location into the current location.
         /// </summary>
         /// <param name="location">The location to copy the values from.</param>
-        public void Copy(DashboardData location)
+        public void Copy(DashBoardViewModel location)
         {
             this.Name = location.Name;
             this.Address = location.Address;

@@ -6,56 +6,91 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:dashdata="using:HelloWindowsIot"
+    xmlns:loc="using:HelloWindowsIot"
+    xmlns:loc1="using:MSGraph.Response"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-       
-        <!-- This DataTemplate provides the UI for the calendar data that appears in the list. This UI appears 
-             where the ContentPresenter is shown in the ListViewItem control template above. This DataTemplate 
-             also declares the editor as an attached flyout, which appears near the item being edited. -->
-        <DataTemplate x:Key="LocationTemplate" x:DataType="dashdata:DashboardData">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <loc:StringFormatConverter x:Key="PercentageStringFormatConverter" StringFormat="Value: {0:P2}"/>
+        <loc:StringFormatConverter x:Key="TimeStringFormatConverter" StringFormat=" {0:HH:mm:ss}"/>
+        <loc:StringFormatConverter x:Key="DateStringFormatConverter" StringFormat=" {0:dd.MM.yyyy}: "/>
 
+        <!-- This Style adds the per-location buttons to the ListViewItem control template.
+             Using a control template is necessary here in order to enable the panel Visibility property 
+             to use TemplatedParent binding to the ListViewItem.IsSelected property. That way, the buttons
+             are shown or hidden depending on whether the item is selected. -->
+        <Style x:Key="EventsViewItemStyle" TargetType="ListViewItem">
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Grid >
+                            <Border Margin="0" Padding="5" Background="SteelBlue" Opacity="0.9" CornerRadius="10">
+                                <StackPanel>
+                                    <ContentPresenter x:Name="Presenter"/>
+                                </StackPanel>
+                            </Border>
+                            <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- This DataTemplate provides the UI for the Event data that appears in the list. This UI appears 
+             where the ContentPresenter is shown in the ListViewItem control template above. -->
+        <DataTemplate x:Key="EventTemplate" x:DataType="loc1:CalendarEventItem">
+            <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
-                <StackPanel>
-                    <TextBlock Text="{x:Bind Name, Mode=OneWay, TargetNullValue=''}" TextWrapping="Wrap"/>
-                    <TextBlock Text="{x:Bind Address, Mode=OneWay, TargetNullValue=''}" FontSize="9" TextWrapping="Wrap"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,4">
-                    <TextBlock Text="{x:Bind FormattedCurrentTravelDistance, Mode=OneWay, TargetNullValue=''}" Grid.Row="0" Grid.Column="1" FontSize="10" Margin="0,0,0,-2" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{x:Bind FormattedCurrentTravelTime, Mode=OneWay, TargetNullValue=''}" Grid.Row="1" Grid.Column="1" FontSize="22" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{x:Bind FormattedTimeStamp, Mode=OneWay, TargetNullValue=''}" Grid.Row="2" Grid.Column="1" FontSize="10" HorizontalAlignment="Center"/>
-                </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="3"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!--<TextBlock Text="{x:Bind StartDateTime, Mode=OneWay, TargetNullValue=''}" FontSize="9" TextWrapping="Wrap"/>-->
+                <TextBlock Grid.Column="0" Grid.Row="0"  Text="{x:Bind StartDateTime.dateTime, Converter={StaticResource DateStringFormatConverter},Mode=OneWay}" FontSize="12" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" FontSize="12" FontFamily="Segoe UI"></TextBlock>
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="{x:Bind Subject, Mode=OneWay, TargetNullValue=''}" FontSize="12" FontFamily="Segoe UI"/>
             </Grid>
         </DataTemplate>
+
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-            <Image x:Name="BGImage"  Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding DashImage, Mode=OneWay}"/>
-        
-        <!-- This ListView is customized using three external resources: 
-               * The LocationsViewItemStyle declares the app-bar buttons at the bottom of an item when it is selected.
-               * The LocationTemplate declares the UI for the location data that appears in each list item.
-               * The ListView itself implicitly uses an altered version of the default ListView control style.
-                 This style is declared in the App.xaml file, and enables the user to manipulate the area of
-                 the map shown below the list. For more info, see App.xaml. -->
-        <ListView x:Name="LocationsView" Grid.Row="1" Margin="10,10,0,0" Width="277" HorizontalAlignment="Left"
-            SelectionMode="Single" 
-            ItemsSource="{x:Bind CalendarEvents}" 
-            ItemTemplate="{StaticResource LocationTemplate}" 
-            ItemContainerStyle="{StaticResource LocationsViewItemStyle}" />
-
+        <Image Grid.Row="0" Grid.RowSpan="2"  x:Name="BGImage"  Source="{x:Bind ViewModel.DashImage, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"/>
+        <Border Grid.Row="0" HorizontalAlignment="Right" Margin="0,20,0,0" Background="SteelBlue" Opacity="0.9" CornerRadius="10" Width="{x:Bind EventsView.Width}" Height="{x:Bind EventListGrid.Height}">
+            <Grid x:Name="EventListGrid" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!-- Grid.Row 0-->
+                <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria" Grid.Row="0"/>
+                <!-- Grid.Row 1-->
+                <TextBlock Text="Heute" Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="1"></TextBlock>
+                
+                <!-- Grid.Row 2-->
+                <ListView x:Name="EventsView" Grid.Row="2" Width="277" HorizontalAlignment="Right"
+            ItemsSource="{x:Bind Path=ViewModel.CalendarEvents}" 
+            ItemTemplate="{StaticResource EventTemplate}" 
+            ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
+                
+                <!-- Grid.Row 3-->
+                <TextBlock Text="Nächste Termine"  Padding="5,10,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="3"></TextBlock>
+                
+                <ListView x:Name="EventsView1" Grid.Row="4" Margin="0,0,0,0" Width="277" HorizontalAlignment="Right"
+            ItemsSource="{x:Bind Path=ViewModel.CalendarEvents}" 
+            ItemTemplate="{StaticResource EventTemplate}" 
+            ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
+                <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
+        </Grid>
+        </Border>
     </Grid>
 </Page>

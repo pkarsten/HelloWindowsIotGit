@@ -16,8 +16,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=234238 dokumentiert.
-
 namespace HelloWindowsIot
 {
     /// <summary>
@@ -28,17 +26,12 @@ namespace HelloWindowsIot
         /// <summary>
         /// Gets or sets the DashBoardData . 
         /// </summary>
-        public DashboardData MyDataSet { get; private set; }
-
-        public ObservableCollection<CalendarEventItem> CalendarEvents
-        {
-            get;private set;
-        }
-
+        public DashBoardViewModel ViewModel { get; set; }
 
         public DashBoard()
         {
             this.InitializeComponent();
+            this.ViewModel = new DashBoardViewModel();
         }
 
         /// <summary>
@@ -54,7 +47,7 @@ namespace HelloWindowsIot
                 // Load location data from storage if it exists;
                 // otherwise, load sample location data.
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
-                MyDataSet = dashboarddata;
+                ViewModel = dashboarddata;
                 //var locations = await LocationDataStore.GetLocationDataAsync();
                 //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();
                 //foreach (var location in locations) this.Locations.Add(location);
@@ -64,11 +57,6 @@ namespace HelloWindowsIot
                 //LocationHelper.Geolocator.StatusChanged += Geolocator_StatusChanged;
                 //NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
             }
-        }
-
-        private Task GetSampleDashBoardDataAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

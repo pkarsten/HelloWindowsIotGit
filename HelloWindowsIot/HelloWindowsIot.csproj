@@ -113,9 +113,11 @@
     <Compile Include="Converter\IListToObservableCollection.cs" />
     <Compile Include="Converter\NegateBoolean.cs" />
     <Compile Include="Converter\ScenarioBinding.cs" />
+    <Compile Include="Converter\StringFormatConverter.cs" />
     <Compile Include="Converter\ThumbnailToImageConverter.cs" />
-    <Compile Include="Models\DashboardData.cs" />
+    <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="Models\SampleDashBoardData.cs" />
+    <Compile Include="ViewModels\ImageViewModel.cs" />
     <Compile Include="Views\DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>

@@ -105,6 +105,7 @@
     <Compile Include="Classes\DeviceInfos.cs" />
     <Compile Include="Classes\EnumUtils.cs" />
     <Compile Include="Classes\Extensions.cs" />
+    <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\RelayCommand.cs" />
     <Compile Include="Controls\InfoBox.xaml.cs">
       <DependentUpon>InfoBox.xaml</DependentUpon>

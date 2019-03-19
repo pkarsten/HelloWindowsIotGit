@@ -15,6 +15,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using RWPBGTasks;
+using Windows.ApplicationModel.Background;
+using AppSettings;
+using MSGraph;
 
 namespace HelloWindowsIot
 {
@@ -32,6 +36,44 @@ namespace HelloWindowsIot
         {
             this.InitializeComponent();
             this.ViewModel = new DashBoardViewModel();
+
+            // Update the Image times every 1 minutes.
+            Helpers.StartTimer(0,30, async () => await this.UpdateDashBoardImageAsync());
+
+            // MappedLocations is a superset of Locations, so any changes in Locations
+            // need to be reflected in MappedLocations. 
+            //this.ViewModel.TodayCalendarEvents.CollectionChanged += (s, e) =>
+            //{
+            //    if (e.NewItems != null) foreach (CalendarEventItem item in e.NewItems) this.ViewModel.TodayCalendarEvents.Add(item);
+            //    if (e.OldItems != null) foreach (CalendarEventItem item in e.OldItems) this.ViewModel.TodayCalendarEvents.Remove(item);
+            //};
+            //this.ViewModel.NextCalendarEvents.CollectionChanged += (s, e) =>
+            //{
+            //    if (e.NewItems != null) foreach (CalendarEventItem item in e.NewItems) this.ViewModel.NextCalendarEvents.Add(item);
+            //    if (e.OldItems != null) foreach (CalendarEventItem item in e.OldItems) this.ViewModel.NextCalendarEvents.Remove(item);
+            //};
+        }
+
+        
+
+        /// <summary>
+        /// Updates the Dashboard Image 
+        /// </summary>
+        private async Task UpdateDashBoardImageAsync()
+        {
+            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);//. LoadImageForDesktop(ItemInfoResponse item);
+            System.Diagnostics.Debug.WriteLine("Here we go");
+            ViewModel.DashImage = Settings.DashBoardImage;
+        }
+
+        /// <summary>
+        /// Attach progress and completed handers to a background task.
+        /// </summary>
+        /// <param name="task">The task to attach progress and completed handlers to.</param>
+        private void AttachChangeImageProgressAndCompletedHandlers(IBackgroundTaskRegistration task)
+        {
+            //task.Progress += new BackgroundTaskProgressEventHandler(OnProgress);
+            //task.Completed += new BackgroundTaskCompletedEventHandler(OnCompleted);
         }
 
         /// <summary>
@@ -46,8 +88,11 @@ namespace HelloWindowsIot
             {
                 // Load location data from storage if it exists;
                 // otherwise, load sample location data.
+                
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
                 ViewModel = dashboarddata;
+
+
                 //var locations = await LocationDataStore.GetLocationDataAsync();
                 //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();
                 //foreach (var location in locations) this.Locations.Add(location);

@@ -12,6 +12,7 @@ using MSGraph.Request;
 using Microsoft.Identity.Client;
 using System.Linq;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace MSGraph
 {

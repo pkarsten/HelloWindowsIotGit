@@ -31,7 +31,8 @@ namespace HelloWindowsIot
             {
                 Name = "MyDashBoard",
                 DashImage = demoImage,
-                CalendarEvents = loccalendarEvents,
+                NextCalendarEvents = loccalendarEvents,
+                TodayCalendarEvents =loccalendarEvents,
                 NextButtonText = "Next Btn Text err"
             };
 

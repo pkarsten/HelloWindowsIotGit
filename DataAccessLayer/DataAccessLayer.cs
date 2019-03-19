@@ -689,6 +689,7 @@ namespace UwpSqliteDal
                     children.Remove(iir);
                 }
             }
+            DeleteAllPictures();
             foreach (var iri in children)
             {
                 var fp = new FavoritePic();

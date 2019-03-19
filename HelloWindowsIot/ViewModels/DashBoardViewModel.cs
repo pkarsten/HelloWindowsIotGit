@@ -22,10 +22,13 @@
 //  THE SOFTWARE.
 //  ---------------------------------------------------------------------------------
 
+using MSGraph;
 using MSGraph.Response;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
@@ -49,6 +52,25 @@ namespace HelloWindowsIot
             _timer.Tick += Timer_Tick;
             _timer.Interval =  new TimeSpan(0, 0, 1);
             _timer.Start();
+
+            GetCalendarEvents();
+
+        }
+
+        private async Task GetCalendarEvents()
+        {
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+
+            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            calendarEvents = myevents.ToObservableCollection();
+
+
+            IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
+            todayEvents = myeventstoday.ToObservableCollection();
+
+            this.OnPropertyChanged("TodayCalendarEvents");
+            this.OnPropertyChanged("NextCalendarEvents");
         }
 
         private void Timer_Tick(object sender, object e)
@@ -84,14 +106,24 @@ namespace HelloWindowsIot
             set { this.SetProperty(ref this.dashimage, value); }
         }
 
-        private ObservableCollection<CalendarEventItem> calendarEvents;
+        private ObservableCollection<CalendarEventItem> calendarEvents = new ObservableCollection<CalendarEventItem>();
         /// <summary>
         /// Gets or sets the saved locations. 
         /// </summary>
-        public ObservableCollection<CalendarEventItem> CalendarEvents
+        public ObservableCollection<CalendarEventItem> NextCalendarEvents
         {
             get { return this.calendarEvents; }
             set { this.SetProperty(ref this.calendarEvents, value); }
+        }
+
+        private ObservableCollection<CalendarEventItem> todayEvents = new ObservableCollection<CalendarEventItem>();
+        /// <summary>
+        /// Gets or sets the saved locations. 
+        /// </summary>
+        public ObservableCollection<CalendarEventItem> TodayCalendarEvents
+        {
+            get { return this.todayEvents; }
+            set { this.SetProperty(ref this.todayEvents, value); }
         }
 
         /***************************************************/

@@ -101,8 +101,12 @@
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\RelayCommand.cs" />
+    <Compile Include="Classes\WebViewExtension.cs" />
     <Compile Include="Controls\InfoBox.xaml.cs">
       <DependentUpon>InfoBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PurchaseTaskControl.xaml.cs">
+      <DependentUpon>PurchaseTaskControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\IListToObservableCollection.cs" />
@@ -183,6 +187,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Controls\InfoBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PurchaseTaskControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

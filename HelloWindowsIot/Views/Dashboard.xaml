@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     xmlns:loc="using:HelloWindowsIot"
     xmlns:loc1="using:MSGraph.Response"
+    xmlns:uc="using:HelloWindowsIot.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
         <loc:StringFormatConverter x:Key="PercentageStringFormatConverter" StringFormat="Value: {0:P2}"/>
@@ -70,6 +71,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!-- Grid.Row 0-->
                 <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria" Grid.Row="0"/>
@@ -90,7 +92,8 @@
             ItemTemplate="{StaticResource EventTemplate}" 
             ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
                 <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
-        </Grid>
+                <uc:PurchaseTaskControl Grid.Row="5" Margin="0,100,0,0"></uc:PurchaseTaskControl>
+           </Grid>
         </Border>
     </Grid>
 </Page>

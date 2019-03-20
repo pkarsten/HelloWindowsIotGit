@@ -43,12 +43,40 @@ namespace HelloWindowsIot
             //CalendarText.Text = await graphService.GetCalendarViewTest();
             string s = "";
             var mypurchtask = await graphService.GetPurchaseTask();
+            TaskWebView.NavigationCompleted += WebView_NavigationCompleted;
             TaskSubject.Text = mypurchtask.Subject;
-            TaskWebView.NavigateToString(mypurchtask.TaskBody.Content);
+            var content = mypurchtask.TaskBody.Content;
+            content = content.Replace("<li> </li>", "");
+            TaskWebView.NavigateToString(content);
             System.Diagnostics.Debug.WriteLine("My Purch Task: " + mypurchtask.Subject);
             System.Diagnostics.Debug.WriteLine("========================================");
             System.Diagnostics.Debug.WriteLine("My Purch List"  + mypurchtask.TaskBody.Content);
             System.Diagnostics.Debug.WriteLine("========================================");
+        }
+
+        private async void WebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            var webView = sender as WebView;
+            webView.Height = 30;
+            int width;
+            int height;
+
+            // get the total width and height
+            var widthString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollWidth.toString()" });
+            var heightString = await webView.InvokeScriptAsync("eval", new[] { "document.body.scrollHeight.toString()" });
+
+            if (!int.TryParse(widthString, out width))
+            {
+                throw new Exception("Unable to get page width");
+            }
+            if (!int.TryParse(heightString, out height))
+            {
+                throw new Exception("Unable to get page height");
+            }
+
+            // resize the webview to the content
+            webView.Width = width;
+            webView.Height = height;
         }
 
         private async void GetAppRootFolder(object sender, RoutedEventArgs e)

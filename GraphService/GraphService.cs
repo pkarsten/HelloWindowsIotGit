@@ -293,7 +293,7 @@ namespace MSGraph
         }
 
         #region Tasks ToDO
-        public async Task<string> GetPurchaseList()
+        public async Task<TaskResponse> GetPurchaseTask()
         {
             //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
             //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
@@ -303,13 +303,15 @@ namespace MSGraph
             {
                 var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')");
                 //var json = await response.Content.ReadAsStringAsync();
-                return await response.Content.ReadAsStringAsync();//JsonConvert.DeserializeObject<string>(json);
+                var purchtask = JsonConvert.DeserializeObject<TaskResponse>(await response.Content.ReadAsStringAsync());
+                return purchtask;
 
 
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                System.Diagnostics.Debug.WriteLine("ERROR while Get Task " + ex.Message);
+                return null;
             }
         }
         #endregion

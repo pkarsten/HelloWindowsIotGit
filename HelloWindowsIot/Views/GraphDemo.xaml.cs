@@ -42,8 +42,13 @@ namespace HelloWindowsIot
             var graphService = new GraphService(accessToken);
             //CalendarText.Text = await graphService.GetCalendarViewTest();
             string s = "";
-            var mylist = await graphService.GetPurchaseList();
-            System.Diagnostics.Debug.WriteLine("My Purch List"  + mylist);
+            var mypurchtask = await graphService.GetPurchaseTask();
+            TaskSubject.Text = mypurchtask.Subject;
+            TaskWebView.NavigateToString(mypurchtask.TaskBody.Content);
+            System.Diagnostics.Debug.WriteLine("My Purch Task: " + mypurchtask.Subject);
+            System.Diagnostics.Debug.WriteLine("========================================");
+            System.Diagnostics.Debug.WriteLine("My Purch List"  + mypurchtask.TaskBody.Content);
+            System.Diagnostics.Debug.WriteLine("========================================");
         }
 
         private async void GetAppRootFolder(object sender, RoutedEventArgs e)

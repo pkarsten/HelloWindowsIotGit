@@ -122,6 +122,7 @@
     <Compile Include="Response\ParseCalendarEventResponse.cs" />
     <Compile Include="Response\ParseChildrenResponse.cs" />
     <Compile Include="Response\PhotoResponseInfo.cs" />
+    <Compile Include="Response\TaskResponse.cs" />
     <Compile Include="Response\VideoResponseInfo.cs" />
     <EmbeddedResource Include="Properties\GraphService.rd.xml" />
   </ItemGroup>

@@ -19,9 +19,9 @@ namespace HelloWindowsIot
     {
         // Our settings
         public static List<TimeObject> ChangeWallpaperTimeCollection { get; } = new List<TimeObject> {
-                 new TimeObject { TName = "15 "+AppcFuncs.GetLanguage("txtMinutes"), TMinutes = 15 },
-                 new TimeObject { TName = "30 "+AppcFuncs.GetLanguage("txtMinutes"), TMinutes = 30 },
-                 new TimeObject { TName = "60 "+AppcFuncs.GetLanguage("txtMinutes"), TMinutes = 60 },
+                 new TimeObject { TName = "15 seconds", TSeconds = 15 },//TODO Language
+                 new TimeObject { TName = "30 seconds", TSeconds = 30 },
+                 new TimeObject { TName = "60 seconds", TSeconds = 60 },
                  new TimeObject { TName = "1 "+AppcFuncs.GetLanguage("txtDay"), TMinutes = 1440 }
             };
 

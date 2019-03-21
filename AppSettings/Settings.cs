@@ -109,8 +109,8 @@ namespace AppSettings
 
 
         #region UI
-        public const string APP_NAME = "Random Rated Wallpapers";
-        public const string ProductIdinStore = "9N9Q908QKJR8";
+        public const string APP_NAME = "Hello WIndows IOT";
+        public const string ProductIdinStore = "";
         public const string SupportEmail = "pkarsten@live.de";
         public const string SupporterFirstName = "Peter";
 

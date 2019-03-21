@@ -5,9 +5,27 @@
     xmlns:local="using:HelloWindowsIot"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    >
     <Page.Resources>
         <local:NegateBooleanConverter x:Key="inverter"/>
+        <Style x:Key="ButtonStyle"
+               TargetType="Button">
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="Margin"
+                    Value="0,16,0,0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalAlignment"
+                    Value="Stretch" />
+        </Style>
+
+        <Style x:Key="TextBoxStyle"
+               TargetType="TextBox">
+            <Setter Property="Margin"
+                    Value="0,0,0,-10" />
+        </Style>
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
         <Grid.RowDefinitions >
@@ -38,29 +56,48 @@
                                                  FromVerticalOffset="100" />
                         </TransitionCollection>
                     </ItemsControl.ItemContainerTransitions>
+                    <TextBlock Text="Picture Show" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock x:Uid="txtTimeIntervalForPicSearch" Text="Picturefolder for DiaShow:" Margin="0,10,0,0" FontFamily="Segoe UI"></TextBlock>
+                    <TextBox x:Name="OneDriveFolderPathText"
+                         PlaceholderText="Enter a OneDrive path without leading '/'"
+                         Style="{StaticResource TextBoxStyle}" />
+                    <Button Content="Load Images From Path"
+                        Click="GetImagesInFolder_Click"
+                        Style="{StaticResource ButtonStyle}" />
 
-                    <TextBlock x:Uid="txtTimeIntervalForPicSearch" Text="Time Interval for Search Pictures" Margin="0,10,0,0"></TextBlock>
-                    <!-- How bind ! invert booean -->
-                    <ComboBox x:Name="timeBoxForSearchPictures"
+                    <TextBlock Text="Interval (min 10 Seconds) for Diashow:" Margin="0,10,0,0"></TextBlock>
+                    <TextBox x:Name="DiaShowInterval"
+                         PlaceholderText="10"
+                         Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
+                    <CheckBox>Enable Picture Show</CheckBox>
+
+                    <TextBlock Text="Tasks" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,40,0,0"/>
+                    <TextBlock Text="Choose Task Folder:" Margin="0,10,0,0"></TextBlock>
+                    
+                    <ComboBox x:Name="cmbTaskFolders" 
                           IsEnabled="{Binding IsOn, ElementName=switchSetWallpaper, Converter={StaticResource inverter}, Mode=TwoWay}"
-                          ItemsSource="{Binding SearchPicturesTimeCollection}"
-                          DisplayMemberPath="TName"
+                          ItemsSource=""
+                          DisplayMemberPath="Name"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="timeBoxForSearchPictures_SelectionChanged"
+                          SelectionChanged="cmbTaskFolders_SelectionChanged"
                           >
                     </ComboBox>
-
-                    <TextBlock x:Uid="txtTimeIntervalForChangeWallpaper" Text="Time Intervall for Change Wallpaper" Margin="0,10,0,0" ></TextBlock>
-
-                    <ComboBox x:Name="timeComboBox"
-                          IsEnabled="{Binding IsOn, ElementName=switchSetWallpaper,Converter={StaticResource inverter}, Mode=TwoWay}"
-                          ItemsSource="{Binding TimeCollection}"
-                          DisplayMemberPath="TName"
+                    <TextBlock Text="Choose your Purchase Task :" Margin="0,10,0,0"></TextBlock>
+                    <!-- How bind ! invert booean -->
+                    <ComboBox x:Name="cmbTaskList"
+                          ItemsSource=""
+                          DisplayMemberPath="Subject"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="timeComboBox_SelectionChanged"
-                          ></ComboBox>
-                    <ToggleSwitch x:Name="switchSetWallpaper" Margin="0,20,0,0" Toggled="ApplySettings_Click"><TextBlock x:Uid="txtSwitchSetWallpaper">loll</TextBlock></ToggleSwitch>
-                    <ToggleSwitch x:Name="tooglelogging" Margin="0,20,0,0" Toggled="Logging_Click">Logging</ToggleSwitch>
+                          SelectionChanged="cmbTaskList_SelectionChanged"
+                          >
+                    </ComboBox>
+                    <CheckBox>Show Purch Task on  Dashboard</CheckBox>
+                    <TextBlock Text="Calendar"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="From:" Margin="0,10,0,0"></TextBlock>
+                    <DatePicker />
+                    <TextBlock Text="To:" Margin="0,10,0,0"></TextBlock>
+                    <DatePicker />
+                    <CheckBox>Show Calendar Events on Dashboard</CheckBox>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>

@@ -24,6 +24,7 @@ using Windows.Storage;
 using System.Collections.ObjectModel;
 using AppSettings;
 using RWPBGTasks;
+using UwpSqLiteDal;
 
 namespace HelloWindowsIot
 {
@@ -32,6 +33,9 @@ namespace HelloWindowsIot
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        private List<OutlookTaskFolder> MyOutlookTaskFolders;
+        private List<OutlookTask> MyOutlookTasks;
+
         private List<TimeObject> ChangeWallpaperTimes { get { return AppSettings.ChangeWallpaperTimeCollection; } }
         private List<TimeObject> SearchPicturesTimes { get { return AppSettings.SearchTimeCollection; } }
         private TimeObject SelectedTimeForChangeWallpaper { get; set; }
@@ -42,8 +46,8 @@ namespace HelloWindowsIot
         {
             InitializeComponent();
             PageTitle.Text = AppcFuncs.GetLanguage("TitleSettings");
-            timeComboBox.ItemsSource = ChangeWallpaperTimes;
-            timeBoxForSearchPictures.ItemsSource = SearchPicturesTimes;
+            //timeComboBox.ItemsSource = ChangeWallpaperTimes;
+            //timeBoxForSearchPictures.ItemsSource = SearchPicturesTimes;
         }
 
         #region Navigate
@@ -68,8 +72,8 @@ namespace HelloWindowsIot
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
-                switchSetWallpaper.IsOn = Settings.ChangeWallpaperTaskRegistered;
-                tooglelogging.IsOn = Dal.GetSetup().EnableLogging;
+                //switchSetWallpaper.IsOn = Settings.ChangeWallpaperTaskRegistered;
+                //tooglelogging.IsOn = Dal.GetSetup().EnableLogging;
             });
         }
 
@@ -79,29 +83,29 @@ namespace HelloWindowsIot
         /// <returns></returns>
         private async Task SelectItemInTimeBoxForSearchPictures()
         {
-            try
-            {
-                var s = await GetSetupConfig();
-                if (s.IntervalForSearchPictures > 0)
-                {
-                    int index = SearchPicturesTimes.FindIndex(a => a.TMinutes == s.IntervalForSearchPictures);
-                    if (index >= 0)
-                    {
-                        timeBoxForSearchPictures.SelectedItem = SearchPicturesTimes.ElementAt(index);
-                    }
-                    if ((timeBoxForSearchPictures.SelectedItem == null) || index < 0)
-                        timeBoxForSearchPictures.SelectedIndex = 0;
-                }
-                else
-                {
-                    //Select First Entry 
-                    timeBoxForSearchPictures.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Exception, "Exception in  SelectItemInTimeBoxForSearchPictures() " + ex.Message);
-            }
+            //try
+            //{
+            //    var s = await GetSetupConfig();
+            //    if (s.IntervalForSearchPictures > 0)
+            //    {
+            //        int index = SearchPicturesTimes.FindIndex(a => a.TMinutes == s.IntervalForSearchPictures);
+            //        if (index >= 0)
+            //        {
+            //            timeBoxForSearchPictures.SelectedItem = SearchPicturesTimes.ElementAt(index);
+            //        }
+            //        if ((timeBoxForSearchPictures.SelectedItem == null) || index < 0)
+            //            timeBoxForSearchPictures.SelectedIndex = 0;
+            //    }
+            //    else
+            //    {
+            //        //Select First Entry 
+            //        timeBoxForSearchPictures.SelectedIndex = 0;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Dal.SaveLogEntry(LogType.Exception, "Exception in  SelectItemInTimeBoxForSearchPictures() " + ex.Message);
+            //}
         }
         /// <summary>
         /// Pre Select Item in ComboBox with Time for Change Wallpaper
@@ -109,29 +113,29 @@ namespace HelloWindowsIot
         /// <returns></returns>
         private async Task SelectItemInTimeBoxForChangeWallpaper()
         {
-            try
-            {
-                var s = await GetSetupConfig();
-                if (s.IntervalForChangeWallPaper > 0)
-                {
-                    int index = ChangeWallpaperTimes.FindIndex(a => a.TMinutes == s.IntervalForChangeWallPaper);
-                    if (index >= 0)
-                    {
-                        timeComboBox.SelectedItem = ChangeWallpaperTimes.ElementAt(index);
-                    }
-                    if ((timeComboBox.SelectedItem == null) || index < 0)
-                        timeComboBox.SelectedIndex = 0;
-                }
-                else
-                {
-                    //Select First Entry 
-                    timeComboBox.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Exception, "Exception in  SelectItemInTimeBoxForChangeWallpaper() " + ex.Message);
-            }
+            //try
+            //{
+            //    var s = await GetSetupConfig();
+            //    if (s.IntervalForChangeWallPaper > 0)
+            //    {
+            //        int index = ChangeWallpaperTimes.FindIndex(a => a.TMinutes == s.IntervalForChangeWallPaper);
+            //        if (index >= 0)
+            //        {
+            //            timeComboBox.SelectedItem = ChangeWallpaperTimes.ElementAt(index);
+            //        }
+            //        if ((timeComboBox.SelectedItem == null) || index < 0)
+            //            timeComboBox.SelectedIndex = 0;
+            //    }
+            //    else
+            //    {
+            //        //Select First Entry 
+            //        timeComboBox.SelectedIndex = 0;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Dal.SaveLogEntry(LogType.Exception, "Exception in  SelectItemInTimeBoxForChangeWallpaper() " + ex.Message);
+            //}
         }
         #region Tasksample
 
@@ -224,33 +228,33 @@ namespace HelloWindowsIot
             {
 
 
-                if (switchSetWallpaper.IsOn)
-                {
-                    Dal.SaveLogEntry(LogType.Info, "Enable Tasks");
+                //if (switchSetWallpaper.IsOn)
+                //{
+                //    Dal.SaveLogEntry(LogType.Info, "Enable Tasks");
 
-                    if (!Settings.ChangeWallpaperTaskRegistered)
-                    {
-                        var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
-                        AttachChangeWallpaperProgressAndCompletedHandlers(task);
-                    }
+                //    if (!Settings.ChangeWallpaperTaskRegistered)
+                //    {
+                //        var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
+                //        AttachChangeWallpaperProgressAndCompletedHandlers(task);
+                //    }
 
-                    if (!Settings.SearchPicturesTaskRegistered)
-                    {
-                        var searchPicTask = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
-                                                                          Settings.SearchPicturesTaskName,
-                                                                          Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
-                                                                          null);
-                    }
+                //    if (!Settings.SearchPicturesTaskRegistered)
+                //    {
+                //        var searchPicTask = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
+                //                                                          Settings.SearchPicturesTaskName,
+                //                                                          Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
+                //                                                          null);
+                //    }
 
-                    UpdateUI();
-                }
-                else
-                {
-                    Dal.SaveLogEntry(LogType.Info, "Disable Tasks");
-                    BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.ChangeWallpaperTaskName);
-                    BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.SearchPicturesTaskName);
-                    UpdateUI();
-                }
+                //    UpdateUI();
+                //}
+                //else
+                //{
+                //    Dal.SaveLogEntry(LogType.Info, "Disable Tasks");
+                //    BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.ChangeWallpaperTaskName);
+                //    BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.SearchPicturesTaskName);
+                //    UpdateUI();
+                //}
             }
             catch (Exception ex)
             {
@@ -260,23 +264,23 @@ namespace HelloWindowsIot
 
         private void timeBoxForSearchPictures_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //remember time
-            Setup s = Dal.GetSetup();
-            TimeObject timeinterval = timeBoxForSearchPictures.SelectedItem as TimeObject;
-            int minutes = timeinterval.TMinutes;
-            s.IntervalForSearchPictures = timeinterval.TMinutes;
-            Dal.UpdateSetup(s);
+            ////remember time
+            //Setup s = Dal.GetSetup();
+            //TimeObject timeinterval = timeBoxForSearchPictures.SelectedItem as TimeObject;
+            //int minutes = timeinterval.TMinutes;
+            //s.IntervalForSearchPictures = timeinterval.TMinutes;
+            //Dal.UpdateSetup(s);
 
             
         }
 
         private void timeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Setup s = Dal.GetSetup();
-            TimeObject timeinterval = timeComboBox.SelectedItem as TimeObject;
-            int minutes = timeinterval.TMinutes;
-            s.IntervalForChangeWallPaper = timeinterval.TMinutes;
-            Dal.UpdateSetup(s);
+            //Setup s = Dal.GetSetup();
+            //TimeObject timeinterval = timeComboBox.SelectedItem as TimeObject;
+            //int minutes = timeinterval.TMinutes;
+            //s.IntervalForChangeWallPaper = timeinterval.TMinutes;
+            //Dal.UpdateSetup(s);
         }
 
         private async void Logging_Click(object sender, RoutedEventArgs e)
@@ -286,12 +290,17 @@ namespace HelloWindowsIot
 
         private async Task ApplyLogging()
         {
-             Dal.EnableLogging(tooglelogging.IsOn);
+             //Dal.EnableLogging(tooglelogging.IsOn);
         }
 
         private async Task<Setup> GetSetupConfig()
         {
             return Dal.GetSetup();
+        }
+
+        private void GetSubFolders_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

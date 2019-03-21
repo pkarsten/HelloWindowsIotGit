@@ -125,6 +125,7 @@
     <Compile Include="Models\FavoritePic.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\OutlookTaskFolder.cs" />
     <Compile Include="Models\PicFilter.cs" />
     <Compile Include="Models\Setup.cs" />
     <Compile Include="Models\TaskStatus.cs" />

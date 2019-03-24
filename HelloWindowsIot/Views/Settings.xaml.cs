@@ -42,7 +42,7 @@ namespace HelloWindowsIot
         private TimeObject SelectedTimeForSearchPictures { get; set; }
 
         /// <summary>
-        /// Gets or sets the DashBoardData . 
+        /// Gets or sets the Settingsdata . 
         /// </summary>
         public SettingsViewModel ViewModel { get; set; }
 
@@ -51,6 +51,8 @@ namespace HelloWindowsIot
         {
             InitializeComponent();
             PageTitle.Text = AppcFuncs.GetLanguage("TitleSettings");
+            this.ViewModel = new SettingsViewModel();
+
             //timeComboBox.ItemsSource = ChangeWallpaperTimes;
             //timeBoxForSearchPictures.ItemsSource = SearchPicturesTimes;
         }
@@ -60,6 +62,18 @@ namespace HelloWindowsIot
         {
             base.OnNavigatedTo(e);
             Dal.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
+
+            SettingsViewModel sampledata;
+            if (Dal.GetSetup() != null)
+            {
+                sampledata = new SettingsViewModel();
+            }
+            else
+            {
+                sampledata = await SampleDashBoardData.GetSampleSettingsDataAsync();
+            }
+
+                ViewModel = sampledata;
 
             await SelectItemInTimeBoxForSearchPictures();
             await SelectItemInTimeBoxForChangeWallpaper();

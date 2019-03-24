@@ -38,5 +38,28 @@ namespace HelloWindowsIot
 
             return dashboarddata;
         }
+
+        public static async Task<SettingsViewModel> GetSampleSettingsDataAsync()
+        {
+            var viewmodel = new SettingsViewModel
+            {
+                Name = "Settings",
+                SetupSettings = new UwpSqliteDal.Setup
+                {
+                    EnableLogging=true,
+                    EnableClock = true,
+                    EnablePictureAddOn = true,
+                    EnableCalendarAddon = true,
+                    EnableCalendarNextEvents = true,
+                    EnableTodayEvents = true,
+                    EnablePurchaseTask = true,
+                    IntervalForSearchPictures = 15,
+                    OneDrivePictureFolder = "/Bilder/WindowsIotApp",
+                    TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks",
+                    PurchaseTaskID = "('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')"
+                }
+            };
+            return viewmodel;
+        }
     }
 }

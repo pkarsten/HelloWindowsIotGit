@@ -36,7 +36,7 @@ namespace UwpSqliteDal
         /// <summary>
         /// Get or Sets if PictureSHow should be run or not 
         /// </summary>
-        public bool EnablePictureShow { get; set; }
+        public bool EnablePictureAddOn { get; set; }
         #endregion
 
         #region Tasks
@@ -65,7 +65,7 @@ namespace UwpSqliteDal
         /// <summary>
         /// get or sets if Calendar Add On should be enabled or disabled
         /// </summary>
-        public int EnableCalendarAddon { get; set; }
+        public bool EnableCalendarAddon { get; set; }
 
         /// <summary>
         /// get or sets if CalendarNext Events should be seen on dashboard 

@@ -103,7 +103,7 @@
 
                     <TextBlock Text="Clock"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <CheckBox>Show Clock on Dashboard?</CheckBox>
-
+                    <Button Content="Apply Settings"  Margin="0,40,0,0"></Button>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>

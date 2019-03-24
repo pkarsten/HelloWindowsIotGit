@@ -43,9 +43,7 @@ namespace HelloWindowsIot
         /// <returns>The AppShell of the app.</returns>
         private async Task Initialize()
         {
-
             Dal.CreateDatabase();
-            UwpSqliteDal.Dal.CreateDatabase();
         }
 
         /// <summary>
@@ -86,6 +84,8 @@ namespace HelloWindowsIot
 
             if (e.PrelaunchActivated == false)
             {
+                //TODO: Check if Settings are Ok for Run the App, other else run the SettingsPage and say what it's wrong
+
                 if (rootFrame.Content == null)
                 {
                     // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren

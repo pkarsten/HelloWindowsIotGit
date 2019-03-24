@@ -29,7 +29,7 @@ using UwpSqLiteDal;
 namespace HelloWindowsIot
 {
     /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
+    /// Settings Page 
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
@@ -40,6 +40,11 @@ namespace HelloWindowsIot
         private List<TimeObject> SearchPicturesTimes { get { return AppSettings.SearchTimeCollection; } }
         private TimeObject SelectedTimeForChangeWallpaper { get; set; }
         private TimeObject SelectedTimeForSearchPictures { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DashBoardData . 
+        /// </summary>
+        public SettingsViewModel ViewModel { get; set; }
 
 
         public SettingsPage()

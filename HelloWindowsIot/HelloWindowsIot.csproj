@@ -117,6 +117,7 @@
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="Models\SampleDashBoardData.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>

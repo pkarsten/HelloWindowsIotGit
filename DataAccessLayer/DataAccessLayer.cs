@@ -172,7 +172,7 @@ namespace UwpSqliteDal
         /// Get Current Setup COnfig saved in Database
         /// </summary>
         /// <returns></returns>
-        public static Setup GetSetup()
+        public static async Task<Setup> GetSetup()
         {
             Setup sconfig = new Setup();
             try

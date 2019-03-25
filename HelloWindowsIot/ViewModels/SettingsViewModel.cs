@@ -15,8 +15,6 @@ namespace HelloWindowsIot
     /// </summary>
     public class SettingsViewModel : BindableBase
     {
-        public ICommand SaveCommand { get; set; }
-
         private ObservableCollection<TaskFolder> taskfolder = new ObservableCollection<TaskFolder>();
         /// <summary>
         /// Gets or sets the taskfolder. 
@@ -39,52 +37,68 @@ namespace HelloWindowsIot
                 //handle your "event" here... 
                 //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
                 System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
+                //TODO: Load Tasks in Folder
                 System.Diagnostics.Debug.WriteLine("Is Busy: ? "+ isBusy);
                 this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
             }
         }
-
 
         public SettingsViewModel()
         {
             System.Diagnostics.Debug.WriteLine("Initialize SettingsViewModel ");
             //saveSettingsCommand = new RelayCommand(OnSaveSettings, () => !isBusy);
             //LoadPicsCommand = new RelayCommand(OnLoadPictureList, () => !isBusy);
-            SaveCommand = new RelayCommand(() => OnSaveSettings());
+            Submit = new RelayCommand(OnSaveSettings, () => true);
         }
 
-        private RelayCommand saveSettingsCommand { get; set; }
-        /// <summary>
-        /// Gets the Save Settings command.
-        /// </summary>
-        public RelayCommand SaveSettingsCommand {
-            get;private set;
+        public RelayCommand Submit { get; private set; }
+
+
+        private bool canExecute;
+
+        public bool CanExecute
+        {
+            get => this.canExecute;
+            set =>  this.SetProperty(ref this.canExecute, value);
         }
+
+
+       
 
         /// <summary>
         /// Gets the Add Person command.
         /// </summary>
         public RelayCommand LoadPicsCommand { get; }
 
+
         private async void OnSaveSettings()
         {
-            System.Diagnostics.Debug.WriteLine("OnSaveSettings()");
-            IsBusy = true;
-            try
-            {
-                // The user needs to be signed-in
-                //await _authEnforcementHandler.CheckUserAuthentication();
+            if (SetupSettings.OneDrivePictureFolder=="")
+                CanExecute = false;
 
-                IsBusy = true;
-                await Dal.UpdateSetup(this.SetupSettings);
-            }
-            catch (Exception ex)
+            if (CanExecute == false)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine("Can't save");
+                return;
             }
-            finally
+            else
             {
-                IsBusy = false;
+
+                System.Diagnostics.Debug.WriteLine("OnSaveSettings()");
+                //IsBusy = true; //Causes : StackOverflowException 
+                try
+                {
+                    //IsBusy = true; // => StackOverflowException 
+                    await Dal.UpdateSetup(this.SetupSettings);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
             }
         }
 
@@ -130,6 +144,7 @@ namespace HelloWindowsIot
         public async Task LoadData()
         {
 
+            CanExecute = false;
             IsBusy = true;
             try
             {
@@ -154,7 +169,7 @@ namespace HelloWindowsIot
             finally
             {
                 IsBusy = false;
-                this.OnPropertyChanged("IsBusy");
+                CanExecute = true;
             }
         }
         #region ComboBoxen

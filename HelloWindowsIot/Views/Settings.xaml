@@ -13,6 +13,8 @@
         <local:NullableBooleanToBooleanConverter x:Key="NullableBooleanToBooleanConverter" />
         <local:ComboBoxItemConvert x:Key="ComboBoxItemConvert"/>
         <local:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        
         <Style x:Key="ButtonStyle"
                TargetType="Button">
             <Setter Property="Height"
@@ -60,7 +62,7 @@
                         </TransitionCollection>
                     </ItemsControl.ItemContainerTransitions>
                     <TextBlock Text="Picture Show" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
-                    <TextBlock x:Uid="txtTimeIntervalForPicSearch" Text="Picturefolder for DiaShow:" Margin="0,10,0,0" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Picturefolder for DiaShow:" Margin="0,10,0,0" FontFamily="Segoe UI"></TextBlock>
                     
                     <TextBox x:Name="OneDriveFolderPathText"
                          PlaceholderText="Enter a OneDrive path without leading '/'"
@@ -110,10 +112,22 @@
 
                     <TextBlock Text="Clock"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableClock, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Clock on Dashboard?</CheckBox>
-                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.SaveSettingsCommand}"></Button>
-                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.SaveCommand, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsBusy, Mode=TwoWay, Converter={StaticResource NegateBooleanConverter}}"></Button>
+                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.Submit}" IsEnabled="{x:Bind ViewModel.CanExecute, Mode=TwoWay}"></Button>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>
+        <Rectangle Fill="#77000000"
+                   Grid.Row="2"
+                   x:Name="PleaseWaitCache"
+                   Visibility="{x:Bind ViewModel.IsBusy, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+        <ProgressRing x:Name="Progress"
+                      Grid.Row="2"
+                      IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      
+                      Width="80"
+                      Height="80" />
     </Grid>
 </Page>

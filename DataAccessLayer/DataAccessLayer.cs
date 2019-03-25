@@ -188,7 +188,7 @@ namespace UwpSqliteDal
                 await SaveLogEntry(LogType.Exception, "GetSetup() Exception: " + ex.Message);
             }
             //TODO: Sample
-            sconfig.TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAbyBQIUAAAA=";
+            //sconfig.TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAbyBQIUAAAA=";
             return sconfig;
         }
 

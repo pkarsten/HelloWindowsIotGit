@@ -7,12 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:UwpSqliteDal" 
     xmlns:graph="using:MSGraph.Response"
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
     mc:Ignorable="d"
     >
     <Page.Resources>
         <local:NullableBooleanToBooleanConverter x:Key="NullableBooleanToBooleanConverter" />
         <local:ComboBoxItemConvert x:Key="ComboBoxItemConvert"/>
+        <local:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
         <Style x:Key="ButtonStyle"
                TargetType="Button">
             <Setter Property="Height"
@@ -110,8 +110,8 @@
 
                     <TextBlock Text="Clock"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableClock, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Clock on Dashboard?</CheckBox>
-                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind Path=ViewModel.SaveSettingsCommand}"></Button>
-                    <Button Content="Apply Settings 1"  Margin="0,40,0,0" Command="{x:Bind Path=ViewModel.SaveSettingsCommand}"></Button>
+                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.SaveSettingsCommand}"></Button>
+                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.SaveCommand, Mode=TwoWay}" IsEnabled="{x:Bind ViewModel.IsBusy, Mode=TwoWay, Converter={StaticResource NegateBooleanConverter}}"></Button>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>

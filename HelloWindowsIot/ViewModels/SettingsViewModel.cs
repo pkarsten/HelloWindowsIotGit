@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using UwpSqliteDal;
 using UwpSqLiteDal;
+using System.Windows.Input;
 
 namespace HelloWindowsIot
 {
@@ -14,6 +15,8 @@ namespace HelloWindowsIot
     /// </summary>
     public class SettingsViewModel : BindableBase
     {
+        public ICommand SaveCommand { get; set; }
+
         private ObservableCollection<TaskFolder> taskfolder = new ObservableCollection<TaskFolder>();
         /// <summary>
         /// Gets or sets the taskfolder. 
@@ -30,24 +33,39 @@ namespace HelloWindowsIot
         {
 
             get { return this.selectedTaskFolder; }
-            set { this.SetProperty(ref this.selectedTaskFolder, value); }
+            set
+            {
+                this.SetProperty(ref this.selectedTaskFolder, value);
+                //handle your "event" here... 
+                //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
+                System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
+                System.Diagnostics.Debug.WriteLine("Is Busy: ? "+ isBusy);
+                this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
+            }
         }
 
 
         public SettingsViewModel()
         {
-            SaveSettingsCommand = new RelayCommand(OnSaveSettings, () => isBusy);
-            LoadPicsCommand = new RelayCommand(OnLoadPictureList, () => isBusy);
+            System.Diagnostics.Debug.WriteLine("Initialize SettingsViewModel ");
+            //saveSettingsCommand = new RelayCommand(OnSaveSettings, () => !isBusy);
+            //LoadPicsCommand = new RelayCommand(OnLoadPictureList, () => !isBusy);
+            SaveCommand = new RelayCommand(() => OnSaveSettings());
         }
 
+        private RelayCommand saveSettingsCommand { get; set; }
         /// <summary>
         /// Gets the Save Settings command.
         /// </summary>
-        public RelayCommand SaveSettingsCommand { get; }
+        public RelayCommand SaveSettingsCommand {
+            get;private set;
+        }
+
         /// <summary>
         /// Gets the Add Person command.
         /// </summary>
         public RelayCommand LoadPicsCommand { get; }
+
         private async void OnSaveSettings()
         {
             System.Diagnostics.Debug.WriteLine("OnSaveSettings()");
@@ -76,7 +94,8 @@ namespace HelloWindowsIot
         public Setup SetupSettings
         {
             get { return this.setupSettings; }
-            set { this.SetProperty(ref this.setupSettings, value); }
+            set { this.SetProperty(ref this.setupSettings, value);
+            }
         }
 
         private string name;
@@ -115,7 +134,7 @@ namespace HelloWindowsIot
             try
             {
                 System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
-                //await Task.Delay(500);//TODO: Simulate Loading
+                await Task.Delay(2000);//TODO: Simulate Loading
                 SetupSettings = await Dal.GetSetup();
                 pageTitle = AppcFuncs.GetLanguage("TitleSettings");
 
@@ -135,6 +154,7 @@ namespace HelloWindowsIot
             finally
             {
                 IsBusy = false;
+                this.OnPropertyChanged("IsBusy");
             }
         }
         #region ComboBoxen

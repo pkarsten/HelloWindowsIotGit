@@ -141,7 +141,7 @@ namespace HelloWindowsIot
 
                     var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
                                                                            Settings.SearchPicturesTaskName,
-                                                                            Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
+                                                                            await Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
                                                                            null);
                     AttachSearchPictureProgressAndCompletedHandlers(apptask);
                     AppSettings.RegisteredBeforeStartSearchPicManual = true;

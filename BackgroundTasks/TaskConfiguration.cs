@@ -233,7 +233,7 @@ namespace RWPBGTasks
                         if (((Dal.GetTaskStatusByTaskName(bgt.Name).CurrentRegisteredStatus == true) && bgt.Registered == false) || (Settings.RegisterAllBackgroundTasks == true))
                         {
                             // TimeTrigger
-                            var task = await RegisterBackgroundTask(bgt.EntryPoint, bgt.Name, Dal.GetTimeIntervalForTask(bgt.Name), null);
+                            var task = await RegisterBackgroundTask(bgt.EntryPoint, bgt.Name, await Dal.GetTimeIntervalForTask(bgt.Name), null);
                         }
                         break;
                 }

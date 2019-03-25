@@ -40,6 +40,7 @@
 - http://blog.harisaltaf.com/682/image-resize-losing-aspect-ratio-c-net/
 
 BiewModels Tutorial https://hangzone.com/data-binding-uwp-part-2/
+Traffic app sample https://github.com/Microsoft/Windows-appsample-trafficapp
 
 	
 

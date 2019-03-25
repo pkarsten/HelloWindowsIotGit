@@ -25,6 +25,7 @@ using System.Collections.ObjectModel;
 using AppSettings;
 using RWPBGTasks;
 using UwpSqLiteDal;
+using MSGraph.Response;
 
 namespace HelloWindowsIot
 {
@@ -33,8 +34,7 @@ namespace HelloWindowsIot
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
-        private List<OutlookTaskFolder> MyOutlookTaskFolders;
-        private List<OutlookTask> MyOutlookTasks;
+
 
         private List<TimeObject> ChangeWallpaperTimes { get { return AppSettings.ChangeWallpaperTimeCollection; } }
         private List<TimeObject> SearchPicturesTimes { get { return AppSettings.SearchTimeCollection; } }
@@ -49,8 +49,7 @@ namespace HelloWindowsIot
 
         public SettingsPage()
         {
-            InitializeComponent();
-            PageTitle.Text = AppcFuncs.GetLanguage("TitleSettings");
+            this.InitializeComponent();
             this.ViewModel = new SettingsViewModel();
 
             //timeComboBox.ItemsSource = ChangeWallpaperTimes;
@@ -61,24 +60,14 @@ namespace HelloWindowsIot
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Dal.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
+            await Dal.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
 
-            SettingsViewModel sampledata;
-            if (Dal.GetSetup() != null)
-            {
-                sampledata = new SettingsViewModel();
-            }
-            else
-            {
-                sampledata = await SampleDashBoardData.GetSampleSettingsDataAsync();
-            }
+            await ViewModel.LoadData();
 
-                ViewModel = sampledata;
+            //await SelectItemInTimeBoxForSearchPictures();
+            //await SelectItemInTimeBoxForChangeWallpaper();
 
-            await SelectItemInTimeBoxForSearchPictures();
-            await SelectItemInTimeBoxForChangeWallpaper();
-
-            UpdateUI();
+            //UpdateUI();
 
         }
         #endregion
@@ -314,12 +303,18 @@ namespace HelloWindowsIot
 
         private async Task<Setup> GetSetupConfig()
         {
-            return Dal.GetSetup();
+            return await Dal.GetSetup();
         }
 
         private void GetSubFolders_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void TaskFolder_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var t = cmbTaskFolders.SelectedItem as TaskFolder;
+            System.Diagnostics.Debug.WriteLine("New Select: " + t.Id);
         }
     }
 }

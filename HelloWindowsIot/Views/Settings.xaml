@@ -5,10 +5,14 @@
     xmlns:local="using:HelloWindowsIot"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:UwpSqliteDal" 
+    xmlns:graph="using:MSGraph.Response"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
     mc:Ignorable="d"
     >
     <Page.Resources>
-        <local:NegateBooleanConverter x:Key="inverter"/>
+        <local:NullableBooleanToBooleanConverter x:Key="NullableBooleanToBooleanConverter" />
+        <local:ComboBoxItemConvert x:Key="ComboBoxItemConvert"/>
         <Style x:Key="ButtonStyle"
                TargetType="Button">
             <Setter Property="Height"
@@ -37,7 +41,7 @@
                      RelativePanel.AlignHorizontalCenterWithPanel="True">
             <SymbolIcon Symbol="Setting" />
         </Viewbox>
-        <TextBlock x:Name="PageTitle" Grid.Row="1" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock x:Name="PageTitle" Grid.Row="1" HorizontalAlignment="Center" Text="{x:Bind ViewModel.PageTitle}"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
             <RelativePanel HorizontalAlignment="Center" >
                 <ItemsControl
@@ -49,7 +53,6 @@
                             <Setter Property="HorizontalAlignment" Value="Stretch" />
                         </Style>
                     </ItemsControl.Resources>
-
                     <ItemsControl.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition IsStaggeringEnabled="False"
@@ -58,52 +61,58 @@
                     </ItemsControl.ItemContainerTransitions>
                     <TextBlock Text="Picture Show" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <TextBlock x:Uid="txtTimeIntervalForPicSearch" Text="Picturefolder for DiaShow:" Margin="0,10,0,0" FontFamily="Segoe UI"></TextBlock>
+                    
                     <TextBox x:Name="OneDriveFolderPathText"
                          PlaceholderText="Enter a OneDrive path without leading '/'"
-                         Style="{StaticResource TextBoxStyle}" />
+                         Style="{StaticResource TextBoxStyle}"
+                            Text="{x:Bind ViewModel.SetupSettings.OneDrivePictureFolder, Mode=TwoWay}" />
+                    
                     <Button Content="Load Images From Path"
-                        Click="GetImagesInFolder_Click"
-                        Style="{StaticResource ButtonStyle}" />
+                        Style="{StaticResource ButtonStyle}" 
+                            Command="{x:Bind ViewModel.LoadPicsCommand}"/>
 
                     <TextBlock Text="Interval (min 10 Seconds) for Diashow:" Margin="0,10,0,0"></TextBlock>
-                    <TextBox x:Name="DiaShowInterval"
+                    <TextBox x:Name="DiaShowInterval" Text="{x:Bind ViewModel.SetupSettings.IntervalForDiashow, Mode=TwoWay}"
                          PlaceholderText="10"
                          Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
-                    <CheckBox>Enable Picture Show</CheckBox>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePictureAddOn, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Enable Picture Show</CheckBox>
 
                     <TextBlock Text="Tasks" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,40,0,0"/>
                     <TextBlock Text="Choose Task Folder:" Margin="0,10,0,0"></TextBlock>
                     
                     <ComboBox x:Name="cmbTaskFolders" 
-                          IsEnabled="{Binding IsOn, ElementName=switchSetWallpaper, Converter={StaticResource inverter}, Mode=TwoWay}"
-                          ItemsSource=""
+                          ItemsSource="{x:Bind ViewModel.MyOutlookTaskFolders, Mode=OneWay}"
+                          SelectedValuePath="Id" 
+                          SelectedItem="{x:Bind ViewModel.SelectedTaskFolder}"
+                          SelectedValue="{x:Bind ViewModel.SelectedTaskFolder, Mode=TwoWay, Converter={StaticResource ComboBoxItemConvert}}"
                           DisplayMemberPath="Name"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="cmbTaskFolders_SelectionChanged"
+                          SelectionChanged="TaskFolder_SelectionChanged"
                           >
                     </ComboBox>
                     <TextBlock Text="Choose your Purchase Task :" Margin="0,10,0,0"></TextBlock>
                     <!-- How bind ! invert booean -->
                     <ComboBox x:Name="cmbTaskList"
-                          ItemsSource=""
+                          ItemsSource="" 
                           DisplayMemberPath="Subject"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="cmbTaskList_SelectionChanged"
                           >
                     </ComboBox>
-                    <CheckBox>Show Purch Task on  Dashboard</CheckBox>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Purch Task on  Dashboard</CheckBox>
                     <TextBlock Text="Calendar"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <TextBlock Text="Show Next Events for x Days:" Margin="0,10,0,0"></TextBlock>
                     <TextBox x:Name="CalendarNextEventsInterval"
+                             Text="{x:Bind ViewModel.SetupSettings.NextEventDays, Mode=TwoWay}"
                          PlaceholderText="10"
                          Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
-                    <CheckBox>Show Calendar Events on Dashboard</CheckBox>
-                    <CheckBox>Show Next Events on Dashboard</CheckBox>
-                    <CheckBox>Show Today  Events on Dashboard</CheckBox>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableCalendarAddon, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Calendar Events on Dashboard</CheckBox>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableCalendarNextEvents, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Next Events on Dashboard</CheckBox>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableTodayEvents, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Today  Events on Dashboard</CheckBox>
 
                     <TextBlock Text="Clock"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
-                    <CheckBox>Show Clock on Dashboard?</CheckBox>
-                    <Button Content="Apply Settings"  Margin="0,40,0,0"></Button>
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableClock, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Clock on Dashboard?</CheckBox>
+                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind Path=ViewModel.SaveSettingsCommand}"></Button>
+                    <Button Content="Apply Settings 1"  Margin="0,40,0,0" Command="{x:Bind Path=ViewModel.SaveSettingsCommand}"></Button>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>

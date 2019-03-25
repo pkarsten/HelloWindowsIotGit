@@ -264,7 +264,7 @@ namespace HelloWindowsIot
         {
             var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
                                                                           Settings.SearchPicturesTaskName,
-                                                                          Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
+                                                                          await Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
                                                                           null);
             AttachSearchPictureProgressAndCompletedHandlers(task);
             UpdateUI();
@@ -289,7 +289,7 @@ namespace HelloWindowsIot
         {
             var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint,
                                                                           Settings.ChangeWallpaperTaskName,
-                                                                          Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName),
+                                                                          await Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName),
                                                                           null);
             AttachChangeWallpaperProgressAndCompletedHandlers(task);
             UpdateUI();
@@ -314,7 +314,7 @@ namespace HelloWindowsIot
         {
             var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint,
                                                                           Settings.CreateMessageTaskName,
-                                                                          Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName),
+                                                                          await Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName),
                                                                           null);
             AttachCreateMessageProgressAndCompletedHandlers(task);
             UpdateUI();
@@ -340,7 +340,7 @@ namespace HelloWindowsIot
         {
             var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ServicingCompleteTaskEntryPoint,
                                                                           Settings.ServicingCompleteTaskName,
-                                                                          Dal.GetTimeIntervalForTask(Settings.ServicingCompleteTaskName),
+                                                                          await Dal.GetTimeIntervalForTask(Settings.ServicingCompleteTaskName),
                                                                           null);
             AttachServicingCompleteProgressAndCompletedHandlers(task);
             UpdateUI();

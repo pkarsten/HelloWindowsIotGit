@@ -8,6 +8,7 @@ namespace UwpSqLiteDal
 {
     public class OutlookTaskFolder
     {
+        //TODO: Needed? See TaskfolderResponse
         string Name { get;set;}
 
         string id { get; set; }

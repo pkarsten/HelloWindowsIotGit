@@ -129,17 +129,17 @@ namespace RWPBGTasks
                         Settings.SearchPicturesTaskResult = "";
                         var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
                                                                                Settings.SearchPicturesTaskName,
-                                                                                Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
+                                                                                await Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
                                                                                null);
                     }
                     if ((tstatus.TaskName == Settings.ChangeWallpaperTaskName) && tstatus.CurrentRegisteredStatus == true)
                     {
-                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
+                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, await Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
                     }
 
                     if ((tstatus.TaskName == Settings.CreateMessageTaskName) && tstatus.CurrentRegisteredStatus == true)
                     {
-                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint, Settings.CreateMessageTaskName, Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName), null);
+                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.CreateMessageTaskEntryPoint, Settings.CreateMessageTaskName, await Dal.GetTimeIntervalForTask(Settings.CreateMessageTaskName), null);
                     }
 
                     if ((tstatus.TaskName == Settings.ServicingCompleteTaskName) && tstatus.CurrentRegisteredStatus == true)

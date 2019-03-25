@@ -71,7 +71,7 @@ namespace UwpSqliteDal
                 var sinfo = db.GetMapping(typeof(Setup));
 
                 var pf = db.CreateTable<PicFilter>();
-                var pfinfo= db.GetMapping(typeof(PicFilter));
+                var pfinfo = db.GetMapping(typeof(PicFilter));
 
                 var ms = db.CreateTable<Message>();
                 var msinfo = db.GetMapping(typeof(Message));
@@ -185,8 +185,10 @@ namespace UwpSqliteDal
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "GetSetup() Exception: " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "GetSetup() Exception: " + ex.Message);
             }
+            //TODO: Sample
+            sconfig.TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAbyBQIUAAAA=";
             return sconfig;
         }
 
@@ -194,7 +196,7 @@ namespace UwpSqliteDal
         /// Update Setup Config Data in Table 
         /// </summary>
         /// <param name="set"></param>
-        public static void UpdateSetup(Setup set)
+        public static async Task UpdateSetup(Setup set)
         {
             try
             {
@@ -214,13 +216,13 @@ namespace UwpSqliteDal
         /// En/Disable Logging 
         /// </summary>
         /// <param name="enable"></param>
-        public static void EnableLogging(bool enable)
+        public static async Task EnableLogging(bool enable)
         {
             try
             {
                 using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
                 {
-                    Setup sconfig = GetSetup();
+                    Setup sconfig = await GetSetup();
                     sconfig.EnableLogging = enable;
                     if (enable == false)
                         SaveLogEntry(LogType.Info, "Disable Logging");
@@ -235,9 +237,9 @@ namespace UwpSqliteDal
             }
         }
 
-        public static TimeTrigger GetTimeIntervalForTask(string taskname)
+        public static async Task<TimeTrigger> GetTimeIntervalForTask(string taskname)
         {
-            Setup s = GetSetup();
+            Setup s = await GetSetup();
             uint minutesForTrigger = 15;
 
             switch (taskname)
@@ -305,12 +307,12 @@ namespace UwpSqliteDal
             }
         }
 
-        public static void SaveLogEntry(LogType ltype, string logDescription)
+        public static async Task SaveLogEntry(LogType ltype, string logDescription)
         {
             // 
             // CHeck when Must Save Log Entry 
             //
-            Setup n = GetSetup();
+            Setup n = await GetSetup();
 
 #if DEBUG
             n.EnableLogging = true;
@@ -431,7 +433,7 @@ namespace UwpSqliteDal
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 var m = (from p in db.Table<FavoritePic>()
-                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive==true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive == true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
 
                 if (m == null)
                     m = (from p in db.Table<FavoritePic>() select p).FirstOrDefault();
@@ -560,8 +562,8 @@ namespace UwpSqliteDal
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 BGTask t = (from p in db.Table<BGTask>()
-                                where p.TaskName == tName
-                                select p).FirstOrDefault();
+                            where p.TaskName == tName
+                            select p).FirstOrDefault();
                 return t;
             }
         }
@@ -636,14 +638,14 @@ namespace UwpSqliteDal
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 var m = (from p in db.Table<FavoritePic>()
-                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive ==true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                         select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive == true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
 
                 if (m == null)
                     m = (from p in db.Table<FavoritePic>() select p).FirstOrDefault();
 
                 return m;
             }
-            
+
         }
 
         public static async Task LoadImagesFromOneDriveInDBTable()
@@ -702,6 +704,39 @@ namespace UwpSqliteDal
                 SavePicture(fp);
             }
 
+        }
+
+        public static async Task<IList<TaskFolder>> GetTaskFolderFromGraph()
+        {
+
+            Exception error = null;
+            IList<TaskFolder> folders = null;
+
+            //// Initialize Graph client
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+
+            try
+            {
+                folders = await graphService.GeTaskFolders();
+                foreach(TaskFolder f in folders)
+                {
+                    System.Diagnostics.Debug.WriteLine("Name: " + f.Name + " - Id: " + f.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+            }
+            finally
+            {
+                if (error != null)
+                {
+                    await SaveLogEntry(LogType.Error, error.Message);
+                }
+            }
+            
+            return folders;
         }
         #endregion
 

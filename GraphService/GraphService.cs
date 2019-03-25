@@ -292,7 +292,29 @@ namespace MSGraph
             return stream;
         }
 
-        #region Tasks ToDO
+        #region Outlook Tasks ToDo
+
+        public async Task<IList<TaskFolder>> GeTaskFolders()
+        {
+            //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
+            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
+            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
+
+            try
+            {
+                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders");
+                var taskfolders = JsonConvert.DeserializeObject<ParseTaskFolderResponse>(await response.Content.ReadAsStringAsync());
+                return taskfolders.Value;
+
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR while Get Task Folders " + ex.Message);
+                return null;
+            }
+        }
+
         public async Task<TaskResponse> GetPurchaseTask()
         {
             //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders

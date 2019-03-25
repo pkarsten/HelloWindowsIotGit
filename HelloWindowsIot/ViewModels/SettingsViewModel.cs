@@ -1,5 +1,6 @@
 ﻿using MSGraph.Response;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -121,9 +122,10 @@ namespace HelloWindowsIot
                 IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
 
-                selectedTaskFolder = new TaskFolder { Name="xyz", Id = setupSettings.TaskFolder };
+                selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
 
                 this.OnPropertyChanged("MyOutlookTaskFolders");
+                this.OnPropertyChanged("SelectedTaskFolder");
 
             }
             catch (Exception ex)

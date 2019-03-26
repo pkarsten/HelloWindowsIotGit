@@ -648,7 +648,7 @@ namespace UwpSqliteDal
 
         }
 
-        public static async Task LoadImagesFromOneDriveInDBTable()
+        public static async Task LoadImagesFromOneDriveInDBTable(string folderPath)
         {
             Exception error = null;
             ItemInfoResponse folder = null;
@@ -661,10 +661,9 @@ namespace UwpSqliteDal
 
             try
             {
-                rootfolder = await graphService.GetAppRoot();
+                //rootfolder = await graphService.GetAppRoot();
                 //folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
-                folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/WindowsIotApp" +
-                    "");
+                folder = await graphService.GetPhotosAndImagesFromFolder(folderPath);
                 children = await graphService.PopulateChildren(folder);
             }
             catch (Exception ex)
@@ -679,6 +678,7 @@ namespace UwpSqliteDal
             }
 
             //https://gunnarpeipman.com/csharp/foreach/
+            ///TODO: Null Exception here when Children is null 
             foreach (ItemInfoResponse iir in children.ToList())
             {
                 if (iir.Image != null)
@@ -737,6 +737,43 @@ namespace UwpSqliteDal
             }
             
             return folders;
+        }
+
+        /// <summary>
+        /// Gets a List of Tasks from MS Graph in given TaskFolder
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<IList<TaskResponse>> GetTasksInFolder(string taskfolderId)
+        {
+
+            Exception error = null;
+            IList<TaskResponse> tasks = null;
+
+            //// Initialize Graph client
+            var accessToken = await GraphService.GetTokenForUserAsync();
+            var graphService = new GraphService(accessToken);
+
+            try
+            {
+                tasks = await graphService.GetTasksInFolder(taskfolderId);
+                foreach (TaskResponse t in tasks)
+                {
+                    System.Diagnostics.Debug.WriteLine("Name: " + t.Subject+ " - Id: " + t.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex;
+            }
+            finally
+            {
+                if (error != null)
+                {
+                    await SaveLogEntry(LogType.Error, error.Message);
+                }
+            }
+
+            return tasks;
         }
         #endregion
 

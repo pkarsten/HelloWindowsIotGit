@@ -179,7 +179,7 @@ namespace RWPBGTasks
                         Dal.SaveLogEntry(LogType.AppInfo, String.Format("Searched for Pictures, total Files Found: {0}.", totalFiles));
                     }
                     Dal.DeleteAllPictures();
-                    await Dal.LoadImagesFromOneDriveInDBTable();
+                    await Dal.LoadImagesFromOneDriveInDBTable("/Bilder/WindowsIotApp");//TODO Add variable here 
 
                     _progress = 100;
                 }

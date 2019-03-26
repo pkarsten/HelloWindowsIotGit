@@ -188,7 +188,7 @@ namespace MSGraph
         {
             //https://docs.microsoft.com/en-us/graph/api/resources/onedrive?view=graph-rest-1.0
             ///me/drive/root:/path/to/folder
-            //https://graph.microsoft.com/v1.0/me/drive/root:/Bilder/Karneval2019
+            //e.g. https://graph.microsoft.com/beta/me/drive/root:/Bilder/WindowsIoTApp   path="/Bilder/WindowsIotApp"
             var response = await MakeGraphCall(HttpMethod.Get, $"/drive/root:{path}");
             var sf = JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
             return sf;
@@ -198,7 +198,8 @@ namespace MSGraph
         {
             try
             {
-                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id&select=image"); //get only the id's add "?select=id" at end 
+                
+                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image"); //get only the id's add "?select=id" at end  
                 var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
                 return l.Value;
             }
@@ -311,6 +312,27 @@ namespace MSGraph
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("ERROR while Get Task Folders " + ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<IList<TaskResponse>> GetTasksInFolder(string taskfolderId)
+        {
+            //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
+            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
+            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
+
+            try
+            {
+                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders/{taskfolderId}/tasks");
+                var tasks = JsonConvert.DeserializeObject<ParseTaskResponse>(await response.Content.ReadAsStringAsync());
+                return tasks.Value;
+
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR while Get Tasklist in Folder " + ex.Message);
                 return null;
             }
         }

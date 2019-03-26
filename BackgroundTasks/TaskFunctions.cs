@@ -168,7 +168,8 @@ namespace RWPBGTasks
             {
                 if (Dal.GetAllPictures().Count == 0)
                 {
-                    await Dal.LoadImagesFromOneDriveInDBTable();
+                    //TODO: Add variable here 
+                    await Dal.LoadImagesFromOneDriveInDBTable("/Bilder/WindowsIotApp");
                 } 
                 // Get Random ItemInfoResponse from Table 
                 var item = Dal.GetRandomInfoItemResponse();

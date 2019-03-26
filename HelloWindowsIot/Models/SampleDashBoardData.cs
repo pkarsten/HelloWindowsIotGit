@@ -43,7 +43,6 @@ namespace HelloWindowsIot
         {
             var viewmodel = new SettingsViewModel
             {
-                Name = "Settings",
                 SetupSettings = new UwpSqliteDal.Setup
                 {
                     EnableLogging=true,

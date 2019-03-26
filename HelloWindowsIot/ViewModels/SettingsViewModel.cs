@@ -6,27 +6,36 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using UwpSqliteDal;
 using UwpSqLiteDal;
-using System.Windows.Input;
+using MSGraph;
 
 namespace HelloWindowsIot
 {
     /// <summary>
-    /// Represents a saved location for use in tracking travel time, distance, and routes. 
+    /// Represents App Settings Setup 
     /// </summary>
     public class SettingsViewModel : BindableBase
     {
+        #region Fields
         private ObservableCollection<TaskFolder> taskfolder = new ObservableCollection<TaskFolder>();
-        /// <summary>
-        /// Gets or sets the taskfolder. 
-        /// </summary>
+        private TaskFolder selectedTaskFolder;
+        private ObservableCollection<TaskResponse> taskList = new ObservableCollection<TaskResponse>();
+        private TaskResponse selectedPurchaseTask;
+        private bool canExecute;
+        private Setup setupSettings;
+        private bool isBusy;
+        #endregion
+
+        #region Properties
+        public Setup SetupSettings
+        {
+            get { return this.setupSettings; }
+            set { this.SetProperty(ref this.setupSettings, value);}
+        }
         public ObservableCollection<TaskFolder> MyOutlookTaskFolders
         {
             get { return this.taskfolder; }
             set { this.SetProperty(ref this.taskfolder, value); }
         }
-        public List<OutlookTask> MyOutlookTasks;
-
-        private TaskFolder selectedTaskFolder;
         public TaskFolder SelectedTaskFolder
         {
 
@@ -38,47 +47,69 @@ namespace HelloWindowsIot
                 //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
                 System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
                 //TODO: Load Tasks in Folder
-                System.Diagnostics.Debug.WriteLine("Is Busy: ? "+ isBusy);
+                System.Diagnostics.Debug.WriteLine("Is Busy: ? " + isBusy);
                 this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
             }
         }
-
-        public SettingsViewModel()
+        public ObservableCollection<TaskResponse> MyOutlookTasks
         {
-            System.Diagnostics.Debug.WriteLine("Initialize SettingsViewModel ");
-            //saveSettingsCommand = new RelayCommand(OnSaveSettings, () => !isBusy);
-            //LoadPicsCommand = new RelayCommand(OnLoadPictureList, () => !isBusy);
-            Submit = new RelayCommand(OnSaveSettings, () => true);
+            get { return this.taskList; }
+            set { this.SetProperty(ref this.taskList, value); }
         }
+        public TaskResponse SelectedPurchaseTask
+        {
 
-        public RelayCommand Submit { get; private set; }
-
-
-        private bool canExecute;
-
+            get { return this.selectedPurchaseTask; }
+            set
+            {
+                this.SetProperty(ref this.selectedPurchaseTask, value);
+                //handle your "event" here... 
+                //TODO: This is fired twice when selectionchanged in tasklist
+                System.Diagnostics.Debug.WriteLine("Selected Task " + selectedPurchaseTask.Subject+ " id " + selectedPurchaseTask.Subject);
+                this.SetupSettings.PurchaseTaskID = selectedPurchaseTask.Id;
+            }
+        }
+        /// <summary>
+        /// True, if can Save Settings 
+        /// </summary>
         public bool CanExecute
         {
             get => this.canExecute;
-            set =>  this.SetProperty(ref this.canExecute, value);
+            set => this.SetProperty(ref this.canExecute, value);
         }
-
-
-       
-
         /// <summary>
-        /// Gets the Add Person command.
+        /// True, if ViewModel is busy, for Show Progress / Load Ring
         /// </summary>
-        public RelayCommand LoadPicsCommand { get; }
+        public bool IsBusy
+        {
+            get { return this.isBusy; }
+            set { this.SetProperty(ref this.isBusy, value); }
+        }
+        public RelayCommand Submit { get; private set; }
+        public RelayCommand LoadPicsCommand { get; private set; }
+        #endregion
 
+        #region Constructor
+        public SettingsViewModel()
+        {
+            System.Diagnostics.Debug.WriteLine("Initialize SettingsViewModel ");
+            LoadPicsCommand = new RelayCommand(LoadPictureList, () =>true);
+            Submit = new RelayCommand(OnSaveSettings, () => true);
+        }
+        #endregion
 
+        #region Events / Functions
+        /// <summary>
+        /// Save Settings in Database if CanExecute = true
+        /// </summary>
         private async void OnSaveSettings()
         {
-            if (SetupSettings.OneDrivePictureFolder=="")
-                CanExecute = false;
+            //if (SetupSettings.OneDrivePictureFolder=="")
+            //    CanExecute = false;
 
             if (CanExecute == false)
             {
-                System.Diagnostics.Debug.WriteLine("Can't save");
+                System.Diagnostics.Debug.WriteLine("Can't save Settings");
                 return;
             }
             else
@@ -101,45 +132,9 @@ namespace HelloWindowsIot
                 }
             }
         }
-
-        private async void OnLoadPictureList() { }
-
-        private Setup setupSettings;
-        public Setup SetupSettings
-        {
-            get { return this.setupSettings; }
-            set { this.SetProperty(ref this.setupSettings, value);
-            }
-        }
-
-        private string name;
+        
         /// <summary>
-        /// Gets or sets the name 
-        /// </summary>
-        public string Name
-        {
-            get { return this.name; }
-            set { this.SetProperty(ref this.name, value); }
-        }
-
-        private bool isBusy;
-        /// <summary>
-        /// True, if ViewModel is busy
-        /// </summary>
-        public bool  IsBusy
-        {
-            get { return this.isBusy; }
-            set { this.SetProperty(ref this.isBusy, value); }
-        }
-        private string pageTitle;
-        public string PageTitle
-        {
-            get { return this.name; }
-            set { this.SetProperty(ref this.name, value); }
-        }
-
-        /// <summary>
-        /// Loads the Data
+        /// Load Settings /Setup Data for the ViewModel
         /// </summary>
         public async Task LoadData()
         {
@@ -151,15 +146,22 @@ namespace HelloWindowsIot
                 System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
                 await Task.Delay(2000);//TODO: Simulate Loading
                 SetupSettings = await Dal.GetSetup();
-                pageTitle = AppcFuncs.GetLanguage("TitleSettings");
-
                 IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
-
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
+
+                if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
+                {
+                    IList<TaskResponse> tasksinFolder= await Dal.GetTasksInFolder(SelectedTaskFolder.Id);
+                    taskList = tasksinFolder.ToObservableCollection();
+                    selectedPurchaseTask = tasksinFolder.FirstOrDefault(t => t.Id == setupSettings.PurchaseTaskID);
+                }
 
                 this.OnPropertyChanged("MyOutlookTaskFolders");
                 this.OnPropertyChanged("SelectedTaskFolder");
+                this.OnPropertyChanged("MyOutlookTasks");
+                this.OnPropertyChanged("SelectedPurchaseTask");
+
 
             }
             catch (Exception ex)
@@ -172,22 +174,22 @@ namespace HelloWindowsIot
                 CanExecute = true;
             }
         }
-        #region ComboBoxen
+
         /// <summary>
-        /// Pre Select Item in ComboBox TaskFolders
+        /// Loads Picturelist from Given OneDrive Folder and Save it in DataBase
         /// </summary>
         /// <returns></returns>
-        private async Task SelectItemInTimeBoxForChangeWallpaper()
+        private async void LoadPictureList()
         {
-            try
-            {
-               
-            }
-            catch (Exception ex)
-            {
-                
-            }
+            isBusy = true;
+            canExecute = false;
+            OnSaveSettings();
+            //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
+            await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
+            isBusy = false;
+            canExecute= true;
         }
         #endregion
     }
+
 }

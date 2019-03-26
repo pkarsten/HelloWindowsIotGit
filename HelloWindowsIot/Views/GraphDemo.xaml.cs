@@ -136,7 +136,7 @@ namespace HelloWindowsIot
 
             try
             {
-                rootfolder = await graphService.GetAppRoot();
+                //rootfolder = await graphService.GetAppRoot();
                 folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
                 children = await graphService.PopulateChildren(folder);
             }
@@ -153,6 +153,7 @@ namespace HelloWindowsIot
                 return;
             }
 
+            ///TODO: Null Exception here when Children is null 
             foreach (ItemInfoResponse iir in children)
             {
                 if (iir.Image != null)

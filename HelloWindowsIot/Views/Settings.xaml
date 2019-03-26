@@ -11,7 +11,8 @@
     >
     <Page.Resources>
         <local:NullableBooleanToBooleanConverter x:Key="NullableBooleanToBooleanConverter" />
-        <local:ComboBoxItemConvert x:Key="ComboBoxItemConvert"/>
+        <local:ComboBoxTaskFolderItemConvert x:Key="ComboBoxTaskFolderItemConvert"/>
+        <local:ComboBoxTaskResponseItemConvert x:Key="ComboBoxTaskResponseItemConvert"/>
         <local:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         
@@ -43,7 +44,6 @@
                      RelativePanel.AlignHorizontalCenterWithPanel="True">
             <SymbolIcon Symbol="Setting" />
         </Viewbox>
-        <TextBlock x:Name="PageTitle" Grid.Row="1" HorizontalAlignment="Center" Text="{x:Bind ViewModel.PageTitle}"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
             <RelativePanel HorizontalAlignment="Center" >
                 <ItemsControl
@@ -71,7 +71,7 @@
                     
                     <Button Content="Load Images From Path"
                         Style="{StaticResource ButtonStyle}" 
-                            Command="{x:Bind ViewModel.LoadPicsCommand}"/>
+                            Command="{x:Bind ViewModel.LoadPicsCommand}" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource NegateBooleanConverter},  Mode=TwoWay}"/>
 
                     <TextBlock Text="Interval (min 10 Seconds) for Diashow:" Margin="0,10,0,0"></TextBlock>
                     <TextBox x:Name="DiaShowInterval" Text="{x:Bind ViewModel.SetupSettings.IntervalForDiashow, Mode=TwoWay}"
@@ -85,18 +85,19 @@
                     <ComboBox x:Name="cmbTaskFolders" 
                           ItemsSource="{x:Bind ViewModel.MyOutlookTaskFolders, Mode=OneWay}"
                           SelectedValuePath="Id" 
-                          SelectedItem="{x:Bind ViewModel.SelectedTaskFolder, Mode=TwoWay, Converter={StaticResource ComboBoxItemConvert}}"
+                          SelectedItem="{x:Bind ViewModel.SelectedTaskFolder, Mode=TwoWay, Converter={StaticResource ComboBoxTaskFolderItemConvert}}"
                           DisplayMemberPath="Name"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="TaskFolder_SelectionChanged"
                           >
                     </ComboBox>
                     <TextBlock Text="Choose your Purchase Task :" Margin="0,10,0,0"></TextBlock>
                     <!-- How bind ! invert booean -->
                     <ComboBox x:Name="cmbTaskList"
-                          ItemsSource="" 
+                          ItemsSource="{x:Bind ViewModel.MyOutlookTasks, Mode=OneWay}" 
+                          SelectedValuePath="Id" 
+                          SelectedItem="{x:Bind ViewModel.SelectedPurchaseTask, Mode=TwoWay, Converter={StaticResource ComboBoxTaskResponseItemConvert}}"                              
                           DisplayMemberPath="Subject"
-                          HorizontalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
                           >
                     </ComboBox>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Purch Task on  Dashboard</CheckBox>
@@ -126,7 +127,6 @@
                       IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
-                      
                       Width="80"
                       Height="80" />
     </Grid>

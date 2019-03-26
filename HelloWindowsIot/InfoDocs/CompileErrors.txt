@@ -20,3 +20,6 @@ und wurde von "CN=9CCAB24B-9A58-49BB-92DD-448BF526AB43" veröffentlich.	RandomWa
     Wählen Sie die App im Startbildschirm aus und klicken Sie in der App-Leiste auf "Deinstallieren". Bereinigen Sie Ihre Projektmappe und erstellen Sie diese anschließend erneut.
     Verwenden Sie PowerShell-Befehle in einer Eingabeaufforderung mit Admin-Berechtigungen, um Ihre Entwicklerlizenz zu entfernen und neu zu installieren. Bereinigen Sie Ihre Projektmappe und erstellen Sie diese anschließend erneut. Siehe 
 
+
+	7. Error Query option '$select/select' was specified more than once, but it must be specified at most once.",
+	  ?select=id&select=image im Graph Service 

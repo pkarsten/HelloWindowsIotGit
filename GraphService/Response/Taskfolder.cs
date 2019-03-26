@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 namespace MSGraph.Response
 {
     // Task Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders
+    /// <summary>
+    /// MS Graph Outlook TaskFolder 
+    /// </summary>
     public class TaskFolder
     {
         [JsonProperty("id")]

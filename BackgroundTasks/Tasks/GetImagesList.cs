@@ -110,7 +110,7 @@ namespace RWPBGTasks
             {
                 try
                 {
-                    await Dal.LoadImagesFromOneDriveInDBTable();
+                    await Dal.LoadImagesFromOneDriveInDBTable("/Bilder/WindowsIotApp");//TODO: add variable here
                     _progress = 100;
                 }
                 catch (Exception ex)

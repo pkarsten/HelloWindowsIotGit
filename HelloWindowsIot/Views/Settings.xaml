@@ -68,10 +68,14 @@
                          PlaceholderText="Enter a OneDrive path without leading '/'"
                          Style="{StaticResource TextBoxStyle}"
                             Text="{x:Bind ViewModel.SetupSettings.OneDrivePictureFolder, Mode=TwoWay}" />
-                    
-                    <Button Content="Load Images From Path"
+                        <Button Content="Load Images From Path"
+                        x:Name="PicTaskRunNowButton"
                         Style="{StaticResource ButtonStyle}" 
-                            Command="{x:Bind ViewModel.LoadPicsCommand}" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource NegateBooleanConverter},  Mode=TwoWay}"/>
+                        Command="{x:Bind ViewModel.LoadPicsCommand}" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource NegateBooleanConverter},  Mode=TwoWay}"/>
+                        <StackPanel>
+                        <TextBlock FontSize="12" Foreground="Silver" Text="{x:Bind ViewModel.TaskProgress, Mode=OneWay}"/>
+                        <TextBlock FontSize="12" Foreground="Silver" Text="{x:Bind ViewModel.TaskResult,Mode=OneWay}"/>
+                        </StackPanel>
 
                     <TextBlock Text="Interval (min 10 Seconds) for Diashow:" Margin="0,10,0,0"></TextBlock>
                     <TextBox x:Name="DiaShowInterval" Text="{x:Bind ViewModel.SetupSettings.IntervalForDiashow, Mode=TwoWay}"
@@ -120,11 +124,11 @@
         <Rectangle Fill="#77000000"
                    Grid.Row="2"
                    x:Name="PleaseWaitCache"
-                   Visibility="{x:Bind ViewModel.IsBusy, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                   Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
         <ProgressRing x:Name="Progress"
                       Grid.Row="2"
-                      IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"
+                      IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
                       VerticalAlignment="Center"
                       HorizontalAlignment="Center"
                       Width="80"

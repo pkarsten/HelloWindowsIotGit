@@ -30,7 +30,7 @@ namespace RWPBGTasks
         {
             try
             {
-                Dal.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await Dal.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -56,7 +56,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -67,11 +67,10 @@ namespace RWPBGTasks
                 }
 
                 await LoadImageListFromOneDrive();
-
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task StreamImageAsync " + ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task GetImageListFromOneDrive " + ex.Message);
             }
 
             finally
@@ -110,12 +109,13 @@ namespace RWPBGTasks
             {
                 try
                 {
-                    await Dal.LoadImagesFromOneDriveInDBTable("/Bilder/WindowsIotApp");//TODO: add variable here
+                    var s = await Dal.GetSetup();
+                    await Dal.LoadImagesFromOneDriveInDBTable(s.OneDrivePictureFolder);//TODO: check for empty string
                     _progress = 100;
                 }
                 catch (Exception ex)
                 {
-                    Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageAsync() " + ex.Message);
+                    await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
                 }
                 finally
                 {
@@ -126,11 +126,12 @@ namespace RWPBGTasks
                     // Write to LocalSettings to indicate that this background task ran.
                     //
                     settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                    UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
-                    ts.LastTimeRun = DateTime.Now.ToString();
-                    ts.AdditionalStatus = settings.Values[key].ToString();
-                    Dal.UpdateTaskStatus(ts);
-                    Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+
+                    //TODO: //ERROR =>System.NullReferenceException ?? UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                    //ts.LastTimeRun = DateTime.Now.ToString();
+                    //ts.AdditionalStatus = settings.Values[key].ToString();
+                    //Dal.UpdateTaskStatus(ts);
+                    await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
                 }
 
             }

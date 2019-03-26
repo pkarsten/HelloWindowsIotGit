@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 using UwpSqliteDal;
 using UwpSqLiteDal;
 using MSGraph;
+using Windows.UI.Core;
+using RWPBGTasks;
+using AppSettings;
+using Windows.ApplicationModel.Background;
+using Windows.Storage;
 
 namespace HelloWindowsIot
 {
@@ -26,6 +31,18 @@ namespace HelloWindowsIot
         #endregion
 
         #region Properties
+        private string taskResult;
+        private string taskProgress;
+        public string TaskProgress {
+            get { return this.taskProgress; }
+            set { this.SetProperty(ref this.taskProgress, value); }
+        }
+        public string TaskResult {
+            get { return this.taskResult; }
+            set { this.SetProperty(ref this.taskResult, value); }
+        }
+        public BGTaskModel MyBgTask {get;set;}
+
         public Setup SetupSettings
         {
             get { return this.setupSettings; }
@@ -108,7 +125,7 @@ namespace HelloWindowsIot
         {
             //if (SetupSettings.OneDrivePictureFolder=="")
             //    CanExecute = false;
-
+            IsBusy = true;
             if (CanExecute == false)
             {
                 System.Diagnostics.Debug.WriteLine("Can't save Settings");
@@ -122,6 +139,7 @@ namespace HelloWindowsIot
                 try
                 {
                     //IsBusy = true; // => StackOverflowException 
+                    await Task.Delay(2000);//TODO: Simulate Loading
                     await Dal.UpdateSetup(this.SetupSettings);
                 }
                 catch (Exception ex)
@@ -131,6 +149,7 @@ namespace HelloWindowsIot
                 finally
                 {
                     IsBusy = false;
+                    CanExecute = true;
                 }
             }
         }
@@ -171,13 +190,86 @@ namespace HelloWindowsIot
         /// <returns></returns>
         private async void LoadPictureList()
         {
-            _isBusy = true;
-            canExecute = false;
+            IsBusy = true;
             OnSaveSettings();
+            var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
+            if (ts != null)
+            {
+                MyBgTask = ts;
+                taskProgress = "Initializing LoadPictureList ...";
+                //AppSettings.RegisteredBeforeStartLoadPicturesFromOneDrive = BackgroundTaskConfig.GetBackgroundRegisteredTaskStatus(Settings.LoadImagesFromOneDriveTaskName);
+                ApplicationTrigger trigger3 = new ApplicationTrigger();
+                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+
+                var task = await BackgroundTaskConfig.RegisterBackgroundTask(ts.EntryPoint,
+                                                                  Settings.LoadImagesFromOneDriveTaskName,
+                                                                  trigger3,
+                                                                  null);
+
+                AttachLoadPictureListProgressAndCompletedHandlers(task);
+
+                // Reset the completion status
+                var settings = ApplicationData.Current.LocalSettings;
+                settings.Values.Remove(Settings.LoadImagesFromOneDriveTaskName);
+
+                //Signal the ApplicationTrigger
+                var result = await trigger3.RequestAsync();
+                taskResult = "Signal result: " + result.ToString();
+
+                //OnPropertyChanged("TaskResult");
+                //OnPropertyChanged("TaskProgress");
+
+
+            }
+                
+            //await TaskFunctions.LoadPicturesFromOneDriveAsync(false);
             //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
-            await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
-            _isBusy = false;
-            canExecute= true;
+            //await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
+            IsBusy = false;
+        }
+
+        /// <summary>
+        /// Attach progress and completed handers to a background task.
+        /// </summary>
+        /// <param name="task">The task to attach progress and completed handlers to.</param>
+        private void AttachLoadPictureListProgressAndCompletedHandlers(IBackgroundTaskRegistration task)
+        {
+            task.Progress += new BackgroundTaskProgressEventHandler(OnProgressLoadPictures);
+            task.Completed += new BackgroundTaskCompletedEventHandler(OnCompletedLoadPictures);
+        }
+
+        /// <summary>
+        /// Handle background task progress.
+        /// </summary>
+        /// <param name="task">The task that is reporting progress.</param>
+        /// <param name="e">Arguments of the progress report.</param>
+        private async void OnProgressLoadPictures(IBackgroundTaskRegistration task, BackgroundTaskProgressEventArgs args)
+        {
+                var progress = "Progress: " + args.Progress + "%";
+            taskProgress = progress;
+            //OnPropertyChanged("TaskResult");
+            //OnPropertyChanged("TaskProgress");
+        }
+        /// <summary>
+        /// Handle background task completion.
+        /// </summary>
+        /// <param name="task">The task that is reporting completion.</param>
+        /// <param name="e">Arguments of the completion report.</param>
+        private async void OnCompletedLoadPictures(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
+        {
+            //Unregister App Trigger 
+            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+            taskProgress = "List Loaded";
+            taskResult = "";
+            //OnPropertyChanged("TaskResult");
+            //OnPropertyChanged("TaskProgress");
+
+            //Register Backgroundtask 
+            var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
+                                                                       Settings.LoadImagesFromOneDriveTaskName,
+                                                                        await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
+                                                                       null);
+
         }
 
         private async Task LoadTaskList()

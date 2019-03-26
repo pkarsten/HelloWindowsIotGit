@@ -32,6 +32,7 @@ namespace HelloWindowsIot
             };
         public static bool SearchPicManual { get; set; }
         public static bool RegisteredBeforeStartSearchPicManual { get; set; }
+        public static bool RegisteredBeforeStartLoadPicturesFromOneDrive{ get; set; }
 
 
 

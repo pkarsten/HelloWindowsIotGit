@@ -265,6 +265,46 @@ namespace RWPBGTasks
         }
 
         #endregion
+
+        //#region Load Images from OneDrive
+        
+        //// Needed for if we wantr call a function by BackGround Task or Manually from App GUI? 
+        //// Because WinRt can use, but can't return Task<T> h ttp://dotnetbyexample.blogspot.de/2014/11/returning-task-from-windows-runtime.html
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="CallFromBackgroundTask">Define if Function was called from Background Task or Startet by Manual Button Click in UI </param>
+        ///// <returns></returns>
+        //public static IAsyncOperation<bool> LoadPicturesFromOneDriveAsync(bool CallFromBackgroundTask)
+        //{
+        //    return InternalLoadPicturesFromOneDriveAsync(CallFromBackgroundTask).AsAsyncOperation();
+        //}
+        //private static async Task<bool> InternalLoadPicturesFromOneDriveAsync(bool CallFromBackgroundTask)
+        //{
+        //    if (CallFromBackgroundTask)
+        //        await Dal.SaveLogEntry(LogType.Info, "Try Load Pictures List from OneDrive Backgroundtask");
+        //    else
+        //        await Dal.SaveLogEntry(LogType.Info, "Try Load Pictures List from OneDrive  manually");
+
+        //        try
+        //        {
+        //            var s = await Dal.GetSetup();
+        //            await Dal.LoadImagesFromOneDriveInDBTable(s.OneDrivePictureFolder);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            await Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageAsync() " + ex.Message);
+        //        }
+        //        finally
+        //        {
+        //        //
+        //        // Write to LocalSettings to indicate that this background task ran.
+        //        //
+        //        Dal.CheckForViewedPictures();
+        //    }
+        //    return true;
+        //}
+        //#endregion
     }
 
 }

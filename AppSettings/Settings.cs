@@ -40,11 +40,14 @@ namespace AppSettings
         public static string SearchPicturesTaskProgress = "";
         public static bool SearchPicturesTaskRegistered = false;
 
+
         public const string CreateMessageTaskEntryPoint = "RWPBGTasks.CreateMessage";
         public const string CreateMessageTaskName = "CreateMessageTask";
         public static string CreateMessageTaskResult = "";
         public static string CreateMessageTaskProgress = "";
         public static bool CreateMessageTaskRegistered = false;
+
+        public const string LoadImagesFromOneDriveTaskName ="LoadImagesFromOneDriveTask";
 
         public static BitmapImage DashBoardImage { get; set; }
 
@@ -53,7 +56,8 @@ namespace AppSettings
                 Settings.SearchPicturesTaskName,
                 Settings.ChangeWallpaperTaskName,
                 Settings.ServicingCompleteTaskName,
-                Settings.CreateMessageTaskName
+                Settings.CreateMessageTaskName,
+                Settings.LoadImagesFromOneDriveTaskName
             };
         // Settings are saved in DB and 
         // public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
@@ -64,6 +68,7 @@ namespace AppSettings
             new BGTaskModel{Name =Settings.ChangeWallpaperTaskName,EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
             new BGTaskModel{Name =Settings.SearchPicturesTaskName,EntryPoint="RWPBGTasks.SearchPictures",Registered=false},
             new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
+            new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
         };
 
         public static bool RegisterAllBackgroundTasks { get; } = true;

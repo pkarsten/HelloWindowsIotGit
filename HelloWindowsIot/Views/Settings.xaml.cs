@@ -39,22 +39,7 @@ namespace HelloWindowsIot
             base.OnNavigatedTo(e);
             await Dal.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
             await ViewModel.LoadData();
-            //UpdateUI();
-
         }
         #endregion
-
-        /// <summary>
-        /// Update the scenario UI.
-        /// </summary>
-        private async void UpdateUI()
-        {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-            () =>
-            {
-                //switchSetWallpaper.IsOn = Settings.ChangeWallpaperTaskRegistered;
-                //tooglelogging.IsOn = Dal.GetSetup().EnableLogging;
-            });
-        }
     }
 }

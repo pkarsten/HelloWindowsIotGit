@@ -97,7 +97,7 @@
                           SelectedValuePath="Id" 
                           SelectedItem="{x:Bind ViewModel.SelectedPurchaseTask, Mode=TwoWay, Converter={StaticResource ComboBoxTaskResponseItemConvert}}"                              
                           DisplayMemberPath="Subject"
-                              HorizontalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
                           >
                     </ComboBox>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Purch Task on  Dashboard</CheckBox>

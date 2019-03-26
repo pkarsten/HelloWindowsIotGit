@@ -22,7 +22,7 @@ namespace HelloWindowsIot
         private TaskResponse selectedPurchaseTask;
         private bool canExecute;
         private Setup setupSettings;
-        private bool isBusy;
+        private bool _isBusy;
         #endregion
 
         #region Properties
@@ -46,9 +46,8 @@ namespace HelloWindowsIot
                 //handle your "event" here... 
                 //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
                 System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
-                //TODO: Load Tasks in Folder
-                System.Diagnostics.Debug.WriteLine("Is Busy: ? " + isBusy);
                 this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
+                //TODO: remove this?  LoadTaskList();
             }
         }
         public ObservableCollection<TaskResponse> MyOutlookTasks
@@ -64,9 +63,9 @@ namespace HelloWindowsIot
             {
                 this.SetProperty(ref this.selectedPurchaseTask, value);
                 //handle your "event" here... 
-                //TODO: This is fired twice when selectionchanged in tasklist
-                System.Diagnostics.Debug.WriteLine("Selected Task " + selectedPurchaseTask.Subject+ " id " + selectedPurchaseTask.Subject);
-                this.SetupSettings.PurchaseTaskID = selectedPurchaseTask.Id;
+                //System.Diagnostics.Debug.WriteLine("Selected Task " + selectedPurchaseTask.Subject+ " id " + selectedPurchaseTask.Id);
+                if(this.selectedPurchaseTask != null)
+                    this.SetupSettings.PurchaseTaskID = selectedPurchaseTask.Id;
             }
         }
         /// <summary>
@@ -82,8 +81,8 @@ namespace HelloWindowsIot
         /// </summary>
         public bool IsBusy
         {
-            get { return this.isBusy; }
-            set { this.SetProperty(ref this.isBusy, value); }
+            get { return this._isBusy; }
+            set { this.SetProperty(ref this._isBusy, value); }
         }
         public RelayCommand Submit { get; private set; }
         public RelayCommand LoadPicsCommand { get; private set; }
@@ -144,25 +143,17 @@ namespace HelloWindowsIot
             try
             {
                 System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
-                await Task.Delay(2000);//TODO: Simulate Loading
+                //await Task.Delay(2000);//TODO: Simulate Loading
                 SetupSettings = await Dal.GetSetup();
                 IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
-
-                if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
-                {
-                    IList<TaskResponse> tasksinFolder= await Dal.GetTasksInFolder(SelectedTaskFolder.Id);
-                    taskList = tasksinFolder.ToObservableCollection();
-                    selectedPurchaseTask = tasksinFolder.FirstOrDefault(t => t.Id == setupSettings.PurchaseTaskID);
-                }
-
                 this.OnPropertyChanged("MyOutlookTaskFolders");
                 this.OnPropertyChanged("SelectedTaskFolder");
-                this.OnPropertyChanged("MyOutlookTasks");
-                this.OnPropertyChanged("SelectedPurchaseTask");
-
-
+                if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
+                {
+                    await LoadTaskList();
+                }
             }
             catch (Exception ex)
             {
@@ -181,13 +172,49 @@ namespace HelloWindowsIot
         /// <returns></returns>
         private async void LoadPictureList()
         {
-            isBusy = true;
+            _isBusy = true;
             canExecute = false;
             OnSaveSettings();
             //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
             await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
-            isBusy = false;
+            _isBusy = false;
             canExecute= true;
+        }
+
+        private async Task LoadTaskList()
+        {
+            _isBusy = true;
+            try {
+                    if (SelectedTaskFolder.Id != "")
+                    {
+                        IList<TaskResponse> tasksinFolder = await Dal.GetTasksInFolder(SelectedTaskFolder.Id);
+                        System.Diagnostics.Debug.WriteLine("Must load tasks for folder : " + SelectedTaskFolder.Name);
+                        taskList = tasksinFolder.ToObservableCollection();
+                        
+                        if (taskList.Count() !=0)
+                        {
+                            var ptask = tasksinFolder.FirstOrDefault(t => t.Id == SetupSettings.PurchaseTaskID);
+                            if (ptask != null)
+                            {
+                                selectedPurchaseTask = ptask;
+                            }
+                            else
+                            {
+                            selectedPurchaseTask = tasksinFolder.FirstOrDefault();
+                            }
+                        this.OnPropertyChanged("MyOutlookTasks");
+                        this.OnPropertyChanged("SelectedPurchaseTask");
+                    }
+                    }
+                }
+                catch(Exception ex)
+                {
+                System.Diagnostics.Debug.WriteLine("Exception in LoadTaskList : " + ex.Message);
+            }
+            finally
+            {
+                _isBusy = false;
+            }
         }
         #endregion
     }

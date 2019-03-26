@@ -47,7 +47,10 @@ namespace HelloWindowsIot
                 //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
                 System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
                 this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
-                //TODO: remove this?  LoadTaskList();
+                if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
+                {
+                    LoadTaskList();
+                }
             }
         }
         public ObservableCollection<TaskResponse> MyOutlookTasks
@@ -150,10 +153,6 @@ namespace HelloWindowsIot
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
                 this.OnPropertyChanged("MyOutlookTaskFolders");
                 this.OnPropertyChanged("SelectedTaskFolder");
-                if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
-                {
-                    await LoadTaskList();
-                }
             }
             catch (Exception ex)
             {

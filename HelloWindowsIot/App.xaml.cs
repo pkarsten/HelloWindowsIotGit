@@ -44,6 +44,7 @@ namespace HelloWindowsIot
         private async Task Initialize()
         {
             Dal.CreateDatabase();
+            BackgroundTaskConfig.UnregisterALlTasks();
         }
 
         /// <summary>
@@ -96,7 +97,6 @@ namespace HelloWindowsIot
                 else
                 {
                     var page = rootFrame.Content as MainPage;
-                    page?.OnLaunchedEvent(e.Arguments);
                 }
 
                 // Sicherstellen, dass das aktuelle Fenster aktiv ist
@@ -113,8 +113,7 @@ namespace HelloWindowsIot
         /// <param name="e">Details über den Navigationsfehler</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            //throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-            throw new Exception(String.Format(AppSettings.AppResourceMap.GetValue("resourcename", ResourceContext.GetForCurrentView()).ValueAsString, e.SourcePageType.FullName));
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         /// <summary>
@@ -128,6 +127,7 @@ namespace HelloWindowsIot
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
+            BackgroundTaskConfig.UnregisterALlTasks();
             deferral.Complete();
         }
     }

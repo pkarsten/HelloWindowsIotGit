@@ -58,7 +58,7 @@ namespace HelloWindowsIot
         /// </summary>
         private async Task UpdateDashBoardImageAsync()
         {
-            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);//. LoadImageForDesktop(ItemInfoResponse item);
+            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
             System.Diagnostics.Debug.WriteLine("Here we go");
             ViewModel.DashImage = Settings.DashBoardImage;
         }

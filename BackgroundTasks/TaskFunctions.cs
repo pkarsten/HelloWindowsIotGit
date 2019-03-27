@@ -20,137 +20,6 @@ namespace RWPBGTasks
 {
     public static class TaskFunctions
     {
-        #region Change WallPaper
-        //Needed for if we wantr call a function by BackGround Task or Manually from App GUI? 
-
-        // Because WinRt can use, but can't return Task<T> h ttp://dotnetbyexample.blogspot.de/2014/11/returning-task-from-windows-runtime.html
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="CallFromBackgroundTask">Define if Function was called from Background Task or Startet by Manual Button Click in UI </param>
-        /// <returns></returns>
-        public static IAsyncOperation<bool> ChangeWallpaperAsync(bool CallFromBackgroundTask)
-        {
-            return InternalChangeWallpaperAsync(CallFromBackgroundTask).AsAsyncOperation();
-        }
-        private static async Task<bool> InternalChangeWallpaperAsync(bool CallFromBackgroundTask)
-        {
-            try
-            {
-              /*if (CallFromBackgroundTask)
-                    Dal.SaveLogEntry(LogType.Info, "Try Change Wallpaper");
-                else
-                    Dal.SaveLogEntry(LogType.Info, "Try Change Wallpaper manually");
-
-                FavoritePic fp = await Dal.GetRandomPicture();
-                //FavoritePic fp = Dal.GetPictureById(243);
-                StorageFile newFile = null;
-                if (fp != null)
-                {
-                    StorageLibrary myPicturesLib = await Windows.Storage.StorageLibrary.GetLibraryAsync(Windows.Storage.KnownLibraryId.Pictures);
-                    IObservableVector<Windows.Storage.StorageFolder> myPictureLibFolders = myPicturesLib.Folders;
-
-                    foreach (var fold in myPictureLibFolders)
-                    {
-                        if (fold.Path == fp.LibraryPath)
-                        {
-                            StorageFile stf = await GetFileAsync(fold, fp.RelativePath);
-                            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                            Dal.SaveLogEntry(LogType.Info, "Selected Pic: " + fp.LibraryPath + "\\"+fp.RelativePath);
-                            newFile = await stf.CopyAsync(ApplicationData.Current.LocalFolder, Configuration.PicFileNameInAppDataFolder + GetFileExtension(stf.Name), NameCollisionOption.ReplaceExisting);
-
-                        }
-                    }
-                    if (await SetWallpaperAsync(newFile) == true)
-                    {
-                        Dal.SaveLogEntry(LogType.AppInfo, "Wallpaper Changed");
-                        fp.Viewed = true;
-                        Dal.ResetIsCurrentWallpaper();
-                        fp.IsCurrentWallPaper = true;
-                        Dal.SavePicture(fp);
-                    }
-                    else
-                    {
-                        Dal.SaveLogEntry(LogType.Error, "Something Wrong - SetWallpaperAsync returns false");
-                    }
-                }
-                else
-                {
-                    Dal.SaveLogEntry(LogType.Error, "GetRandomPicture() is null in ChangeWallpaperAsync()");
-                }
-                */
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in InternalChangeWallpaperAsync() " + ex.Message);
-            }
-            finally
-            {
-                Dal.CheckForViewedPictures();
-            }
-            return true;
-        }
-
-        private static string GetFileExtension(string name)
-        {
-            string result = "";
-            try
-            {
-                result = name.Substring(name.LastIndexOf('.')); //e.g. name="hallo.jpg" returns ".jpg", LastIndexOf+1 returns jpg without .
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in GetFileExtension()" + ex.Message);
-            }
-            return result;
-        }
-
-        private static async Task<StorageFile> GetFileAsync(StorageFolder folder, string filename)
-        {
-            StorageFile file = null;
-            try
-            {
-                if (folder != null)
-                {
-                    file = await folder.GetFileAsync(filename);
-                }
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in GetFileAsync()" + ex.Message);
-            }
-            return file;
-        }
-
-        /// <summary>
-        /// Pass in a relative path to a file inside the local appdata folder 
-        /// </summary>
-        /// <param name="fileItem"></param>
-        /// <returns></returns>
-        private static async Task<bool> SetWallpaperAsync(StorageFile fileItem)
-        {
-            bool success = false;
-            try
-            {
-                if (UserProfilePersonalizationSettings.IsSupported())
-                {
-                    UserProfilePersonalizationSettings profileSettings = UserProfilePersonalizationSettings.Current;
-                    success = await profileSettings.TrySetWallpaperImageAsync(fileItem);
-                }
-                else
-                {
-                    Dal.SaveLogEntry(LogType.Error, "UserProfilePersonalizationSettings is NOT Supported ");
-                }
-            }
-            catch (Exception ex)
-            {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in SetWallpaperAsync()" + ex.Message);
-
-            }
-            return success;
-        }
-        #endregion
-
         #region Change Dashboard Desktop Pic
         // Because WinRt can use, but can't return Task<T> h ttp://dotnetbyexample.blogspot.de/2014/11/returning-task-from-windows-runtime.html
         /// <summary>
@@ -168,8 +37,8 @@ namespace RWPBGTasks
             {
                 if (Dal.GetAllPictures().Count == 0)
                 {
-                    //TODO: Add variable here 
-                    await Dal.LoadImagesFromOneDriveInDBTable("/Bilder/WindowsIotApp");
+                    var s = await Dal.GetSetup();
+                    await Dal.LoadImagesFromOneDriveInDBTable(s.OneDrivePictureFolder);
                 } 
                 // Get Random ItemInfoResponse from Table 
                 var item = Dal.GetRandomInfoItemResponse();
@@ -181,7 +50,6 @@ namespace RWPBGTasks
                 ItemInfoResponse foundFile = null;
                 Stream contentStream = null;
 
-                //ShowBusy(true);
                 //// Initialize Graph client
                 var accessToken = await GraphService.GetTokenForUserAsync();
                 var graphService = new GraphService(accessToken);
@@ -195,7 +63,7 @@ namespace RWPBGTasks
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + "Id: " + item.OneDriveId + item.DownloadUrl);
+                        System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + " Id: " + item.OneDriveId + item.DownloadUrl);
 
                     }
 
@@ -245,7 +113,7 @@ namespace RWPBGTasks
                 System.Diagnostics.Debug.WriteLine("must set bgimage");
 
                 //bitmapimage = new BitmapImage(new Uri(item.DownloadUrl)); -> Works too
-                Dal.SaveLogEntry(LogType.AppInfo, "Wallpaper Changed");
+                Dal.SaveLogEntry(LogType.AppInfo, "Dashboard Picture Changed");
                 item.Viewed = true;
                 Dal.ResetIsCurrentWallpaper();
                 item.IsCurrentWallPaper = true;
@@ -255,7 +123,7 @@ namespace RWPBGTasks
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in InternalChangeWallpaperAsync() " + ex.Message);
+                Dal.SaveLogEntry(LogType.Error, "Exception  in InternalChangeDashBoardBackGroundAsync() " + ex.Message);
             }
             finally
             {
@@ -265,46 +133,6 @@ namespace RWPBGTasks
         }
 
         #endregion
-
-        //#region Load Images from OneDrive
-        
-        //// Needed for if we wantr call a function by BackGround Task or Manually from App GUI? 
-        //// Because WinRt can use, but can't return Task<T> h ttp://dotnetbyexample.blogspot.de/2014/11/returning-task-from-windows-runtime.html
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="CallFromBackgroundTask">Define if Function was called from Background Task or Startet by Manual Button Click in UI </param>
-        ///// <returns></returns>
-        //public static IAsyncOperation<bool> LoadPicturesFromOneDriveAsync(bool CallFromBackgroundTask)
-        //{
-        //    return InternalLoadPicturesFromOneDriveAsync(CallFromBackgroundTask).AsAsyncOperation();
-        //}
-        //private static async Task<bool> InternalLoadPicturesFromOneDriveAsync(bool CallFromBackgroundTask)
-        //{
-        //    if (CallFromBackgroundTask)
-        //        await Dal.SaveLogEntry(LogType.Info, "Try Load Pictures List from OneDrive Backgroundtask");
-        //    else
-        //        await Dal.SaveLogEntry(LogType.Info, "Try Load Pictures List from OneDrive  manually");
-
-        //        try
-        //        {
-        //            var s = await Dal.GetSetup();
-        //            await Dal.LoadImagesFromOneDriveInDBTable(s.OneDrivePictureFolder);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            await Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageAsync() " + ex.Message);
-        //        }
-        //        finally
-        //        {
-        //        //
-        //        // Write to LocalSettings to indicate that this background task ran.
-        //        //
-        //        Dal.CheckForViewedPictures();
-        //    }
-        //    return true;
-        //}
-        //#endregion
     }
 
 }

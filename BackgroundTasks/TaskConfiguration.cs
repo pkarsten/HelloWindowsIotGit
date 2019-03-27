@@ -92,6 +92,15 @@ namespace RWPBGTasks
             UpdateBackgroundTaskRegistrationStatus(name, false);
         }
 
+        public static void UnregisterALlTasks()
+        {
+            foreach (var cur in BackgroundTaskRegistration.AllTasks)
+            {
+                cur.Value.Unregister(true);
+                Dal.SaveLogEntry(LogType.Info, "Unregister (All) => " + cur.Value.Name);
+            }
+        }
+
 
         /// <summary>
         /// Store the registration status of a background task with a given name.

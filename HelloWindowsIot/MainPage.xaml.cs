@@ -110,13 +110,21 @@ namespace HelloWindowsIot
             Scenario s = scenarioListBox.SelectedItem as Scenario;
             if (s != null)
             {
-                ScenarioFrame.Navigate(s.ClassType);
-                if (Window.Current.Bounds.Width < 640)
+                /// I want Dashboard in "Fullscreen" without Splitter and Scenario Control and so on ... 
+                if (s.ClassType == typeof(DashBoard))
                 {
-                    Splitter.IsPaneOpen = false;
+                    this.Frame.Navigate(typeof(DashBoard));
                 }
-                FooterControl.SelectedItem = null;
-                ScenarioControl.SelectedItem = scenarioListBox.SelectedItem;
+                else
+                {
+                    ScenarioFrame.Navigate(s.ClassType);
+                    if (Window.Current.Bounds.Width < 640)
+                    {
+                        Splitter.IsPaneOpen = false;
+                    }
+                    FooterControl.SelectedItem = null;
+                    ScenarioControl.SelectedItem = scenarioListBox.SelectedItem;
+                }
             }
         }
 
@@ -160,35 +168,7 @@ namespace HelloWindowsIot
             // Scenarios for Bottom in Hamburger Menu
             FooterControl.ItemsSource = bottomScenarios;
             FooterControl.SelectedIndex = -1;
-
-            if (e.Parameter != null)
-            {
-                var launchEvent = e.Parameter.ToString();
-                this.OnLaunchedEvent(launchEvent);
-            }
-
         }
-        #endregion
-
-        public async void OnLaunchedEvent(string arguments)
-        {
-            switch (arguments.ToLower())
-            {
-                case "changewp":
-                    Dal.SaveLogEntry(LogType.Info, "ChangeWallPaper Called from JumpList");
-                    ScenarioControl.SelectedIndex = 0;
-                    await LaunchChangeWallpaper();
-                    Application.Current.Exit();//PKA041018 CLose App after Change Wallpaper Over JumpList 
-                    break;
-            }
-        }
-
-        #region Jumplist
-        private async Task LaunchChangeWallpaper()
-        {
-            await TaskFunctions.ChangeWallpaperAsync(false);
-        }
-
         #endregion
     }
 }

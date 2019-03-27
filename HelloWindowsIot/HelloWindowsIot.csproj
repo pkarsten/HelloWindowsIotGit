@@ -97,6 +97,7 @@
     <Compile Include="Classes\BaseCommand.cs" />
     <Compile Include="Classes\BindableBase.cs" />
     <Compile Include="Classes\DeviceInfos.cs" />
+    <Compile Include="Classes\DispatcherHelper.cs" />
     <Compile Include="Classes\EnumUtils.cs" />
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\Helpers.cs" />

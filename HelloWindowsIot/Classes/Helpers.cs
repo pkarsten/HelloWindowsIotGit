@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -12,11 +8,16 @@ namespace HelloWindowsIot
 {
     public static class Helpers
     {
+
+
         /// <summary>
         /// Runs the specified handler on the UI thread at Normal priority. 
         /// </summary>
-        public static async Task CallOnUiThreadAsync(DispatchedHandler handler) => await
-            CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, handler);
+        public static async Task CallOnUiThreadAsync(CoreDispatcher dispatcher, DispatchedHandler handler) =>
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, handler);
+
+        public static async Task CallOnMainViewUiThreadAsync(DispatchedHandler handler) =>
+            await CallOnUiThreadAsync(CoreApplication.MainView.CoreWindow.Dispatcher, handler);
 
         /// <summary>
         /// Starts a timer to perform the specified action at the specified interval.

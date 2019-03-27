@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using UwpSqliteDal;
-using UwpSqLiteDal;
-using MSGraph;
-using Windows.UI.Core;
+using Windows.UI.Xaml;
 using RWPBGTasks;
 using AppSettings;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace HelloWindowsIot
 {
@@ -33,15 +33,15 @@ namespace HelloWindowsIot
         #endregion
 
         #region Properties
-        private string taskResult;
-        private string taskProgress;
+        private string _taskResult;
+        private string _taskProgress;
         public string TaskProgress {
-            get { return this.taskProgress; }
-            set { this.SetProperty(ref this.taskProgress, value); }
+            get { return this._taskProgress; }
+            set { this.SetProperty(ref this._taskProgress, value); }
         }
         public string TaskResult {
-            get { return this.taskResult; }
-            set { this.SetProperty(ref this.taskResult, value); }
+            get { return this._taskResult; }
+            set { this.SetProperty(ref this._taskResult, value); }
         }
         public BGTaskModel MyBgTask {get;set;}
 
@@ -198,8 +198,7 @@ namespace HelloWindowsIot
             if (ts != null)
             {
                 MyBgTask = ts;
-                taskProgress = "Initializing LoadPictureList ...";
-                //AppSettings.RegisteredBeforeStartLoadPicturesFromOneDrive = BackgroundTaskConfig.GetBackgroundRegisteredTaskStatus(Settings.LoadImagesFromOneDriveTaskName);
+                _taskProgress = "Initializing LoadPictureList ...";
                 ApplicationTrigger trigger3 = new ApplicationTrigger();
                 BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
 
@@ -216,10 +215,8 @@ namespace HelloWindowsIot
 
                 //Signal the ApplicationTrigger
                 var result = await trigger3.RequestAsync();
-                taskResult = "Signal result: " + result.ToString();
-
-                //OnPropertyChanged("TaskResult");
-                //OnPropertyChanged("TaskProgress");
+                _taskResult = "Signal result: " + result.ToString();
+                UpdateUI();
 
 
             }
@@ -228,6 +225,17 @@ namespace HelloWindowsIot
             //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
             //await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
             IsBusy = false;
+        }
+
+        private async void UpdateUI()
+        {
+            await DispatcherHelper.ExecuteOnUIThreadAsync(
+                () =>
+                {
+                    OnPropertyChanged("TaskResult");
+                    OnPropertyChanged("TaskProgress");
+                }
+                , CoreDispatcherPriority.Normal);
         }
 
         /// <summary>
@@ -247,10 +255,14 @@ namespace HelloWindowsIot
         /// <param name="e">Arguments of the progress report.</param>
         private async void OnProgressLoadPictures(IBackgroundTaskRegistration task, BackgroundTaskProgressEventArgs args)
         {
-                var progress = "Progress: " + args.Progress + "%";
-            taskProgress = progress;
-            //OnPropertyChanged("TaskResult");
-            //OnPropertyChanged("TaskProgress");
+            await DispatcherHelper.ExecuteOnUIThreadAsync(
+                () =>
+                {
+                    var progress = "Progress: " + args.Progress + "%";
+                    _taskProgress = progress;
+                    UpdateUI();
+                }
+                , CoreDispatcherPriority.Normal);
         }
         /// <summary>
         /// Handle background task completion.
@@ -261,8 +273,8 @@ namespace HelloWindowsIot
         {
             //Unregister App Trigger 
             BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
-            taskProgress = "List Loaded";
-            taskResult = "";
+            _taskProgress = "List Loaded";
+            _taskResult = "";
             //OnPropertyChanged("TaskResult");
             //OnPropertyChanged("TaskProgress");
 
@@ -271,6 +283,8 @@ namespace HelloWindowsIot
                                                                        Settings.LoadImagesFromOneDriveTaskName,
                                                                         await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
                                                                        null);
+
+            UpdateUI();
 
         }
 

@@ -397,7 +397,7 @@ namespace UwpSqliteDal
             }
         }
 
-        public static void DeleteAllPictures()
+        public static async Task DeleteAllPictures()
         {
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
@@ -509,7 +509,7 @@ namespace UwpSqliteDal
             }
         }
 
-        public static void SavePicture(FavoritePic pic)
+        public static async Task SavePicture(FavoritePic pic)
         {
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))

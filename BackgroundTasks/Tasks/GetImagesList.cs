@@ -2,8 +2,10 @@
 using MSGraph;
 using MSGraph.Response;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UwpSqliteDal;
@@ -105,35 +107,91 @@ namespace RWPBGTasks
         //
         private async Task LoadImageListFromOneDrive()
         {
-            if ((_cancelRequested == false))
+            await Dal.SaveLogEntry(LogType.Info, "Entry in LoadImageListFromOneDrive()");
+
+            if ((_cancelRequested == false) && (_progress < 100))
             {
+            }
+            try
+            {
+                Exception error = null;
+                ItemInfoResponse folder = null;
+                IList<ItemInfoResponse> children = null;
+
+                //// Initialize Graph client
+                var accessToken = await GraphService.GetTokenForUserAsync();
+                var graphService = new GraphService(accessToken);
+
                 try
                 {
                     var s = await Dal.GetSetup();
-                    await Dal.LoadImagesFromOneDriveInDBTable(s.OneDrivePictureFolder);//TODO: check for empty string
-                    _progress = 100;
+                    folder = await graphService.GetPhotosAndImagesFromFolder(s.OneDrivePictureFolder);
+                    children = await graphService.PopulateChildren(folder);
+
+                    try
+                    {
+
+                        //https://gunnarpeipman.com/csharp/foreach/
+                        ///TODO: Null Exception here when Children is null 
+                        foreach (ItemInfoResponse iir in children.ToList())
+                        {
+                            if (iir.Image != null)
+                            {
+                                System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
+                                //iri = iir;
+                            }
+                            else
+                            {
+                                children.Remove(iir);
+                            }
+                        }
+                        int totalFiles = children.Count;
+                        int filesProcessed = 0;
+                        await Dal.DeleteAllPictures();
+                        foreach (var iri in children)
+                        {
+                            filesProcessed++;
+                            _progress = (uint)((double)filesProcessed / totalFiles * 100);
+                            _taskInstance.Progress = _progress; ///=> !!!!!!!!
+                            var fp = new FavoritePic();
+                            fp.DownloadedFromOneDrive = true;
+                            fp.Viewed = false;
+                            fp.DownloadUrl = iri.DownloadUrl;
+                            fp.Name = iri.Name;
+                            fp.OneDriveId = iri.Id;
+                            await Dal.SavePicture(fp);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Dal.SaveLogEntry(LogType.Error, error.Message);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                    error = ex;
                 }
-                finally
-                {
-                    var settings = ApplicationData.Current.LocalSettings;
-                    var key = _taskInstance.Task.Name;
+                _progress = 100;
+            }
+             catch (Exception ex)
+            {
+                await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+            }
+            finally
+            {
+                var settings = ApplicationData.Current.LocalSettings;
+                var key = _taskInstance.Task.Name;
 
-                    //
-                    // Write to LocalSettings to indicate that this background task ran.
-                    //
-                    settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-
-                    //TODO: //ERROR =>System.NullReferenceException ?? UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
-                    //ts.LastTimeRun = DateTime.Now.ToString();
-                    //ts.AdditionalStatus = settings.Values[key].ToString();
-                    //Dal.UpdateTaskStatus(ts);
-                    await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
-                }
-
+                //
+                // Write to LocalSettings to indicate that this background task ran.
+                //
+                settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
+                //TODO: ??//ERROR =>System.NullReferenceException ?? 
+                BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                ts.LastTimeRun = DateTime.Now.ToString();
+                ts.AdditionalStatus = settings.Values[key].ToString();
+                Dal.UpdateTaskStatus(ts);
+                await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

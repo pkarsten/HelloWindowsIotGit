@@ -31,11 +31,6 @@
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="RWPBGTasks.ServicingComplete">
-          <BackgroundTasks>
-            <Task Type="systemEvent" />
-          </BackgroundTasks>
-        </Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="RWPBGTasks.GetImageListFromOneDrive">
           <BackgroundTasks>
             <Task Type="systemEvent" />

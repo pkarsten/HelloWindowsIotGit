@@ -19,9 +19,7 @@ using System.Collections.ObjectModel;
 
 namespace HelloWindowsIot
 {
-    /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
-    /// </summary>
+
     public sealed partial class LogsPage : Page
     {
         public ObservableCollection<LogEntry> logList = new ObservableCollection<LogEntry>();

@@ -244,11 +244,11 @@ namespace UwpSqliteDal
 
             switch (taskname)
             {
-                case Settings.ChangeWallpaperTaskName:
-                    minutesForTrigger = (uint)s.IntervalForChangeWallPaper;
+                case Settings.LoadCalendarEventsAndToDosTaskName:
+                    minutesForTrigger = (uint)s.IntervalForLoadCalendarAndTasksInterval;
                     break;
                 case Settings.LoadImagesFromOneDriveTaskName:
-                    minutesForTrigger = (uint)s.IntervalForSearchPictures;
+                    minutesForTrigger = (uint)s.IntervalForLoadCalendarAndTasksInterval;
                     break;
                 default:
                     minutesForTrigger = 15;

@@ -52,7 +52,7 @@ namespace HelloWindowsIot
                     EnableCalendarNextEvents = true,
                     EnableTodayEvents = true,
                     EnablePurchaseTask = true,
-                    IntervalForSearchPictures = 15,
+                    IntervalForLoadPictures = 15,
                     OneDrivePictureFolder = "/Bilder/WindowsIotApp",
                     TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks",
                     PurchaseTaskID = "('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')"

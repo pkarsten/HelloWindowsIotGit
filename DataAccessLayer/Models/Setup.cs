@@ -34,6 +34,16 @@ namespace UwpSqliteDal
         public int IntervalForDiashow { get; set; }
 
         /// <summary>
+        /// Time Interval in Minutes for run the Background Task Load Pictures From OneDrive min 15 min. 
+        /// </summary>
+        public int IntervalForLoadPictures { get; set; }
+
+        /// <summary>
+        /// Time Interval in Minutes for run the Background Task for Load Calendar and Tasks from MS Graph
+        /// </summary>
+        public int IntervalForLoadCalendarAndTasksInterval{ get; set; }
+
+        /// <summary>
         /// Get or Sets if PictureSHow should be run or not 
         /// </summary>
         public bool EnablePictureAddOn { get; set; }
@@ -84,21 +94,6 @@ namespace UwpSqliteDal
         /// </summary>
         public bool EnableClock { get; set; }
         #endregion
-
-
-        #region not needed?
-        //TODO: Check this 
-        /// <summary>
-        /// Time Interval in Minutes for run the Background Task Search Pictures 
-        /// </summary>
-        public int IntervalForSearchPictures { get; set; }
-
-        /// <summary>
-        /// Time Interval in Minutes for run the Background Task Change WallPaper
-        /// </summary>
-        public int IntervalForChangeWallPaper { get; set; }
-        #endregion
-
 
     }
 }

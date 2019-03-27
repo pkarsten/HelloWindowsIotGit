@@ -7,13 +7,14 @@
     public sealed class Configuration
     {
         public static string PicFileNameInAppDataFolder { get; } = "mybgpicture";
-        public static string DatabaseName { get; } = "Storage.WPTDB";
+        public static string DatabaseName { get; } = "HelloWindowsIotDB.Sqlite";
         public static Setup InitialSetupConfig { get; } = new Setup
         {
             Id = 1,
             EnableLogging = false,
-            IntervalForSearchPictures = 60,
-            IntervalForChangeWallPaper = 15
+            IntervalForDiashow =10,
+            IntervalForLoadPictures = 60,
+            IntervalForLoadCalendarAndTasksInterval = 15,
         };
         public static PicFilter InitialPicFilterConfig { get; } = new PicFilter
         {

@@ -150,12 +150,6 @@
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\StartPage.xaml.cs">
-      <DependentUpon>StartPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Status.xaml.cs">
-      <DependentUpon>Status.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -224,14 +218,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Settings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\StartPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Status.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

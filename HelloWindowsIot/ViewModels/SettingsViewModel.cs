@@ -125,6 +125,9 @@ namespace HelloWindowsIot
         /// </summary>
         private async void OnSaveSettings()
         {
+            //TODO: Check if can save 
+            //e.g. cant save if background tasks interval are smaller than 15 minutes 
+
             //if (SetupSettings.OneDrivePictureFolder=="")
             //    CanExecute = false;
             IsBusy = true;

@@ -22,9 +22,6 @@ using MSGraph;
 
 namespace HelloWindowsIot
 {
-    /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
-    /// </summary>
     public sealed partial class DashBoard : Page
     {
         /// <summary>
@@ -86,12 +83,13 @@ namespace HelloWindowsIot
 
             if (e.NavigationMode == NavigationMode.New)
             {
+                
                 // Load location data from storage if it exists;
                 // otherwise, load sample location data.
                 
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
                 ViewModel = dashboarddata;
-
+                //await ViewModel.LoadData();
 
                 //var locations = await LocationDataStore.GetLocationDataAsync();
                 //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();

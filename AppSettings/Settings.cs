@@ -21,12 +21,6 @@ namespace AppSettings
         #endregion
 
         #region Background Tasks
-        public const string ServicingCompleteTaskEntryPoint = "RWPBGTasks.ServicingComplete";
-        public const string ServicingCompleteTaskName = "ServicingCompleteTask";
-        public static string ServicingCompleteTaskProgress = "";
-        public static string ServicingCompleteTaskResult = "";
-        public static bool ServicingCompleteTaskRegistered = false;
-
         public const string ChangeWallpaperTaskEntryPoint = "RWPBGTasks.ChangeWallpaper";
         public const string ChangeWallpaperTaskName = "ChangeWallpaperTask";
         public static string ChangeWallpaperTaskResult = "";
@@ -40,13 +34,13 @@ namespace AppSettings
         public static bool CreateMessageTaskRegistered = false;
 
         public const string LoadImagesFromOneDriveTaskName ="LoadImagesFromOneDriveTask";
+        public const string LoadCalendarEventsAndToDosTaskName = "LoadCalendarEventsAndToDos";
 
         public static BitmapImage DashBoardImage { get; set; }
 
         public static List<string> TaskList { get; } = new List<string>
             {
                 Settings.ChangeWallpaperTaskName,
-                Settings.ServicingCompleteTaskName,
                 Settings.CreateMessageTaskName,
                 Settings.LoadImagesFromOneDriveTaskName
             };
@@ -55,10 +49,10 @@ namespace AppSettings
 
         public  static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
         {
-            new BGTaskModel{Name =Settings.ServicingCompleteTaskName,EntryPoint="RWPBGTasks.ServicingComplete",Registered=false},
             new BGTaskModel{Name =Settings.ChangeWallpaperTaskName,EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
             new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
             new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
+            new BGTaskModel{Name =Settings.LoadCalendarEventsAndToDosTaskName,EntryPoint="RWPBGTasks.LoadCalendarEventsFromGraph",Registered=false},
         };
 
         public static bool RegisterAllBackgroundTasks { get; } = true;

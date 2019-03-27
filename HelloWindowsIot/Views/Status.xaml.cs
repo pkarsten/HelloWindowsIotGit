@@ -41,10 +41,6 @@ namespace HelloWindowsIot
             Dal.SaveLogEntry(LogType.Info, "Navigated To StatusPage");
             foreach (var task in BackgroundTaskRegistration.AllTasks)
             {
-                if (task.Value.Name == Settings.SearchPicturesTaskName)
-                {
-                    AttachSearchPictureProgressAndCompletedHandlers(task.Value);
-                }
                 if (task.Value.Name == Settings.ChangeWallpaperTaskName)
                 {
                     AttachChangeWallpaperProgressAndCompletedHandlers(task.Value);
@@ -69,16 +65,6 @@ namespace HelloWindowsIot
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
             () =>
             {
-                //SearchPicOverviewTitle (get From Resources
-                SearchPicOverviewName.Text = "Name: " + Settings.SearchPicturesTaskName;
-                SearchPicOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.SearchPicturesTaskName);
-                if (!String.IsNullOrEmpty(Dal.GetTaskStatusByTaskName(Settings.SearchPicturesTaskName).LastTimeRun))
-                    SearchPicOverviewLastRun.Text = AppcFuncs.GetLanguage("txtLastRun") + " " + Dal.GetTaskStatusByTaskName(Settings.SearchPicturesTaskName).LastTimeRun;
-                else SearchPicOverviewLastRun.Text = "";
-                SearchPicOverviewProgress.Text = Settings.SearchPicturesTaskProgress;
-                SearchPicOverviewResult.Text = Settings.SearchPicturesTaskResult;
-
-
                 //ChangeWPOverviewTitle from resources
                 ChangeWPOverviewName.Text = "Name: " + Settings.ChangeWallpaperTaskName;
                 ChangeWPOverviewStatus.Text = "Status: " + BackgroundTaskConfig.GetBackgroundTaskStatus(Settings.ChangeWallpaperTaskName);
@@ -112,42 +98,7 @@ namespace HelloWindowsIot
                 
             });
         }
-        #region SearchPictureTaskEventhandler
-       
-        /// <summary>
-        /// Attach progress and completed handers to a background task.
-        /// </summary>
-        /// <param name="task">The task to attach progress and completed handlers to.</param>
-        private void AttachSearchPictureProgressAndCompletedHandlers(IBackgroundTaskRegistration task)
-        {
-            task.Progress += new BackgroundTaskProgressEventHandler(OnProgressSearchPictures);
-            task.Completed += new BackgroundTaskCompletedEventHandler(OnCompletedSearchPictures);
-        }
-        /// <summary>
-        /// Handle background task completion.
-        /// </summary>
-        /// <param name="task">The task that is reporting completion.</param>
-        /// <param name="e">Arguments of the completion report.</param>
-        private async void OnCompletedSearchPictures(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
-        {
-            UpdateUI();
-        }
-        /// <summary>
-        /// Handle background task progress.
-        /// </summary>
-        /// <param name="task">The task that is reporting progress.</param>
-        /// <param name="e">Arguments of the progress report.</param>
-        private void OnProgressSearchPictures(IBackgroundTaskRegistration task, BackgroundTaskProgressEventArgs args)
-        {
-            var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                var progress = "Progress: " + args.Progress + "%";
-                Settings.SearchPicturesTaskProgress = progress;
-                UpdateUI();
-            });
-        }
-        #endregion
-
+        
         #region Change Wallpaper eventhandler
         /// <summary>
         /// Attach progress and completed handers to a background task.
@@ -255,31 +206,6 @@ namespace HelloWindowsIot
         #endregion
 
         #region Un/Register Buttons
-        /// <summary>
-        /// Register a SampleBackgroundTask.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void RegisterSearchPictureTask(object sender, RoutedEventArgs e)
-        {
-            var task = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
-                                                                          Settings.SearchPicturesTaskName,
-                                                                          await Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
-                                                                          null);
-            AttachSearchPictureProgressAndCompletedHandlers(task);
-            UpdateUI();
-        }
-
-        /// <summary>
-        /// Unregister a SampleBackgroundTask.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UnRegisterSearchPictureTask(object sender, RoutedEventArgs e)
-        {
-            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.SearchPicturesTaskName);
-            UpdateUI();
-        }
         /// <summary>
         /// Register a ChangeWP.
         /// </summary>

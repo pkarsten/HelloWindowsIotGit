@@ -147,9 +147,6 @@
     <Compile Include="Views\Logs.xaml.cs">
       <DependentUpon>Logs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PicturesFilter.xaml.cs">
-      <DependentUpon>PicturesFilter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -223,10 +220,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Logs.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PicturesFilter.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

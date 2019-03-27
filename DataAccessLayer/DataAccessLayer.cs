@@ -247,7 +247,7 @@ namespace UwpSqliteDal
                 case Settings.ChangeWallpaperTaskName:
                     minutesForTrigger = (uint)s.IntervalForChangeWallPaper;
                     break;
-                case Settings.SearchPicturesTaskName:
+                case Settings.LoadImagesFromOneDriveTaskName:
                     minutesForTrigger = (uint)s.IntervalForSearchPictures;
                     break;
                 default:
@@ -574,7 +574,7 @@ namespace UwpSqliteDal
             return ts.LastTimeRun;
         }
 
-        public static void UpdateTaskStatus(BGTask ts)
+        public static async Task UpdateTaskStatus(BGTask ts)
         {
             try
             {
@@ -585,12 +585,12 @@ namespace UwpSqliteDal
                     if (GetTaskStatusByTaskName(ts.TaskName) != null)
                     {
                         db.Update(ts);
-                        SaveLogEntry(LogType.Info, "DB Update TaskStatus " + ts.TaskName + " Current Status: " + ts.CurrentRegisteredStatus);
+                        await SaveLogEntry(LogType.Info, "DB Update TaskStatus " + ts.TaskName + " Current Status: " + ts.CurrentRegisteredStatus);
                     }
                     else
                     {
                         db.Insert(ts);
-                        SaveLogEntry(LogType.Info, "DB Save TaskStatus " + ts.TaskName + " Current Status: " + ts.CurrentRegisteredStatus);
+                        await SaveLogEntry(LogType.Info, "DB Save TaskStatus " + ts.TaskName + " Current Status: " + ts.CurrentRegisteredStatus);
                     }
 
 
@@ -598,7 +598,7 @@ namespace UwpSqliteDal
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "Exception in UpdateTaskStatus " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "Exception in UpdateTaskStatus " + ex.Message);
             }
             finally
             {

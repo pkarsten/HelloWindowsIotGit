@@ -39,20 +39,6 @@
                                                  FromVerticalOffset="100" />
                         </TransitionCollection>
                     </ItemsControl.ItemContainerTransitions>
-                    
-                    <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,0,0,0">
-                        <TextBlock x:Uid="SearchPicOverviewTitle" VerticalAlignment="Top" FontSize="12">Aufgabe Bilder Suchen:</TextBlock>
-                        <TextBlock x:Name="SearchPicOverviewName" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}" >Name: SearchPicturesTask</TextBlock>
-                        <TextBlock x:Name="SearchPicOverviewStatus" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Status: Registered</TextBlock>
-                        <TextBlock x:Name="SearchPicOverviewLastRun" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}">Zuletzt ausgeführt: 2017-04-03 11:15</TextBlock>
-                        <TextBlock x:Name="SearchPicOverviewProgress"  FontSize="12" Foreground="Silver" Text="" Style="{StaticResource HyperlinTextkStyle}"/>
-                        <TextBlock x:Name="SearchPicOverviewResult"   FontSize="12" Text=""  Foreground="Silver"/>
-                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
-                            <Button x:Name="RegisterButton1" Content="Register" Click="RegisterSearchPictureTask" Height="25" FontSize="9"/>
-                            <Button x:Name="UnregisterButton1" Content="Unregister" Click="UnRegisterSearchPictureTask"  Height="25" FontSize="9"/>
-                        </StackPanel>
-                    </StackPanel>
-                    
                     <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,20,0,0">
                         <TextBlock x:Uid="ChangeWPOverviewTitle" VerticalAlignment="Top" FontSize="12">Bilder wechseln</TextBlock>
                         <TextBlock x:Name="ChangeWPOverviewName" VerticalAlignment="Top" FontSize="12" Style="{StaticResource HyperlinTextkStyle}" >Name: ChangeWallpaperTask</TextBlock>

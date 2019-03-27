@@ -127,7 +127,6 @@
     <Compile Include="Tasks\ChangeWallpaper.cs" />
     <Compile Include="Tasks\CreateMessage.cs" />
     <Compile Include="Tasks\GetImagesList.cs" />
-    <Compile Include="Tasks\SearchPictures.cs" />
     <Compile Include="Tasks\ServicingComplete.cs" />
     <Compile Include="Tasks\StreamImage.cs" />
     <EmbeddedResource Include="Properties\BackgroundTasks.rd.xml" />

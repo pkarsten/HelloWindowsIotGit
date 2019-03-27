@@ -162,11 +162,17 @@ namespace HelloWindowsIot
         public async Task LoadData()
         {
 
+            AppSettings.SearchPicManual = false;
             CanExecute = false;
             IsBusy = true;
             try
             {
-                System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
+                var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
+                if (ts != null)
+                {
+                    MyBgTask = ts;
+                }
+                    System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
                 //await Task.Delay(2000);//TODO: Simulate Loading
                 SetupSettings = await Dal.GetSetup();
                 IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
@@ -174,6 +180,16 @@ namespace HelloWindowsIot
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
                 this.OnPropertyChanged("MyOutlookTaskFolders");
                 this.OnPropertyChanged("SelectedTaskFolder");
+
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
+                {
+                    if (task.Value.Name == Settings.LoadImagesFromOneDriveTaskName)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Task " + task.Value.Name+  " is registriert attach handler ");
+                        AttachLoadPictureListProgressAndCompletedHandlers(task.Value);
+                    }
+                }
+                UpdateUI();
             }
             catch (Exception ex)
             {
@@ -192,21 +208,20 @@ namespace HelloWindowsIot
         /// <returns></returns>
         private async void LoadPictureList()
         {
-            IsBusy = true;
+            //IsBusy = true;
             OnSaveSettings();
-            var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
-            if (ts != null)
+            if (MyBgTask != null)
             {
-                MyBgTask = ts;
-                _taskProgress = "Initializing LoadPictureList ...";
-                ApplicationTrigger trigger3 = new ApplicationTrigger();
+
                 BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
 
-                var task = await BackgroundTaskConfig.RegisterBackgroundTask(ts.EntryPoint,
+                ApplicationTrigger trigger3 = new ApplicationTrigger();
+                System.Diagnostics.Debug.WriteLine("Call RegisterBackgroundTask on Setttings ViewModel LoadPictures");
+                var task = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
                                                                   Settings.LoadImagesFromOneDriveTaskName,
                                                                   trigger3,
                                                                   null);
-
+                _taskProgress = "Initializing LoadPictureList ...";
                 AttachLoadPictureListProgressAndCompletedHandlers(task);
 
                 // Reset the completion status
@@ -216,15 +231,14 @@ namespace HelloWindowsIot
                 //Signal the ApplicationTrigger
                 var result = await trigger3.RequestAsync();
                 _taskResult = "Signal result: " + result.ToString();
+                AppSettings.SearchPicManual = true;
                 UpdateUI();
-
-
             }
                 
             //await TaskFunctions.LoadPicturesFromOneDriveAsync(false);
             //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
             //await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
-            IsBusy = false;
+            //IsBusy = false;
         }
 
         private async void UpdateUI()
@@ -271,19 +285,20 @@ namespace HelloWindowsIot
         /// <param name="e">Arguments of the completion report.</param>
         private async void OnCompletedLoadPictures(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
         {
-            //Unregister App Trigger 
-            BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+            if (AppSettings.SearchPicManual == true)
+            {
+                //Unregister App Trigger 
+                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+                //Register Backgroundtask 
+                var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
+                                                                           Settings.LoadImagesFromOneDriveTaskName,
+                                                                            await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
+                                                                           null);
+            }
             _taskProgress = "List Loaded";
             _taskResult = "";
-            //OnPropertyChanged("TaskResult");
-            //OnPropertyChanged("TaskProgress");
-
-            //Register Backgroundtask 
-            var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
-                                                                       Settings.LoadImagesFromOneDriveTaskName,
-                                                                        await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
-                                                                       null);
-
+            System.Diagnostics.Debug.WriteLine("OnCompleted Picturesloaded");
+            AppSettings.SearchPicManual = false;
             UpdateUI();
 
         }

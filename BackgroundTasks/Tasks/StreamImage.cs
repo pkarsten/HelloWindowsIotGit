@@ -192,7 +192,7 @@ namespace RWPBGTasks
                 }
                 catch (Exception ex)
                 {
-                    Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageAsync() " + ex.Message);
+                    await Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageAsync() " + ex.Message);
                 }
                 finally
                 {
@@ -206,8 +206,8 @@ namespace RWPBGTasks
                     UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                     ts.LastTimeRun = DateTime.Now.ToString();
                     ts.AdditionalStatus = settings.Values[key].ToString();
-                    Dal.UpdateTaskStatus(ts);
-                    Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                    await Dal.UpdateTaskStatus(ts);
+                    await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
                 }
 
             }

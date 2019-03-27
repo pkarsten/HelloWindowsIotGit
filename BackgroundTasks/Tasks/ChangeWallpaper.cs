@@ -46,7 +46,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -59,11 +59,11 @@ namespace RWPBGTasks
                 await TaskFunctions.ChangeWallpaperAsync(true);
                 BGTask ts = Dal.GetTaskStatusByTaskName(taskInstance.Task.Name);
                 ts.LastTimeRun = DateTime.Now.ToString();
-                Dal.UpdateTaskStatus(ts);
+                await Dal.UpdateTaskStatus(ts);
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task ChangeWallpeper " + ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task ChangeWallpeper " + ex.Message);
             }
 
             finally

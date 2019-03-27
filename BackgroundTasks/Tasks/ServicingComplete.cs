@@ -124,14 +124,6 @@ namespace RWPBGTasks
                 }
                 foreach (var tstatus in Dal.GetAllTaskStatus())
                 {
-                    if ((tstatus.TaskName == Settings.SearchPicturesTaskName) && tstatus.CurrentRegisteredStatus == true)
-                    {
-                        Settings.SearchPicturesTaskResult = "";
-                        var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.SearchPicturesTaskEntryPoint,
-                                                                               Settings.SearchPicturesTaskName,
-                                                                                await Dal.GetTimeIntervalForTask(Settings.SearchPicturesTaskName),
-                                                                               null);
-                    }
                     if ((tstatus.TaskName == Settings.ChangeWallpaperTaskName) && tstatus.CurrentRegisteredStatus == true)
                     {
                         var t = await BackgroundTaskConfig.RegisterBackgroundTask(Settings.ChangeWallpaperTaskEntryPoint, Settings.ChangeWallpaperTaskName, await Dal.GetTimeIntervalForTask(Settings.ChangeWallpaperTaskName), null);
@@ -153,7 +145,7 @@ namespace RWPBGTasks
 
 
 
-                Dal.SaveLogEntry(LogType.Info, "Reset Log Table after Update to " + GetAppVersion());
+                await Dal.SaveLogEntry(LogType.Info, "Reset Log Table after Update to " + GetAppVersion());
                 var settings = ApplicationData.Current.LocalSettings;
                 var key = _taskInstance.Task.Name;
 
@@ -165,13 +157,13 @@ namespace RWPBGTasks
                 UwpSqliteDal.BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                 ts.LastTimeRun = DateTime.Now.ToString();
                 ts.AdditionalStatus = settings.Values[key].ToString();
-                Dal.UpdateTaskStatus(ts);
-                Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                await Dal.UpdateTaskStatus(ts);
+                await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
 
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception in ServicingComplete-MakeSomeThingsAfterUpdate() " + ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exception in ServicingComplete-MakeSomeThingsAfterUpdate() " + ex.Message);
             }
         }
     }

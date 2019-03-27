@@ -33,14 +33,6 @@ namespace AppSettings
         public static string ChangeWallpaperTaskProgress = "";
         public static bool ChangeWallpaperTaskRegistered = false;
 
-
-        public const string SearchPicturesTaskEntryPoint = "RWPBGTasks.SearchPictures";
-        public const string SearchPicturesTaskName = "SearchPicturesTask";
-        public static string SearchPicturesTaskResult = "";
-        public static string SearchPicturesTaskProgress = "";
-        public static bool SearchPicturesTaskRegistered = false;
-
-
         public const string CreateMessageTaskEntryPoint = "RWPBGTasks.CreateMessage";
         public const string CreateMessageTaskName = "CreateMessageTask";
         public static string CreateMessageTaskResult = "";
@@ -53,7 +45,6 @@ namespace AppSettings
 
         public static List<string> TaskList { get; } = new List<string>
             {
-                Settings.SearchPicturesTaskName,
                 Settings.ChangeWallpaperTaskName,
                 Settings.ServicingCompleteTaskName,
                 Settings.CreateMessageTaskName,
@@ -66,7 +57,6 @@ namespace AppSettings
         {
             new BGTaskModel{Name =Settings.ServicingCompleteTaskName,EntryPoint="RWPBGTasks.ServicingComplete",Registered=false},
             new BGTaskModel{Name =Settings.ChangeWallpaperTaskName,EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
-            new BGTaskModel{Name =Settings.SearchPicturesTaskName,EntryPoint="RWPBGTasks.SearchPictures",Registered=false},
             new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
             new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
         };

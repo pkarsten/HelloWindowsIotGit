@@ -187,10 +187,10 @@ namespace RWPBGTasks
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
                 //TODO: ??//ERROR =>System.NullReferenceException ?? 
-                BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
-                ts.LastTimeRun = DateTime.Now.ToString();
-                ts.AdditionalStatus = settings.Values[key].ToString();
-                Dal.UpdateTaskStatus(ts);
+                //BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                //ts.LastTimeRun = DateTime.Now.ToString();
+                //ts.AdditionalStatus = settings.Values[key].ToString();
+                //Dal.UpdateTaskStatus(ts);
                 await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }

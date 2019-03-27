@@ -165,7 +165,7 @@ namespace HelloWindowsIot
         public async Task LoadData()
         {
 
-            AppSettings.SearchPicManual = false;
+            Settings.LoadPictureListManually = false;
             CanExecute = false;
             IsBusy = true;
             try
@@ -234,7 +234,7 @@ namespace HelloWindowsIot
                 //Signal the ApplicationTrigger
                 var result = await trigger3.RequestAsync();
                 _taskResult = "Signal result: " + result.ToString();
-                AppSettings.SearchPicManual = true;
+                Settings.LoadPictureListManually = true;
                 UpdateUI();
             }
                 
@@ -288,7 +288,7 @@ namespace HelloWindowsIot
         /// <param name="e">Arguments of the completion report.</param>
         private async void OnCompletedLoadPictures(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
         {
-            if (AppSettings.SearchPicManual == true)
+            if (Settings.LoadPictureListManually == true)
             {
                 //Unregister App Trigger 
                 BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
@@ -301,7 +301,7 @@ namespace HelloWindowsIot
             _taskProgress = "List Loaded";
             _taskResult = "";
             System.Diagnostics.Debug.WriteLine("OnCompleted Picturesloaded");
-            AppSettings.SearchPicManual = false;
+            Settings.LoadPictureListManually = false;
             UpdateUI();
 
         }

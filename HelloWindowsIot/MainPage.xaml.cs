@@ -91,13 +91,21 @@ namespace HelloWindowsIot
             Scenario s = scenarioListBox.SelectedItem as Scenario;
             if (s != null)
             {
-                ScenarioFrame.Navigate(s.ClassType);
-                if (Window.Current.Bounds.Width < 640)
+                // if Scenario is Dashboard Frame.Navigate because we want see the page Fullsize without Pane ScenarioControl and so on 
+                if (s.ClassType == typeof(DashBoard))
                 {
-                    Splitter.IsPaneOpen = false;
+                    this.Frame.Navigate(typeof(DashBoard));
                 }
-                FooterControl.SelectedItem = null;
-                ScenarioControl.SelectedItem = scenarioListBox.SelectedItem;
+                else
+                {
+                    ScenarioFrame.Navigate(s.ClassType);
+                    if (Window.Current.Bounds.Width < 640)
+                    {
+                        Splitter.IsPaneOpen = false;
+                    }
+                    FooterControl.SelectedItem = null;
+                    ScenarioControl.SelectedItem = scenarioListBox.SelectedItem;
+                }
             }
         }
 

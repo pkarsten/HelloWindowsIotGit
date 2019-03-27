@@ -98,11 +98,9 @@
     <Compile Include="Classes\BindableBase.cs" />
     <Compile Include="Classes\DeviceInfos.cs" />
     <Compile Include="Classes\DispatcherHelper.cs" />
-    <Compile Include="Classes\EnumUtils.cs" />
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\RelayCommand.cs" />
-    <Compile Include="Classes\WebViewExtension.cs" />
     <Compile Include="Controls\InfoBox.xaml.cs">
       <DependentUpon>InfoBox.xaml</DependentUpon>
     </Compile>
@@ -156,8 +154,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="HelloWindowsIot_TemporaryKey.pfx" />
-    <PRIResource Include="Strings\en-US\Resources.resw" />
-    <PRIResource Include="Strings\de-DE\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\dashdemoimage.jpg" />
@@ -247,9 +243,6 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.9</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <XliffResource Include="MultilingualResources\HelloWindowsIot.en-US.xlf" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

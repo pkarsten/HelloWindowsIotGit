@@ -12,14 +12,6 @@ namespace AppSettings
 {
     public static class Settings
     {
-        #region trial
-        /// <summary>
-        ///  For Trial Test Purpose Set this True 
-        /// </summary>
-        public static bool TestTrial { get; } = false;
-        //TODO: Remove this when Online ? 
-        #endregion
-
         #region Background Tasks
         public const string ChangeWallpaperTaskEntryPoint = "RWPBGTasks.ChangeWallpaper";
         public const string ChangeWallpaperTaskName = "ChangeWallpaperTask";
@@ -102,48 +94,8 @@ namespace AppSettings
         public const string ProductIdinStore = "";
         public const string SupportEmail = "pkarsten@live.de";
         public const string SupporterFirstName = "Peter";
+        public static bool LoadPictureListManually { get; set; }
 
-        #endregion
-
-        #region Picture Filter Lists
-        /// <summary>
-        /// Represents all CommonFolderQuerys Enums for the Full Version, bool define if Allowed to see /select in ListView
-        /// </summary>
-        public static Dictionary<CommonFolderQuery, bool> AllowedFullVersionPicFilterList { get; } = new Dictionary<CommonFolderQuery, bool>
-        {
-            { CommonFolderQuery.DefaultQuery,false},
-            { CommonFolderQuery.GroupByAlbum,true},
-            { CommonFolderQuery.GroupByAlbumArtist,false},
-            { CommonFolderQuery.GroupByArtist,true},
-            { CommonFolderQuery.GroupByAuthor,true},
-            { CommonFolderQuery.GroupByComposer,false},
-            { CommonFolderQuery.GroupByGenre,true},
-            { CommonFolderQuery.GroupByMonth,true},
-            { CommonFolderQuery.GroupByPublishedYear,true},
-            { CommonFolderQuery.GroupByRating,true},
-            { CommonFolderQuery.GroupByTag,true},
-            { CommonFolderQuery.GroupByType,true},
-            { CommonFolderQuery.GroupByYear,true},
-        };
-        /// <summary>
-        /// Represents all CommonFolderQuerys Enums for the Trial Version, bool define if Allowed to see /select in ListView
-        /// </summary>
-        public static Dictionary<CommonFolderQuery, bool> AllowedTrialVersionPicFilterList { get; } = new Dictionary<CommonFolderQuery, bool>
-        {
-            { CommonFolderQuery.DefaultQuery,false},
-            { CommonFolderQuery.GroupByAlbum,false},
-            { CommonFolderQuery.GroupByAlbumArtist,false},
-            { CommonFolderQuery.GroupByArtist,false},
-            { CommonFolderQuery.GroupByAuthor,false},
-            { CommonFolderQuery.GroupByComposer,false},
-            { CommonFolderQuery.GroupByGenre,false},
-            { CommonFolderQuery.GroupByMonth,true},//
-            { CommonFolderQuery.GroupByPublishedYear,false},
-            { CommonFolderQuery.GroupByRating,true},//
-            { CommonFolderQuery.GroupByTag,true},//
-            { CommonFolderQuery.GroupByType,false},
-            { CommonFolderQuery.GroupByYear,false},
-        };
         #endregion
 
     }

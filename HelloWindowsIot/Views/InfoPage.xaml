@@ -29,41 +29,11 @@
                             <Setter Property="HorizontalAlignment" Value="Stretch" />
                         </Style>
                     </ItemsControl.Resources>
-
-                    <ItemsControl.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="False"
-                                                 FromVerticalOffset="100" />
-                        </TransitionCollection>
-                    </ItemsControl.ItemContainerTransitions>
                     <StackPanel>
                         <TextBlock Text="&#xA9; 2017 Peter Karsten" Margin="0,0,0,0" Style="{StaticResource CopyrightTextStyle}"></TextBlock>
                         <TextBlock x:Name="txtAppName" Text="txtAppName" FontSize="12"  Style="{StaticResource HyperlinTextkStyle}"/>
                         <TextBlock x:Name="txtInfoPageVersion" FontSize="12"  Style="{StaticResource HyperlinTextkStyle}"/>
                     </StackPanel>
-                    <StackPanel Margin="0,30,0,0">
-                        <TextBlock x:Uid="txtbuyFullVersion" Text="Aktuelle Lizenz: " Margin="0,10,0,0" TextWrapping="Wrap">
-                                <Run x:Name="LicenseMode">Unknown</Run>
-                        </TextBlock>
-                        <TextBlock x:Name="txtTrialPeriodInformation" Text="You have a full license. The trial time is not meaningful" FontSize="12"  Style="{StaticResource HyperlinTextkStyle}"  TextWrapping="Wrap" Width="180"/>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap">Buy app (<Run x:Name="PurchasePrice">Price unknown</Run>)</TextBlock>
-                            <Button Grid.Row="0" Grid.Column="1" Background="Transparent" Click="{x:Bind PurchaseFullLicense}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7BF;"/>
-                            </Button>
-                            <Border x:Name="StatusBorder" Margin="0,0,0,0" Grid.Row="1" Grid.ColumnSpan="2">
-                                <TextBlock x:Name="StatusBlock" FontSize="12" MaxWidth="{Binding ElementName=txtTrialPeriodInformation, Path=ActualWidth}"  Margin="0,0,0,0" TextWrapping="Wrap"  />
-                            </Border>
-                        </Grid>
-                    </StackPanel>                    
                     <StackPanel Margin="0,30,0,0">
                         <TextBlock x:Uid="txtContactSupport" Text="Support kontaktieren"></TextBlock>
                         <TextBlock x:Uid="txtContactSupportInfo" Text="Probleme? Fragen? Lob? Kritik? Schicken Sie mir eine E-Mail. " FontSize="12"  Style="{StaticResource HyperlinTextkStyle}"  TextWrapping="Wrap" Width="180"/>
@@ -76,19 +46,6 @@
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8CA;"/>
                             </Button>
                         </Grid>
-                    </StackPanel>
-                    <StackPanel Margin="0,10,0,0">
-                        <TextBlock x:Uid="txtRating" Text="Bewertung schreiben"></TextBlock>
-                        <TextBlock x:Uid="txtRatingInfo" Text="Gute Bewertungen und Kritik ermutigen mich Updates zu Programmieren und Bereitzustellen. Möchten Sie die App nun Bewerten und kritisieren?" FontSize="12"  Style="{StaticResource HyperlinTextkStyle}" TextWrapping="Wrap" Width="180"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="1" Background="Transparent" Click="RatingBtn_Click">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE734;"/>
-                            </Button>
-                        </Grid>                        
                     </StackPanel>
                 </ItemsControl>
             </RelativePanel>

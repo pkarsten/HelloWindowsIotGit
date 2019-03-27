@@ -28,7 +28,7 @@ namespace HelloWindowsIot
         public LogsPage()
         {
             this.InitializeComponent();
-            PageTitle.Text = AppcFuncs.GetLanguage("TitleLogs");
+            PageTitle.Text = "Logs";
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)

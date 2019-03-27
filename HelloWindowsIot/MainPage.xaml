@@ -77,8 +77,6 @@
                     </ToggleButton.Content>
                 </ToggleButton>
             </Border>
-            <Image x:Name="WindowsLogo" Stretch="None" Source="Assets/windows-sdk.png" Margin="0,15,0,0" />
-            <TextBlock x:Name="Header" Text="PlaceHodler Appname v.1.1.52" Style="{StaticResource BaseTextBlockStyle}" Margin="0,5,0,0" VerticalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

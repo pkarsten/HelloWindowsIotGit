@@ -1,29 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.ViewManagement; //ApplicationView
-using Windows.ApplicationModel.Core; //CoreApplicationViewTitleBar
-using Windows.ApplicationModel.Background; //BackgroundTasks
-using Windows.Media.Playback; //BackgroundMediaPlayer
 using System.Threading.Tasks; //Tasks
-using Windows.UI.Popups; //Messagebox MessageDialog
 using RWPBGTasks;
-using Windows.UI.Core;
-using Windows.Storage;
-using Windows.ApplicationModel;
-using System.Windows.Input;
-using Windows.Globalization;
 using UwpSqliteDal;
 
 namespace HelloWindowsIot
@@ -55,7 +37,6 @@ namespace HelloWindowsIot
             // This is a static public property that allows downstream pages to get a handle to the MainPage instance
             // in order to call methods that are in this class.
             Current = this;
-            Header.Text = AppInfos.ApplicationName + " " + AppInfos.ApplicationVersion;
 
             //TODO: Remove Test Language 
             //ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
@@ -160,35 +141,7 @@ namespace HelloWindowsIot
             // Scenarios for Bottom in Hamburger Menu
             FooterControl.ItemsSource = bottomScenarios;
             FooterControl.SelectedIndex = -1;
-
-            if (e.Parameter != null)
-            {
-                var launchEvent = e.Parameter.ToString();
-                this.OnLaunchedEvent(launchEvent);
-            }
-
         }
-        #endregion
-
-        public async void OnLaunchedEvent(string arguments)
-        {
-            switch (arguments.ToLower())
-            {
-                case "changewp":
-                    Dal.SaveLogEntry(LogType.Info, "ChangeWallPaper Called from JumpList");
-                    ScenarioControl.SelectedIndex = 0;
-                    await LaunchChangeWallpaper();
-                    Application.Current.Exit();//PKA041018 CLose App after Change Wallpaper Over JumpList 
-                    break;
-            }
-        }
-
-        #region Jumplist
-        private async Task LaunchChangeWallpaper()
-        {
-            await TaskFunctions.ChangeWallpaperAsync(false);
-        }
-
         #endregion
     }
 }

@@ -75,6 +75,7 @@
                 </Grid.RowDefinitions>
                 <!-- Grid.Row 0-->
                 <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria" Grid.Row="0"/>
+                <uc:ClockControl CurrentTime="{x:Bind ViewModel.CurrentTime}"></uc:ClockControl>
                 <!-- Grid.Row 1-->
                 <TextBlock Text="Heute" Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="1"></TextBlock>
                 

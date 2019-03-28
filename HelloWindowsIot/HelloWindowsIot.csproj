@@ -101,6 +101,9 @@
     <Compile Include="Classes\Extensions.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\RelayCommand.cs" />
+    <Compile Include="Controls\ClockControl.xaml.cs">
+      <DependentUpon>ClockControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InfoBox.xaml.cs">
       <DependentUpon>InfoBox.xaml</DependentUpon>
     </Compile>
@@ -115,6 +118,7 @@
     <Compile Include="Converter\ScenarioBinding.cs" />
     <Compile Include="Converter\StringFormatConverter.cs" />
     <Compile Include="Converter\ThumbnailToImageConverter.cs" />
+    <Compile Include="Models\ClockModel.cs" />
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="Models\SampleDashBoardData.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
@@ -177,6 +181,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\ClockControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InfoBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

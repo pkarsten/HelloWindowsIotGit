@@ -33,7 +33,8 @@ namespace HelloWindowsIot
                 DashImage = demoImage,
                 NextCalendarEvents = loccalendarEvents,
                 TodayCalendarEvents =loccalendarEvents,
-                NextButtonText = "Next Btn Text err"
+                NextButtonText = "Next Btn Text err",
+                EnableClock = false
             };
 
             return dashboarddata;

@@ -13,6 +13,6 @@
         <local:StringFormatConverter x:Key="DateStringFormatConverter" StringFormat=" {0:dd.MM.yyyy}: "/>
     </UserControl.Resources>
     <Grid>
-        <TextBlock Text="{x:Bind CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria" Grid.Row="0"/>
+            <TextBlock Text="{x:Bind CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria"/>
     </Grid>
 </UserControl>

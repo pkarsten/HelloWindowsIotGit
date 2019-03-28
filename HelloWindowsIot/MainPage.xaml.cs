@@ -55,10 +55,6 @@ namespace HelloWindowsIot
             // This is a static public property that allows downstream pages to get a handle to the MainPage instance
             // in order to call methods that are in this class.
             Current = this;
-            Header.Text = AppInfos.ApplicationName + " " + AppInfos.ApplicationVersion;
-
-            //TODO: Remove Test Language 
-            //ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
         }
         #endregion
 

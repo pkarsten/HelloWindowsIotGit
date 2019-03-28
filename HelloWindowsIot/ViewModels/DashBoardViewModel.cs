@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using UwpSqliteDal;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
@@ -42,17 +43,9 @@ namespace HelloWindowsIot
     /// </summary>
     public class DashBoardViewModel : BindableBase
     {
-        private DispatcherTimer _timer = new DispatcherTimer();
-
-        public DateTime CurrentTime { get { return DateTime.Now; } }
-
-
+        
         public DashBoardViewModel()
         {
-            _timer.Tick += Timer_Tick;
-            _timer.Interval =  new TimeSpan(0, 0, 1);
-            _timer.Start();
-
             GetCalendarEvents();
 
         }
@@ -73,16 +66,56 @@ namespace HelloWindowsIot
             this.OnPropertyChanged("NextCalendarEvents");
         }
 
-        private void Timer_Tick(object sender, object e)
-        {
-            this.OnPropertyChanged("CurrentTime");
-        }
-
         private string nextButtonText;
         public string NextButtonText
         {
             get { return this.nextButtonText; }
             set { this.SetProperty(ref this.nextButtonText, value); }
+        }
+
+        private ClockViewModel clock;
+        public ClockViewModel Clock
+        {
+            get => clock;
+            set => this.SetProperty(ref clock, value);
+        }
+
+
+        private bool _enableClock;
+        public bool EnableClock
+        {
+            get { return this._enableClock; }
+            set { this.SetProperty(ref this._enableClock, value); }
+        }
+
+        private DispatcherTimer _timer = new DispatcherTimer();
+        public DateTime CurrentTime { get { return DateTime.Now; } }
+
+        private void Timer_Tick(object sender, object e)
+        {
+                this.OnPropertyChanged("CurrentTime");
+        }
+
+        /// <summary>
+        /// Load Settings /Setup Data for the ViewModel
+        /// </summary>
+        public async Task LoadData()
+        {
+            try
+            {
+                var s = await Dal.GetSetup();
+                if (s.EnableClock == true)
+                {
+                    _timer.Tick += Timer_Tick;
+                    _timer.Interval = new TimeSpan(0, 0, 1);
+                    _timer.Start();
+                } else
+                {
+                    _timer.Stop();
+                }
+                //this.OnPropertyChanged("EnableClock");
+            }
+            catch { }
         }
 
         private string name;

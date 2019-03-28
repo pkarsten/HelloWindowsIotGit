@@ -123,12 +123,12 @@ namespace RWPBGTasks
                         if (s.EnableTodayEvents)
                         {
                             IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-                            todayEvents = myeventstoday.ToObservableCollection();
+                            //todayEvents = myeventstoday.ToObservableCollection();
                         }
                         if (s.EnableCalendarNextEvents)
                         {
                             IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-                            calendarEvents = myevents.ToObservableCollection();
+                            //calendarEvents = myevents.ToObservableCollection();
                         }
                         
                     }
@@ -142,7 +142,7 @@ namespace RWPBGTasks
                 }
                 catch (Exception ex)
                 {
-                    error = ex;
+                    await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
                 }
                 _progress = 100;
             }

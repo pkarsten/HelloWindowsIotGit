@@ -159,11 +159,11 @@ namespace HelloWindowsIot
             // Populate the scenario list from the AppConfiguration.cs file
             // Scenarios for Top in Hamburger Menu
             ScenarioControl.ItemsSource = topScenarios;
-            ScenarioControl.SelectedIndex = 0;
+            ScenarioControl.SelectedIndex = -1;
 
             // Scenarios for Bottom in Hamburger Menu
             FooterControl.ItemsSource = bottomScenarios;
-            FooterControl.SelectedIndex = -1;
+            FooterControl.SelectedIndex = 0;
         }
         #endregion
     }

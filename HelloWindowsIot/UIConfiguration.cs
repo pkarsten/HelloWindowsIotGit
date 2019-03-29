@@ -24,7 +24,7 @@ namespace HelloWindowsIot
         {
             new Scenario() { Title="Settings", ClassType=typeof(SettingsPage), GlyphChar="\xE713"},
             new Scenario() { Title="Dashboard", ClassType=typeof(DashBoard), GlyphChar="\xE80F"},
-            new Scenario() { Title="Desktop", ClassType=typeof(GraphDemo), GlyphChar="\xE713"},
+            new Scenario() { Title="GraphDemo", ClassType=typeof(GraphDemo), GlyphChar="\xE713"},
             new Scenario() { Title="Logs", ClassType=typeof(LogsPage), GlyphChar="\xE8F1"}
             
         };

@@ -1,38 +1,19 @@
-﻿//  ---------------------------------------------------------------------------------
-//  Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
-//  The MIT License (MIT)
-// 
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-// 
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-// 
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
-//  ---------------------------------------------------------------------------------
-
+﻿using AppSettings;
 using MSGraph;
 using MSGraph.Response;
+using RWPBGTasks;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using UwpSqliteDal;
+using Windows.ApplicationModel.Background;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -43,11 +24,107 @@ namespace HelloWindowsIot
     /// </summary>
     public class DashBoardViewModel : BindableBase
     {
-        
+
+        #region Fields
+        private string _taskResult;
+        private string _taskProgress;
+        private bool _enableClock;
+        private DispatcherTimer _timer = new DispatcherTimer();
+        #endregion
+
+        #region Properties
+        public DateTime CurrentTime { get { return DateTime.Now; } }
+        public bool EnableClock
+        {
+            get { return this._enableClock; }
+            set { this.SetProperty(ref this._enableClock, value); }
+        }
+        public BGTaskModel MyBgTask { get; set; }
+        public RelayCommand ClickCmd { get; private set; }
+        #endregion
+
         public DashBoardViewModel()
         {
-            GetCalendarEvents();
+            ClickCmd = new RelayCommand(DoSomething, () => true);
 
+            // Update the Image times every 1 minutes.
+            Helpers.StartTimer(0, 30, async () => await this.UpdateDashBoardImageAsync());
+
+            GetCalendarEvents();
+        }
+
+        /// <summary>
+        /// Attach progress and completed handers to a background task.
+        /// </summary>
+        /// <param name="task">The task to attach progress and completed handlers to.</param>
+        private void AttachGetGraphData_ProgressAndCompletedHandlers(IBackgroundTaskRegistration task)
+        {
+            task.Progress += new BackgroundTaskProgressEventHandler(OnProgressGetGraphData);
+            task.Completed += new BackgroundTaskCompletedEventHandler(OnCompletedGetGraphData);
+        }
+
+        /// <summary>
+        /// Handle background task progress.
+        /// </summary>
+        /// <param name="task">The task that is reporting progress.</param>
+        /// <param name="e">Arguments of the progress report.</param>
+        private async void OnProgressGetGraphData(IBackgroundTaskRegistration task, BackgroundTaskProgressEventArgs args)
+        {
+            await DispatcherHelper.ExecuteOnUIThreadAsync(
+                () =>
+                {
+                    var progress = "Progress: " + args.Progress + "%";
+                    _taskProgress = progress;
+                    UpdateUI();
+                }
+                , CoreDispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// Handle background task completion.
+        /// </summary>
+        /// <param name="task">The task that is reporting completion.</param>
+        /// <param name="e">Arguments of the completion report.</param>
+        private async void OnCompletedGetGraphData(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
+        {
+            if (Settings.LoadPictureListManually == true)
+            {
+                //Unregister App Trigger 
+                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+                //Register Backgroundtask 
+                var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
+                                                                           Settings.LoadImagesFromOneDriveTaskName,
+                                                                            await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
+                                                                           null);
+            }
+            _taskProgress = "List Loaded";
+            _taskResult = "";
+            System.Diagnostics.Debug.WriteLine("OnCompleted Picturesloaded");
+            Settings.LoadPictureListManually = false;
+            UpdateUI();
+
+        }
+
+        private async void UpdateUI()
+        {
+            await DispatcherHelper.ExecuteOnUIThreadAsync(
+                () =>
+                {
+                    System.Diagnostics.Debug.WriteLine("UpdateUI()");
+                    //OnPropertyChanged("TaskResult");
+                    //OnPropertyChanged("TaskProgress");
+                }
+                , CoreDispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// Updates the Dashboard Image 
+        /// </summary>
+        private async Task UpdateDashBoardImageAsync()
+        {
+            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
+            System.Diagnostics.Debug.WriteLine("Here we go");
+            DashImage = Settings.DashBoardImage;
         }
 
         private async Task GetCalendarEvents()
@@ -66,35 +143,13 @@ namespace HelloWindowsIot
             this.OnPropertyChanged("NextCalendarEvents");
         }
 
-        private string nextButtonText;
-        public string NextButtonText
-        {
-            get { return this.nextButtonText; }
-            set { this.SetProperty(ref this.nextButtonText, value); }
-        }
-
-        private ClockViewModel clock;
-        public ClockViewModel Clock
-        {
-            get => clock;
-            set => this.SetProperty(ref clock, value);
-        }
-
-
-        private bool _enableClock;
-        public bool EnableClock
-        {
-            get { return this._enableClock; }
-            set { this.SetProperty(ref this._enableClock, value); }
-        }
-
-        private DispatcherTimer _timer = new DispatcherTimer();
-        public DateTime CurrentTime { get { return DateTime.Now; } }
 
         private void Timer_Tick(object sender, object e)
         {
                 this.OnPropertyChanged("CurrentTime");
         }
+
+        
 
         /// <summary>
         /// Load Settings /Setup Data for the ViewModel
@@ -106,14 +161,22 @@ namespace HelloWindowsIot
                 var s = await Dal.GetSetup();
                 if (s.EnableClock == true)
                 {
+                    EnableClock = true;
                     _timer.Tick += Timer_Tick;
                     _timer.Interval = new TimeSpan(0, 0, 1);
                     _timer.Start();
                 } else
                 {
+                    EnableClock = false;
                     _timer.Stop();
                 }
                 //this.OnPropertyChanged("EnableClock");
+
+                var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadGraphDataTaskName).FirstOrDefault();
+                if (ts != null)
+                {
+                    MyBgTask = ts;
+                }
             }
             catch { }
         }
@@ -353,38 +416,12 @@ namespace HelloWindowsIot
             this.Timestamp = DateTimeOffset.Now;
         }
 
-        /// <summary>
-        /// Returns the name of the location, or the geocoordinates if there is no name. 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() => String.IsNullOrEmpty(this.Name) ?
-            $"{this.Position.Latitude}, {this.Position.Longitude}" : this.Name;
-
-        /// <summary>
-        /// Return a new LocationData with the same property values as the current one.
-        /// </summary>
-        /// <returns>The new LocationData instance.</returns>
-        public DashBoardViewModel Clone()
+        private async void DoSomething()
         {
-            var location = new DashBoardViewModel();
-            location.Copy(this);
-            return location;
+
         }
 
-        /// <summary>
-        /// Copies the property values of the specified location into the current location.
-        /// </summary>
-        /// <param name="location">The location to copy the values from.</param>
-        public void Copy(DashBoardViewModel location)
-        {
-            this.Name = location.Name;
-            this.Address = location.Address;
-            this.Position = location.Position;
-            this.CurrentTravelDistance = location.CurrentTravelDistance;
-            this.CurrentTravelTime = location.CurrentTravelTime;
-            this.Timestamp = location.Timestamp;
-            this.IsMonitored = location.IsMonitored;
-        }
+
 
     }
 }

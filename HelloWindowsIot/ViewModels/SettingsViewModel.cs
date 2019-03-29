@@ -30,11 +30,11 @@ namespace HelloWindowsIot
         private bool canExecute;
         private Setup setupSettings;
         private bool _isBusy;
+        private string _taskResult;
+        private string _taskProgress;
         #endregion
 
         #region Properties
-        private string _taskResult;
-        private string _taskProgress;
         public string TaskProgress {
             get { return this._taskProgress; }
             set { this.SetProperty(ref this._taskProgress, value); }

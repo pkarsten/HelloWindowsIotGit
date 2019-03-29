@@ -24,19 +24,14 @@ namespace HelloWindowsIot
 {
     public sealed partial class DashBoard : Page
     {
-        /// <summary>
-        /// Gets or sets the DashBoardData . 
-        /// </summary>
         public DashBoardViewModel ViewModel { get; set; }
 
         public DashBoard()
         {
             this.InitializeComponent();
             this.ViewModel = new DashBoardViewModel();
-
-            // Update the Image times every 1 minutes.
-            Helpers.StartTimer(0,30, async () => await this.UpdateDashBoardImageAsync());
-
+            
+            
             // MappedLocations is a superset of Locations, so any changes in Locations
             // need to be reflected in MappedLocations. 
             //this.ViewModel.TodayCalendarEvents.CollectionChanged += (s, e) =>
@@ -53,15 +48,7 @@ namespace HelloWindowsIot
 
         
 
-        /// <summary>
-        /// Updates the Dashboard Image 
-        /// </summary>
-        private async Task UpdateDashBoardImageAsync()
-        {
-            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
-            System.Diagnostics.Debug.WriteLine("Here we go");
-            ViewModel.DashImage = Settings.DashBoardImage;
-        }
+      
 
         /// <summary>
         /// Attach progress and completed handers to a background task.
@@ -83,7 +70,6 @@ namespace HelloWindowsIot
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
                 ViewModel = dashboarddata;
                 await ViewModel.LoadData();
-            //await ViewModel.LoadData();
 
             //var locations = await LocationDataStore.GetLocationDataAsync();
             //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();
@@ -93,6 +79,11 @@ namespace HelloWindowsIot
             // so that the view doesn't get refreshed before there is something to show.
             //LocationHelper.Geolocator.StatusChanged += Geolocator_StatusChanged;
             //NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MainPage));
         }
     }
 }

@@ -74,8 +74,11 @@
                 </Grid.RowDefinitions>
                 <!-- Grid.Row 0-->
                 <StackPanel  Grid.Row="0" Orientation="Vertical">
+                    <Button Background="Red" Click="Button_Click">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EE;"/>
+                    </Button>
                     <!--<uc:ClockControl CurrentTime="{x:Bind ViewModel.CurrentTime}" EnableClock="{x:Bind ViewModel.EnableClock}" Visibility="{x:Bind ViewModel.EnableClock, Converter={StaticResource BoolToVisibility}}" />-->
-                    <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" FontSize="36" FontFamily="Cambria"/>
+                    <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}"  Visibility="{x:Bind ViewModel.EnableClock, Converter={StaticResource BoolToVisibility}}" FontSize="36" FontFamily="Cambria"/>
                 </StackPanel>
                 <!-- Grid.Row 1-->
                 <TextBlock Text="Heute" Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="1"></TextBlock>
@@ -95,7 +98,8 @@
             ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
                 <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
                 <uc:PurchaseTaskControl Grid.Row="5" Margin="0,100,0,0"></uc:PurchaseTaskControl>
-           </Grid>
+
+            </Grid>
         </Border>
     </Grid>
 </Page>

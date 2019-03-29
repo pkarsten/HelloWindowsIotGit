@@ -26,7 +26,7 @@ namespace AppSettings
         public static bool CreateMessageTaskRegistered = false;
 
         public const string LoadImagesFromOneDriveTaskName ="LoadImagesFromOneDriveTask";
-        public const string LoadCalendarEventsAndToDosTaskName = "LoadCalendarEventsAndToDos";
+        public const string LoadGraphDataTaskName = "LoadGraphDataTaskName";
 
         public static BitmapImage DashBoardImage { get; set; }
 
@@ -44,7 +44,7 @@ namespace AppSettings
             new BGTaskModel{Name =Settings.ChangeWallpaperTaskName,EntryPoint="RWPBGTasks.ChangeWallpaper",Registered=false},
             new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
             new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
-            new BGTaskModel{Name =Settings.LoadCalendarEventsAndToDosTaskName,EntryPoint="RWPBGTasks.LoadCalendarEventsFromGraph",Registered=false},
+            new BGTaskModel{Name =Settings.LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphDataTaskName",Registered=false},
         };
 
         public static bool RegisterAllBackgroundTasks { get; } = true;

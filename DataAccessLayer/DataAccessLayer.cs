@@ -244,7 +244,7 @@ namespace UwpSqliteDal
 
             switch (taskname)
             {
-                case Settings.LoadCalendarEventsAndToDosTaskName:
+                case Settings.LoadGraphDataTaskName:
                     minutesForTrigger = (uint)s.IntervalForLoadCalendarAndTasksInterval;
                     break;
                 case Settings.LoadImagesFromOneDriveTaskName:

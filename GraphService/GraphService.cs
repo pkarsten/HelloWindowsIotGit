@@ -253,7 +253,7 @@ namespace MSGraph
             try
             {
                 string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00&enddatetime={today}T23:59:00&$select=subject,Start,End");
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00&enddatetime={today}T23:30:00&$select=subject,Start,End");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }

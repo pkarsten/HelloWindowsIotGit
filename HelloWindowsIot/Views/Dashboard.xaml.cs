@@ -68,7 +68,7 @@ namespace HelloWindowsIot
         {
             base.OnNavigatedTo(e);
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
-                ViewModel = dashboarddata;
+                //ViewModel = dashboarddata;
                 await ViewModel.LoadData();
 
             //var locations = await LocationDataStore.GetLocationDataAsync();

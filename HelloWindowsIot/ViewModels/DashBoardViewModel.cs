@@ -11,9 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UwpSqliteDal;
 using Windows.ApplicationModel.Background;
-using Windows.Devices.Geolocation;
-using Windows.Foundation;
-using Windows.Services.Maps;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
@@ -106,6 +103,10 @@ namespace HelloWindowsIot
             _taskProgress = "Graph Data ";
             _taskResult = "";
             System.Diagnostics.Debug.WriteLine("OnCompleted Load Graph Data ");
+            NextCalendarEvents = Settings.NextEvents;
+            TodayCalendarEvents = Settings.TodayEvents;
+            this.OnPropertyChanged("TodayCalendarEvents");
+            this.OnPropertyChanged("NextCalendarEvents");
             UpdateUI();
         }
 
@@ -161,11 +162,6 @@ namespace HelloWindowsIot
         {
             try
             {
-                var s = await Dal.GetSetup();
-                await CheckClockStatus(s);
-
-                Helpers.StartTimer(0, 15, async () => await this.UpdateDashBoardImageAsync());
-
 
                 var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadGraphDataTaskName).FirstOrDefault();
                 if (ts != null)
@@ -181,7 +177,6 @@ namespace HelloWindowsIot
                         AttachGetGraphData_ProgressAndCompletedHandlers(task.Value);
                     }
                 }
-
                 //Unregister App Trigger 
                 BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadGraphDataTaskName);
                 //Register Backgroundtask 
@@ -189,6 +184,19 @@ namespace HelloWindowsIot
                                                                            Settings.LoadGraphDataTaskName,
                                                                             await Dal.GetTimeIntervalForTask(Settings.LoadGraphDataTaskName),
                                                                            null);
+
+
+                var s = await Dal.GetSetup();
+                await CheckClockStatus(s);
+
+                if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
+
+                Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
+
+
+               
+
+
 
                 await GetCalendarEvents();
             }

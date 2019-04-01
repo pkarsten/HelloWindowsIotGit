@@ -1,4 +1,5 @@
 ﻿using AppSettings;
+using HelloWindowsIot;
 using MSGraph;
 using MSGraph.Response;
 using System;
@@ -123,12 +124,12 @@ namespace RWPBGTasks
                         if (s.EnableTodayEvents)
                         {
                             IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-                            //todayEvents = myeventstoday.ToObservableCollection();
+                            Settings.TodayEvents = myeventstoday.ToObservableCollection();
                         }
                         if (s.EnableCalendarNextEvents)
                         {
                             IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-                            //calendarEvents = myevents.ToObservableCollection();
+                            Settings.NextEvents = myevents.ToObservableCollection();
                         }
                         
                     }

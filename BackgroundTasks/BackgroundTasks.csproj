@@ -126,7 +126,6 @@
     <Compile Include="Tasks\CreateMessage.cs" />
     <Compile Include="Tasks\GetGraphData.cs" />
     <Compile Include="Tasks\GetImagesList.cs" />
-    <Compile Include="Tasks\StreamImage.cs" />
     <EmbeddedResource Include="Properties\BackgroundTasks.rd.xml" />
   </ItemGroup>
   <ItemGroup>

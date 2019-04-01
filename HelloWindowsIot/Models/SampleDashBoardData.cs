@@ -29,7 +29,6 @@ namespace HelloWindowsIot
 
             var dashboarddata = new DashBoardViewModel
             {
-                Name = "MyDashBoard",
                 DashImage = demoImage,
                 NextCalendarEvents = loccalendarEvents,
                 TodayCalendarEvents =loccalendarEvents,

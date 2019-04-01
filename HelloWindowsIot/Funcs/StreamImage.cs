@@ -13,7 +13,7 @@ namespace HelloWindowsIot
 {
     public class HelperFunc
     {
-        public static async Task StreamImageFromOneDrive()
+        public static async Task<BitmapImage> StreamImageFromOneDrive()
         {
             try
             {
@@ -101,11 +101,13 @@ namespace HelloWindowsIot
                 item.IsCurrentWallPaper = true;
                 Dal.SavePicture(item);
                 Task.Delay(15000);
-                Settings.DashBoardImage = bitmapimage;
+                //Settings.DashBoardImage = bitmapimage;
+                return bitmapimage;
             }
             catch (Exception ex)
             {
                 Dal.SaveLogEntry(LogType.Error, "Exception  in DAL xxxxxxxxx () " + ex.Message);
+                return null;
             }
             finally
             {

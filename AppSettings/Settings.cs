@@ -29,7 +29,6 @@ namespace AppSettings
         public const string LoadGraphDataTaskName = "LoadGraphDataTaskName";
 
         public static BitmapImage DashBoardImage { get; set; }
-
         public static List<string> TaskList { get; } = new List<string>
             {
                 Settings.ChangeWallpaperTaskName,

@@ -238,8 +238,7 @@ namespace HelloWindowsIot
                 UpdateUI();
             }
                 
-            //await TaskFunctions.LoadPicturesFromOneDriveAsync(false);
-            //TODO: Run this on Backgroundtask and notify progress on UI because when run blocks the UI 
+            //TODO: Run this on Backgroundtask ???? and notify progress on UI because when run blocks the UI 
             //await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
             //IsBusy = false;
         }

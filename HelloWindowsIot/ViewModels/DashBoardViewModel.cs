@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using UwpSqliteDal;
 using Windows.ApplicationModel.Background;
@@ -29,7 +30,7 @@ namespace HelloWindowsIot
         private string _taskResult;
         private string _taskProgress;
         private bool _enableClock;
-        private DispatcherTimer _timer = new DispatcherTimer();
+        private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
         #endregion
 
         #region Properties
@@ -47,8 +48,9 @@ namespace HelloWindowsIot
         {
             ClickCmd = new RelayCommand(DoSomething, () => true);
 
-            // Update the Image times every 1 minutes.
-            Helpers.StartTimer(0, 30, async () => await this.UpdateDashBoardImageAsync());
+            
+            //Helpers.StartTimer(0, 30, async () => await this.UpdateDashBoardImageAsync());
+           // StartTimer();
 
             GetCalendarEvents();
         }
@@ -111,6 +113,7 @@ namespace HelloWindowsIot
                 () =>
                 {
                     System.Diagnostics.Debug.WriteLine("UpdateUI()");
+                    DashImage = Settings.DashBoardImage;
                     //OnPropertyChanged("TaskResult");
                     //OnPropertyChanged("TaskProgress");
                 }
@@ -122,9 +125,15 @@ namespace HelloWindowsIot
         /// </summary>
         private async Task UpdateDashBoardImageAsync()
         {
-            await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
-            System.Diagnostics.Debug.WriteLine("Here we go");
-            DashImage = Settings.DashBoardImage;
+            System.Diagnostics.Debug.WriteLine("Here we go ->  Called at " + DateTime.Now);
+            await DispatcherHelper.ExecuteOnUIThreadAsync(
+                async () =>
+                    {
+                        await HelperFunc.StreamImageFromOneDrive();
+                    }
+                    , CoreDispatcherPriority.High);
+
+            UpdateUI();
         }
 
         private async Task GetCalendarEvents()
@@ -162,14 +171,16 @@ namespace HelloWindowsIot
                 if (s.EnableClock == true)
                 {
                     EnableClock = true;
-                    _timer.Tick += Timer_Tick;
-                    _timer.Interval = new TimeSpan(0, 0, 1);
-                    _timer.Start();
+                    _dtimer.Tick += Timer_Tick;
+                    _dtimer.Interval = new TimeSpan(0, 0, 1);
+                    _dtimer.Start();
                 } else
                 {
                     EnableClock = false;
-                    _timer.Stop();
+                    _dtimer.Stop();
                 }
+
+                Helpers.StartTimer(0, 15, async () => await this.UpdateDashBoardImageAsync());
                 //this.OnPropertyChanged("EnableClock");
 
                 var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadGraphDataTaskName).FirstOrDefault();
@@ -179,6 +190,10 @@ namespace HelloWindowsIot
                 }
             }
             catch { }
+            finally
+            {
+                UpdateUI();
+            }
         }
 
         private string name;

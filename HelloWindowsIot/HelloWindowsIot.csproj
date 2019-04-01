@@ -118,6 +118,7 @@
     <Compile Include="Converter\ScenarioBinding.cs" />
     <Compile Include="Converter\StringFormatConverter.cs" />
     <Compile Include="Converter\ThumbnailToImageConverter.cs" />
+    <Compile Include="Funcs\StreamImage.cs" />
     <Compile Include="ViewModels\ClockViewModel.cs" />
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="Models\SampleDashBoardData.cs" />

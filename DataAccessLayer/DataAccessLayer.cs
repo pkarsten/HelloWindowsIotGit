@@ -14,6 +14,7 @@ using SQLite.Net;
 using AppSettings;
 using MSGraph.Response;
 using MSGraph;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UwpSqliteDal
 {
@@ -145,7 +146,6 @@ namespace UwpSqliteDal
             }
         }
         #endregion
-
 
         #region Setup
         /// <summary>
@@ -783,6 +783,7 @@ namespace UwpSqliteDal
 
             return tasks;
         }
+
         #endregion
 
     }

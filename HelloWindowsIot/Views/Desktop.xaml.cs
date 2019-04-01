@@ -194,7 +194,7 @@ namespace HelloWindowsIot
             ThreadPoolTimer PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(
                 async (source) =>
                 {
-                    await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
+                    await HelperFunc.StreamImageFromOneDrive();
                     UpdateUI();
                 }, period);
         }

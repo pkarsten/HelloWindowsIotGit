@@ -152,8 +152,6 @@ namespace RWPBGTasks
             }
             finally
             {
-                await TaskFunctions.ChangeDashBoardBackGroundAsync(false);
-
                 var settings = ApplicationData.Current.LocalSettings;
                 var key = _taskInstance.Task.Name;
 

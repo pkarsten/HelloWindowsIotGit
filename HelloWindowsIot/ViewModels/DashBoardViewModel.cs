@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Background;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
+using UwpSqLiteDal;
 
 namespace HelloWindowsIot
 {
@@ -31,6 +32,9 @@ namespace HelloWindowsIot
         private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
         private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
         private ObservableCollection<CalendarEvent> nextcalendarEvents = new ObservableCollection<CalendarEvent>();
+        private PurchTask purchtask =new PurchTask();
+        private string purchtaskcontent = "";
+        private string purchtasksubject ="";
         #endregion
 
         #region Properties
@@ -56,6 +60,24 @@ namespace HelloWindowsIot
         {
             get { return this.todayEvents; }
             set { this.SetProperty(ref this.todayEvents, value); }
+        }
+        public PurchTask PurchTask
+        {
+            get { return this.purchtask; }
+            set
+            {
+                this.SetProperty(ref this.purchtask, value);
+            }
+        }
+        public string PurchTaskContent
+        {
+            get { return this.purchtaskcontent; }
+            set { this.SetProperty(ref this.purchtaskcontent, value); }
+        }
+        public string PurchTaskSubject
+        {
+            get { return this.purchtasksubject; }
+            set { this.SetProperty(ref this.purchtasksubject, value); }
         }
         #endregion
 
@@ -107,7 +129,12 @@ namespace HelloWindowsIot
 
                 nextcalendarEvents = Dal.GetNextEvents().ToObservableCollection();
                 todayEvents = Dal.GetTodayEvents().ToObservableCollection();
-                
+                var pt = await Dal.GetPurchTask();
+                purchtaskcontent = pt.BodyText;
+                purchtasksubject = pt.Subject;
+                await Dal.SaveLogEntry(LogType.Info, "Purch task" + purchtasksubject);
+
+
                 UpdateUI();
             }
             catch(Exception ex)
@@ -128,7 +155,8 @@ namespace HelloWindowsIot
                     System.Diagnostics.Debug.WriteLine("UpdateUI()");
                     this.OnPropertyChanged("TodayCalendarEvents");
                     this.OnPropertyChanged("NextCalendarEvents");
-                    //OnPropertyChanged("TaskResult");
+                    this.OnPropertyChanged("PurchTaskContent");
+                    this.OnPropertyChanged("PurchTaskSubject");
                     //OnPropertyChanged("TaskProgress");
                 }
                 , CoreDispatcherPriority.Normal);

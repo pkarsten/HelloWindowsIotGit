@@ -97,8 +97,10 @@
             ItemTemplate="{StaticResource EventTemplate}" 
             ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
                 <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
-                <uc:PurchaseTaskControl Grid.Row="5" Margin="0,100,0,0"></uc:PurchaseTaskControl>
-               
+                    <StackPanel Orientation="Vertical" Grid.Row="5">
+                    <TextBlock x:Name="TaskSubject" Text="{x:Bind ViewModel.PurchTaskSubject,Mode=OneWay}" MinHeight="10" FontSize="13" FontFamily="Segoe Ui" FontWeight="Bold" Foreground="White">asdff</TextBlock>
+                    <WebView x:Name="TaskWebView" loc:Extensions.HTML="{x:Bind ViewModel.PurchTaskContent, Mode=OneWay}" MinHeight="30" Height="30" Width="175" DefaultBackgroundColor="SteelBlue"  Opacity="0.6" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Stretch" ></WebView>
+                    </StackPanel>
             </Grid>
         </Border>
     </Grid>

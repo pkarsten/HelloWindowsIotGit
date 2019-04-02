@@ -123,11 +123,13 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DataAccessLayer.cs" />
     <Compile Include="Helper\ListExtensions.cs" />
+    <Compile Include="Models\CalendarEvent.cs" />
     <Compile Include="Models\FavoritePic.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\OutlookTaskFolder.cs" />
     <Compile Include="Models\PicFilter.cs" />
+    <Compile Include="Models\PurchTask.cs" />
     <Compile Include="Models\Setup.cs" />
     <Compile Include="Models\TaskStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

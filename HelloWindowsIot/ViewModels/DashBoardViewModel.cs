@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading;
+using HelloWindowsIot;
 using System.Threading.Tasks;
 using UwpSqliteDal;
 using Windows.ApplicationModel.Background;
@@ -29,8 +29,8 @@ namespace HelloWindowsIot
         private bool _enableClock;
         private BitmapImage dashimage;
         private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
-        private ObservableCollection<CalendarEventItem> todayEvents = new ObservableCollection<CalendarEventItem>();
-        private ObservableCollection<CalendarEventItem> calendarEvents = new ObservableCollection<CalendarEventItem>();
+        private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
+        private ObservableCollection<CalendarEvent> calendarEvents = new ObservableCollection<CalendarEvent>();
         #endregion
 
         #region Properties
@@ -47,12 +47,12 @@ namespace HelloWindowsIot
             get { return this.dashimage; }
             set { this.SetProperty(ref this.dashimage, value); }
         }
-        public ObservableCollection<CalendarEventItem> NextCalendarEvents
+        public ObservableCollection<CalendarEvent> NextCalendarEvents
         {
             get { return this.calendarEvents; }
             set { this.SetProperty(ref this.calendarEvents, value); }
         }
-        public ObservableCollection<CalendarEventItem> TodayCalendarEvents
+        public ObservableCollection<CalendarEvent> TodayCalendarEvents
         {
             get { return this.todayEvents; }
             set { this.SetProperty(ref this.todayEvents, value); }
@@ -104,9 +104,9 @@ namespace HelloWindowsIot
             {
                 _taskProgress = "Graph Data ";
                 _taskResult = "";
-               
-                NextCalendarEvents = Settings.NextEvents;
-                TodayCalendarEvents = Settings.TodayEvents;
+
+                NextCalendarEvents = Dal.GetNextEvents().ToObservableCollection();
+                TodayCalendarEvents = Dal.GetTodayEvents().ToObservableCollection();
                 //this.OnPropertyChanged("TodayCalendarEvents");
                 //this.OnPropertyChanged("NextCalendarEvents");
                 UpdateUI();
@@ -151,18 +151,18 @@ namespace HelloWindowsIot
 
         private async Task GetCalendarEvents()
         {
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
+            //var accessToken = await GraphService.GetTokenForUserAsync();
+            //var graphService = new GraphService(accessToken);
 
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-            calendarEvents = myevents.ToObservableCollection();
+            //IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            //calendarEvents = myevents.ToObservableCollection();
 
 
-            IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-            todayEvents = myeventstoday.ToObservableCollection();
+            //IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
+            //todayEvents = myeventstoday.ToObservableCollection();
 
-            this.OnPropertyChanged("TodayCalendarEvents");
-            this.OnPropertyChanged("NextCalendarEvents");
+            //this.OnPropertyChanged("TodayCalendarEvents");
+            //this.OnPropertyChanged("NextCalendarEvents");
         }
        
 

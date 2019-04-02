@@ -14,7 +14,7 @@ using SQLite.Net;
 using AppSettings;
 using MSGraph.Response;
 using MSGraph;
-using Windows.UI.Xaml.Media.Imaging;
+using UwpSqLiteDal;
 
 namespace UwpSqliteDal
 {
@@ -531,6 +531,111 @@ namespace UwpSqliteDal
                     db.Update(pic);
                 }
             }
+        }
+
+       
+
+        #endregion
+
+        #region CalendarEvents
+        public static async Task SaveCalendarEvent(CalendarEvent ce)
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                if (ce.Id == 0)
+                {
+                    // New
+                    db.Insert(ce);
+                }
+                else
+                {
+                    // Update
+                    db.Update(ce);
+                }
+            }
+        }
+        public static async Task DeleteAllCalendarEvents()
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                // Activate Tracing
+                //db.TraceListener = new DebugTraceListener();
+
+                // SQL Syntax:
+                db.Execute("DELETE FROM CalendarEvent");
+            }
+        }
+        public static IList<CalendarEvent> GetTodayEvents()
+        {
+            IList<CalendarEvent> models;
+
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+
+                models = (from p in db.Table<CalendarEvent>()
+                          select p).Where(c => c.TodayEvent == true).ToList();
+            }
+
+            return models;
+        }
+        public static IList<CalendarEvent> GetNextEvents()
+        {
+            IList<CalendarEvent> models;
+
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                models = (from p in db.Table<CalendarEvent>()
+                          select p).Where(c => c.TodayEvent == false).ToList();
+            }
+
+            return models;
+        }
+        #endregion
+
+        #region PurchTask
+        public static async Task SavePurchTask(PurchTask obj)
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                if (obj.Id == 0)
+                {
+                    // New
+                    db.Insert(obj);
+                }
+                else
+                {
+                    // Update
+                    db.Update(obj);
+                }
+            }
+        }
+        public static async Task DeletePurchTask()
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                // SQL Syntax:
+                db.Execute("DELETE FROM PurchTask");
+            }
+        }
+        public static async Task<PurchTask> GetPurchTask()
+        {
+            PurchTask model;
+
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+
+                model = (from p in db.Table<PurchTask>()
+                          select p).FirstOrDefault();
+            }
+
+            return model;
         }
         #endregion
 

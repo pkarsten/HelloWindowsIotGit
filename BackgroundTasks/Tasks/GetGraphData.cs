@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UwpSqliteDal;
+using UwpSqLiteDal;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
 
@@ -124,12 +125,28 @@ namespace RWPBGTasks
                         if (s.EnableTodayEvents)
                         {
                             IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-                            Settings.TodayEvents = myeventstoday.ToObservableCollection();
+                            foreach(var o in myeventstoday)
+                            {
+                                var ce = new CalendarEvent();
+                                ce.Subject = o.Subject;
+                                ce.TodayEvent = true;
+                                ce.StartDateTime = o.StartDateTime.dateTime;
+                                await Dal.SaveCalendarEvent(ce);
+                            }
+                            //Settings.TodayEvents = myeventstoday.ToObservableCollection();
                         }
                         if (s.EnableCalendarNextEvents)
                         {
-                            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-                            Settings.NextEvents = myevents.ToObservableCollection();
+                            IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents();
+                            Settings.NextEvents = nextevents.ToObservableCollection();
+                            foreach (var o in nextevents)
+                            {
+                                var ce = new CalendarEvent();
+                                ce.Subject = o.Subject;
+                                ce.TodayEvent = false;
+                                ce.StartDateTime = o.StartDateTime.dateTime;
+                                await Dal.SaveCalendarEvent(ce);
+                            }
                         }
                         
                     }
@@ -138,6 +155,14 @@ namespace RWPBGTasks
                     {
                         //Graph Service for get Tasks
                         var mypurchtask = await graphService.GetPurchaseTask();
+
+                        if(mypurchtask != null)
+                        {
+                            var pt = new PurchTask();
+                            pt.Subject = mypurchtask.Subject;
+                            pt.BodyText = mypurchtask.TaskBody.Content;
+                            await Dal.SavePurchTask(pt);
+                        }
                     }
                     //Settings.DashBoardImage = bitmapimage;
                 }

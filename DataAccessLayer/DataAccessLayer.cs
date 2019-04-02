@@ -77,6 +77,12 @@ namespace UwpSqliteDal
                 var ms = db.CreateTable<Message>();
                 var msinfo = db.GetMapping(typeof(Message));
 
+                var ce = db.CreateTable<CalendarEvent>();
+                var cdinfo= db.GetMapping(typeof(CalendarEvent));
+
+                var pt = db.CreateTable<PurchTask>();
+                var ptinfo = db.GetMapping(typeof(PurchTask));
+
             }
             CheckSetupData();
             CheckPicFilterData();

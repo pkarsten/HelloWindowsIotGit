@@ -121,6 +121,7 @@ namespace RWPBGTasks
                     var s = await Dal.GetSetup();
                     if (s.EnableCalendarAddon)
                     {
+                        await Dal.DeleteAllCalendarEvents();
                         //Graphservice for get Calendar Events
                         if (s.EnableTodayEvents)
                         {
@@ -153,6 +154,7 @@ namespace RWPBGTasks
 
                     if (s.EnablePurchaseTask)
                     {
+                        await Dal.DeletePurchTask();
                         //Graph Service for get Tasks
                         var mypurchtask = await graphService.GetPurchaseTask();
 

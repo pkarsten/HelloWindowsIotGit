@@ -30,7 +30,7 @@ namespace HelloWindowsIot
         private BitmapImage dashimage;
         private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
         private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
-        private ObservableCollection<CalendarEvent> calendarEvents = new ObservableCollection<CalendarEvent>();
+        private ObservableCollection<CalendarEvent> nextcalendarEvents = new ObservableCollection<CalendarEvent>();
         #endregion
 
         #region Properties
@@ -49,8 +49,8 @@ namespace HelloWindowsIot
         }
         public ObservableCollection<CalendarEvent> NextCalendarEvents
         {
-            get { return this.calendarEvents; }
-            set { this.SetProperty(ref this.calendarEvents, value); }
+            get { return this.nextcalendarEvents; }
+            set { this.SetProperty(ref this.nextcalendarEvents, value); }
         }
         public ObservableCollection<CalendarEvent> TodayCalendarEvents
         {
@@ -105,10 +105,9 @@ namespace HelloWindowsIot
                 _taskProgress = "Graph Data ";
                 _taskResult = "";
 
-                NextCalendarEvents = Dal.GetNextEvents().ToObservableCollection();
-                TodayCalendarEvents = Dal.GetTodayEvents().ToObservableCollection();
-                //this.OnPropertyChanged("TodayCalendarEvents");
-                //this.OnPropertyChanged("NextCalendarEvents");
+                nextcalendarEvents = Dal.GetNextEvents().ToObservableCollection();
+                todayEvents = Dal.GetTodayEvents().ToObservableCollection();
+                
                 UpdateUI();
             }
             catch(Exception ex)
@@ -127,6 +126,8 @@ namespace HelloWindowsIot
                 () =>
                 {
                     System.Diagnostics.Debug.WriteLine("UpdateUI()");
+                    this.OnPropertyChanged("TodayCalendarEvents");
+                    this.OnPropertyChanged("NextCalendarEvents");
                     //OnPropertyChanged("TaskResult");
                     //OnPropertyChanged("TaskProgress");
                 }
@@ -148,24 +149,6 @@ namespace HelloWindowsIot
 
             UpdateUI();
         }
-
-        private async Task GetCalendarEvents()
-        {
-            //var accessToken = await GraphService.GetTokenForUserAsync();
-            //var graphService = new GraphService(accessToken);
-
-            //IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
-            //calendarEvents = myevents.ToObservableCollection();
-
-
-            //IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-            //todayEvents = myeventstoday.ToObservableCollection();
-
-            //this.OnPropertyChanged("TodayCalendarEvents");
-            //this.OnPropertyChanged("NextCalendarEvents");
-        }
-       
-
         /// <summary>
         /// Load Initial Settings /Setup Data for the ViewModel
         /// </summary>
@@ -195,7 +178,6 @@ namespace HelloWindowsIot
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
-                await GetCalendarEvents();
             }
             catch(Exception ex)
             {

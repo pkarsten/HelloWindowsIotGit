@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UwpSqliteDal;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace HelloWindowsIot
@@ -17,13 +18,13 @@ namespace HelloWindowsIot
         /// <returns>The sample locations.</returns>
         public static async Task<DashBoardViewModel> GetSampleDashBoardDataAsync()
         {
-            var loccalendarEvents = new System.Collections.ObjectModel.ObservableCollection<MSGraph.Response.CalendarEventItem>();
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now.AddDays(-2) } });
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin 1", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now } });
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin 3", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now.AddDays(2) } });
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin 4", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now.AddDays(3) } });
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin 6", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now.AddDays(4) } });
-            loccalendarEvents.Add(new CalendarEventItem { Subject = "hallo Termin 8", StartDateTime = new DateInfoResponse { dateTime = DateTime.Now.AddDays(4) } });
+            var loccalendarEvents = new System.Collections.ObjectModel.ObservableCollection<CalendarEvent>();
+            loccalendarEvents.Add(new CalendarEvent { Subject = "hallo Termin", StartDateTime = DateTime.Now.AddDays(-2)});
+            loccalendarEvents.Add(new CalendarEvent { Subject = "hallo Termin 1", StartDateTime = DateTime.Now });
+            loccalendarEvents.Add(new CalendarEvent{ Subject = "hallo Termin 3", StartDateTime = DateTime.Now.AddDays(2) } );
+            loccalendarEvents.Add(new CalendarEvent{ Subject = "hallo Termin 4", StartDateTime = DateTime.Now.AddDays(3) } );
+            loccalendarEvents.Add(new CalendarEvent{ Subject = "hallo Termin 6", StartDateTime =  DateTime.Now.AddDays(4) });
+            loccalendarEvents.Add(new CalendarEvent{ Subject = "hallo Termin 8", StartDateTime =  DateTime.Now.AddDays(4) });
 
             BitmapImage demoImage = new BitmapImage(new Uri("ms-appx:///Assets/dashdemoimage.jpg"));
 

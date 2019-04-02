@@ -45,6 +45,7 @@ namespace HelloWindowsIot
         {
             Dal.CreateDatabase();
             BackgroundTaskConfig.UnregisterALlTasks();
+            await BackgroundTaskConfig.RegisterNeededTasks();
         }
 
         /// <summary>

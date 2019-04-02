@@ -13,7 +13,7 @@ using Windows.Storage;
 
 namespace RWPBGTasks
 {
-    public sealed class GetCalendarEventsAndTasks : IBackgroundTask
+    public sealed class LoadGraphData : IBackgroundTask
     {
         #region variablen
         BackgroundTaskCancellationReason _cancelReason = BackgroundTaskCancellationReason.Abort;

@@ -65,8 +65,6 @@ namespace RWPBGTasks
 
             BackgroundTaskRegistration task = builder.Register();
             Dal.SaveLogEntry(LogType.Info, "Background Task " + name + " Registered " + " at " + DateTime.Now);
-            UpdateBackgroundTaskRegistrationStatus(name, true);
-
             return task;
         }
 
@@ -88,8 +86,6 @@ namespace RWPBGTasks
                     Dal.SaveLogEntry(LogType.Info, "Unregister " + name);
                 }
             }
-
-            UpdateBackgroundTaskRegistrationStatus(name, false);
         }
 
         public static void UnregisterALlTasks()
@@ -101,37 +97,27 @@ namespace RWPBGTasks
             }
         }
 
-
-        /// <summary>
-        /// Store the registration status of a background task with a given name.
-        /// </summary>
-        /// <param name="name">Name of background task to store registration status for.</param>
-        /// <param name="registered">TRUE if registered, FALSE if unregistered.</param>
-        public static void UpdateBackgroundTaskRegistrationStatus(String name, bool registered)
+        public static IAsyncOperation<bool> RegisterNeededTasks()
         {
-            var til = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
-            til.Registered = registered;
-
-            
-            var ts = Dal.GetTaskStatusByTaskName(name);
-            if (ts != null)
+            return InternalRegisterNeededTasks().AsAsyncOperation();
+        }
+        private static async Task<bool> InternalRegisterNeededTasks()
+        {
+            foreach (BGTaskModel b in Settings.ListBgTasks)
             {
-                var settings = ApplicationData.Current.LocalSettings;
-                string additionalStatus = "";
-                if (settings.Values.ContainsKey(name))
+                if(b.Registered == false)
                 {
-                    additionalStatus = settings.Values[name].ToString();
+                    var task = await RegisterBackgroundTask(b.EntryPoint,
+                                                                    b.Name,
+                                                                    await Dal.GetTimeIntervalForTask(b.Name),
+                                                                    null);
                 }
-
-                ts.CurrentRegisteredStatus = registered;
-                ts.AdditionalStatus = additionalStatus;
-                Dal.UpdateTaskStatus(ts);
-                Dal.SaveLogEntry(LogType.Info, string.Format("Update {0} status registered: {1} ", name, registered));
             }
+            return true;
         }
 
 
-
+       
         /// <summary>
         /// Get the registration / completion status of the background task with
         /// given name.

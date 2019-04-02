@@ -12,7 +12,7 @@ namespace AppSettings
         #region Background Tasks
         public const string CreateMessageTaskName = "CreateMessageTask";
         public const string LoadImagesFromOneDriveTaskName = "LoadImagesFromOneDriveTask";
-        public const string LoadGraphDataTaskName = "LoadGraphDataTaskName";
+        public const string LoadGraphDataTaskName = "LoadGraphDataTask";
 
         public static BitmapImage DashBoardImage { get; set; }
         public static ObservableCollection<CalendarEventItem> NextEvents { get; set; } = new ObservableCollection<CalendarEventItem>();
@@ -30,7 +30,7 @@ namespace AppSettings
         {
             new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
             new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
-            new BGTaskModel{Name =Settings.LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphDataTaskName",Registered=false},
+            new BGTaskModel{Name =Settings.LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphData",Registered=false},
         };
 
         public static bool RegisterAllBackgroundTasks { get; } = true;

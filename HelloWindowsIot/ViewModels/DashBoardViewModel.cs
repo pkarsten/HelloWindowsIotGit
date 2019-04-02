@@ -100,14 +100,25 @@ namespace HelloWindowsIot
         /// <param name="e">Arguments of the completion report.</param>
         private async void OnCompletedGetGraphData(IBackgroundTaskRegistration task, BackgroundTaskCompletedEventArgs args)
         {
-            _taskProgress = "Graph Data ";
-            _taskResult = "";
-            System.Diagnostics.Debug.WriteLine("OnCompleted Load Graph Data ");
-            NextCalendarEvents = Settings.NextEvents;
-            TodayCalendarEvents = Settings.TodayEvents;
-            this.OnPropertyChanged("TodayCalendarEvents");
-            this.OnPropertyChanged("NextCalendarEvents");
-            UpdateUI();
+            try
+            {
+                _taskProgress = "Graph Data ";
+                _taskResult = "";
+               
+                NextCalendarEvents = Settings.NextEvents;
+                TodayCalendarEvents = Settings.TodayEvents;
+                //this.OnPropertyChanged("TodayCalendarEvents");
+                //this.OnPropertyChanged("NextCalendarEvents");
+                UpdateUI();
+            }
+            catch(Exception ex)
+            {
+                await Dal.SaveLogEntry(LogType.Error, ex.Message);
+            }
+            finally
+            {
+                await Dal.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
+            }
         }
 
         private async void UpdateUI()
@@ -177,14 +188,6 @@ namespace HelloWindowsIot
                         AttachGetGraphData_ProgressAndCompletedHandlers(task.Value);
                     }
                 }
-                //Unregister App Trigger 
-                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadGraphDataTaskName);
-                //Register Backgroundtask 
-                var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
-                                                                           Settings.LoadGraphDataTaskName,
-                                                                            await Dal.GetTimeIntervalForTask(Settings.LoadGraphDataTaskName),
-                                                                           null);
-
 
                 var s = await Dal.GetSetup();
                 await CheckClockStatus(s);
@@ -192,12 +195,6 @@ namespace HelloWindowsIot
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
-
-
-               
-
-
-
                 await GetCalendarEvents();
             }
             catch(Exception ex)

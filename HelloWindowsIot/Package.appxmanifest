@@ -32,8 +32,9 @@
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks" EntryPoint="RWPBGTasks.LoadGraphDataTaskName">
+        <Extension Category="windows.backgroundTasks" EntryPoint="RWPBGTasks.LoadGraphData">
           <BackgroundTasks>
+            <Task Type="systemEvent" />
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>

@@ -130,7 +130,7 @@ namespace HelloWindowsIot
                 nextcalendarEvents = Dal.GetNextEvents().ToObservableCollection();
                 todayEvents = Dal.GetTodayEvents().ToObservableCollection();
                 var pt = await Dal.GetPurchTask();
-                purchtaskcontent = pt.BodyText;
+                purchtaskcontent = pt.BodyText.Replace("<li> </li>", ""); 
                 purchtasksubject = pt.Subject;
                 await Dal.SaveLogEntry(LogType.Info, "Purch task" + purchtasksubject);
 

@@ -21,32 +21,40 @@ namespace HelloWindowsIot.Controls
 {
     public sealed partial class PurchaseTaskControl : UserControl
     {
+        public static readonly DependencyProperty PurchTaskHtmlProperty =
+          DependencyProperty.Register("PurchTaskHtml", typeof(string), typeof(PurchaseTaskControl),null);
+
+        public string PurchTaskHtml
+        {
+            get => (string)GetValue(PurchTaskHtmlProperty);
+            set => SetValue(PurchTaskHtmlProperty, value);
+        }
+        public static readonly DependencyProperty PurchTaskSubjectProperty =
+  DependencyProperty.Register("PurchTaskSubjectProperty ", typeof(string), typeof(PurchaseTaskControl), new PropertyMetadata(0, new PropertyChangedCallback(OnPurchTaskSubjectChanged)));
+
+        public string PurchTaskSubject
+        {
+            get => (string)GetValue(PurchTaskSubjectProperty);
+            set => SetValue(PurchTaskSubjectProperty, value);
+        }
+
         public PurchaseTaskControl()
         {
             this.InitializeComponent();
-            GetPurchList();
+            TaskWebView.NavigationCompleted += WebView_NavigationCompleted;
+            //TaskWebView.NavigateToString(PurchTaskHtml);
+            //GetPurchList();
         }
 
-        private async Task GetPurchList()
+        private static void OnPurchTaskSubjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-            //CalendarText.Text = await graphService.GetCalendarViewTest();
-            string s = "";
-            var mypurchtask = await graphService.GetPurchaseTask();
-            TaskWebView.NavigationCompleted += WebView_NavigationCompleted;
-            TaskSubject.Text = mypurchtask.Subject;
-            var content = mypurchtask.TaskBody.Content;
-            content = content.Replace("<li> </li>", "");
-            TaskWebView.NavigateToString(content);
-            System.Diagnostics.Debug.WriteLine("My Purch Task: " + mypurchtask.Subject);
-            System.Diagnostics.Debug.WriteLine("========================================");
-            System.Diagnostics.Debug.WriteLine("My Purch List" + mypurchtask.TaskBody.Content);
-            System.Diagnostics.Debug.WriteLine("========================================");
+
+           
         }
 
         private async void WebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
+            ///Calc Needed High for Webview
             var webView = sender as WebView;
             webView.Height = 30;
             int width;

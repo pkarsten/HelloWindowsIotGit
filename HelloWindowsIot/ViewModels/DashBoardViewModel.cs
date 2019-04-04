@@ -127,19 +127,21 @@ namespace HelloWindowsIot
                 _taskProgress = "Graph Data ";
                 _taskResult = "";
 
-                nextcalendarEvents = Dal.GetNextEvents().ToObservableCollection();
-                todayEvents = Dal.GetTodayEvents().ToObservableCollection();
+                var t = Dal.GetNextEvents().ToObservableCollection();
+
+                nextcalendarEvents = t;
+
+                var t1 = Dal.GetTodayEvents().ToObservableCollection();
+                todayEvents = t1;
                 var pt = await Dal.GetPurchTask();
                 purchtaskcontent = pt.BodyText.Replace("<li> </li>", ""); 
                 purchtasksubject = pt.Subject;
                 await Dal.SaveLogEntry(LogType.Info, "Purch task" + purchtasksubject);
-
-
                 UpdateUI();
             }
             catch(Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exce in OnCompletedGraphtask " + ex.Message);
             }
             finally
             {

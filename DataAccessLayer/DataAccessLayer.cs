@@ -491,30 +491,6 @@ namespace UwpSqliteDal
             }
         }
 
-        /// <summary>
-        /// Reset All Fields IsCurrentWallpaper in Table FavoritePic
-        /// </summary>
-        public static void ResetIsCurrentWallpaper()
-        {
-            // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
-            {
-                db.Query<FavoritePic>("UPDATE FavoritePic SET IsCurrentWallPaper = 0");
-            }
-        }
-
-        public static FavoritePic GetCurrentBGPic()
-        {
-            // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
-            {
-                FavoritePic m = (from p in db.Table<FavoritePic>()
-                                 where p.IsCurrentWallPaper == true
-                                 select p).FirstOrDefault();
-                return m;
-            }
-        }
-
         public static async Task SavePicture(FavoritePic pic)
         {
             // Create a new connection
@@ -522,12 +498,6 @@ namespace UwpSqliteDal
             {
                 if (pic.Id == 0)
                 {
-                    //TODO: First Reset all Current BG Pics Status 
-                    //var allPictures = (from p in db.Table<FavoritePic>()
-                    //          select p).ToList();
-                    ////https://code.msdn.microsoft.com/windowsapps/Sqlite-Sample-for-Windows-ad3af7ae
-                    db.Query<FavoritePic>("UPDATE FavoritePic SET IsCurrentWallPaper = 0");
-
                     // New
                     db.Insert(pic);
                 }

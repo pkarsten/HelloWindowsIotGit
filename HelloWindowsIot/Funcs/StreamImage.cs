@@ -41,11 +41,11 @@ namespace HelloWindowsIot
 
                     if (foundFile == null)
                     {
-                        Dal.SaveLogEntry(LogType.Error, $"Image Not found Id: {item.OneDriveId}");
+                        await Dal.SaveLogEntry(LogType.Error, $"Image Not found Id: {item.OneDriveId}");
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + " Id: " + item.OneDriveId + item.DownloadUrl);
+                        //System.Diagnostics.Debug.WriteLine("Found Image: " + item.Name + " Id: " + item.OneDriveId + item.DownloadUrl);
 
                     }
 
@@ -54,7 +54,7 @@ namespace HelloWindowsIot
 
                     if (contentStream == null)
                     {
-                        Dal.SaveLogEntry(LogType.Error, $"Content not found: {foundFile.Name}");
+                        await Dal.SaveLogEntry(LogType.Error, $"Content Stream not found: {foundFile.Name}");
                     }
                 }
                 catch (Exception ex)
@@ -64,7 +64,7 @@ namespace HelloWindowsIot
 
                 if (error != null)
                 {
-                    Dal.SaveLogEntry(LogType.Error, error.Message);
+                    await Dal.SaveLogEntry(LogType.Error, error.Message);
                 }
 
                 // Save the retrieved stream 
@@ -72,14 +72,7 @@ namespace HelloWindowsIot
 
                 if (memoryStream != null)
                 {
-                    //if (item.Image == null)
-                    //{
-                    //    System.Diagnostics.Debug.WriteLine("item.Image == null");
-                    //}
-                    System.Diagnostics.Debug.WriteLine("memoryStream != null");
-                    //await item.Image.Bitmap.SetSourceAsync(memoryStream.AsRandomAccessStream());
                     await bitmapimage.SetSourceAsync(memoryStream.AsRandomAccessStream());
-                    System.Diagnostics.Debug.WriteLine("awaited memory stream != null");
 
                 }
                 else
@@ -88,29 +81,22 @@ namespace HelloWindowsIot
                     {
                         await contentStream.CopyToAsync(memoryStream);
                         memoryStream.Position = 0;
-                        System.Diagnostics.Debug.WriteLine("using (memoryStream = new MemoryStream()");
                         await bitmapimage.SetSourceAsync(memoryStream.AsRandomAccessStream());
                     }
                 }
-                System.Diagnostics.Debug.WriteLine("must set bgimage");
-
-                //bitmapimage = new BitmapImage(new Uri(item.DownloadUrl)); -> Works too
-                Dal.SaveLogEntry(LogType.AppInfo, "Dashboard Picture Changed");
+                
                 item.Viewed = true;
-                Dal.ResetIsCurrentWallpaper();
-                item.IsCurrentWallPaper = true;
-                Dal.SavePicture(item);
-                Task.Delay(15000);
-                //Settings.DashBoardImage = bitmapimage;
+                await Dal.SavePicture(item);
                 return bitmapimage;
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception  in DAL xxxxxxxxx () " + ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exception  in StreamImageFromOneDrive(): " + ex.Message);
                 return null;
             }
             finally
             {
+                await Dal.SaveLogEntry(LogType.Info, "Dashboard Picture Changed at: " + DateTime.Now);
                 Dal.CheckForViewedPictures();
             }
         }

@@ -127,24 +127,17 @@ namespace HelloWindowsIot
                 _taskProgress = "Graph Data ";
                 _taskResult = "";
 
-                var t = Dal.GetNextEvents().ToObservableCollection();
-
-                nextcalendarEvents = t;
-
-                var t1 = Dal.GetTodayEvents().ToObservableCollection();
-                todayEvents = t1;
-                var pt = await Dal.GetPurchTask();
-                purchtaskcontent = pt.BodyText.Replace("<li> </li>", ""); 
-                purchtasksubject = pt.Subject;
-                await Dal.SaveLogEntry(LogType.Info, "Purch task" + purchtasksubject);
+                await LoadCalendarEvents();
+                await LoadPurchTask();
                 UpdateUI();
             }
             catch(Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exce in OnCompletedGraphtask " + ex.Message);
+                await Dal.SaveLogEntry(LogType.Error, "Exception: in OnCompletedGetGraphData: " + ex.Message);
             }
             finally
             {
+                
                 await Dal.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
             }
         }
@@ -169,7 +162,6 @@ namespace HelloWindowsIot
         /// </summary>
         private async Task UpdateDashBoardImageAsync()
         {
-            System.Diagnostics.Debug.WriteLine("Here we go ->  Called at " + DateTime.Now);
             await DispatcherHelper.ExecuteOnUIThreadAsync(
                 async () =>
                     {
@@ -186,6 +178,9 @@ namespace HelloWindowsIot
         {
             try
             {
+                await this.UpdateDashBoardImageAsync();
+                await LoadCalendarEvents();
+                await LoadPurchTask();
 
                 var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadGraphDataTaskName).FirstOrDefault();
                 if (ts != null)
@@ -208,6 +203,7 @@ namespace HelloWindowsIot
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
+
             }
             catch(Exception ex)
             {
@@ -244,9 +240,7 @@ namespace HelloWindowsIot
             EnableClock = false;
             _dtimer.Stop();
         }
-        #endregion
 
-        #region Event Handler
         /// <summary>
         /// Change Time on CLock if Clock COntrol is Enable
         /// </summary>
@@ -256,6 +250,31 @@ namespace HelloWindowsIot
         {
             this.OnPropertyChanged("CurrentTime");
         }
+        #endregion
+
+        #region Calendar Events
+        private async Task LoadCalendarEvents()
+        {
+            var t = Dal.GetNextEvents().ToObservableCollection();
+            if (t!= null)
+                nextcalendarEvents = t;
+
+            var t1 = Dal.GetTodayEvents().ToObservableCollection();
+            if (t1!=null)
+                todayEvents = t1;
+        }
+        #endregion
+
+        #region PurchTask
+        private async Task LoadPurchTask()
+        {
+            var pt = await Dal.GetPurchTask();
+            purchtaskcontent = pt.BodyText.Replace("<li> </li>", "");
+            purchtasksubject = pt.Subject;
+        }
+        #endregion
+
+        #region Event Handler
 
         private async void DoSomething()
         {

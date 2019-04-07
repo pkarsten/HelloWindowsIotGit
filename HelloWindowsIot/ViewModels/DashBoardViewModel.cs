@@ -152,7 +152,7 @@ namespace HelloWindowsIot
                     this.OnPropertyChanged("NextCalendarEvents");
                     this.OnPropertyChanged("PurchTaskContent");
                     this.OnPropertyChanged("PurchTaskSubject");
-                    //OnPropertyChanged("TaskProgress");
+                    this.OnPropertyChanged("EnableCLock");
                 }
                 , CoreDispatcherPriority.Normal);
         }

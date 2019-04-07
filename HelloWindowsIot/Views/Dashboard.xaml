@@ -61,7 +61,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Grid.RowSpan="2"  x:Name="BGImage"  Source="{x:Bind ViewModel.DashImage, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill"/>
+        <Image Grid.Row="0" Grid.RowSpan="2"  x:Name="BGImage"  Source="{x:Bind ViewModel.DashImage, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" />
         <Border Grid.Row="0" HorizontalAlignment="Right" Margin="0,20,0,0" Background="SteelBlue" Opacity="0.9" CornerRadius="10" Width="{x:Bind EventsView.Width}" Height="{x:Bind EventListGrid.Height}">
             <Grid x:Name="EventListGrid" Grid.Row="1">
                 <Grid.RowDefinitions>

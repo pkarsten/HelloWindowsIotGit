@@ -18,5 +18,6 @@ namespace UwpSqliteDal
         public string Subject {get;set;}
         public DateTime StartDateTime {get;set;}
         public bool TodayEvent{ get; set; }
+        public bool IsAllDay { get; set; }
     }
 }

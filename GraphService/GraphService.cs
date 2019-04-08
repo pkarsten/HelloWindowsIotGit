@@ -64,6 +64,7 @@ namespace MSGraph
             httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
+
         }
         public static async Task<bool> SignOut()
         {
@@ -199,7 +200,7 @@ namespace MSGraph
             try
             {
                 
-                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image"); //get only the id's add "?select=id" at end  
+                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image,name"); //get only the id's add "?select=id" at end  
                 var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
                 return l.Value;
             }
@@ -235,7 +236,7 @@ namespace MSGraph
             {
                 string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1));  // "2018-03-09""
                 string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1).AddDays(60));  // "2018-03-09""
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}&enddatetime={xdays}&$select=subject,Start,End");
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}&enddatetime={xdays}&select=subject,start,end,isallday");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }
@@ -249,11 +250,11 @@ namespace MSGraph
         public async Task<IList<CalendarEventItem>> GetTodayCalendarEvents()
         {
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
-            // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-03-10T10:05:30.014Z&enddatetime=2019-03-17T10:05:30.014Z
+            // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-04-08T06:00:00.014Z&enddatetime=2019-04-08T23:30:00.014Z&select=subject,start,end,isallday
             try
             {
                 string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00&enddatetime={today}T23:30:00&$select=subject,Start,End");
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00.014Z&enddatetime={today}T23:30:00.014Z&select=subject,start,end,isallday");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }

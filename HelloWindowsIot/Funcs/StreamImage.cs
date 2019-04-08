@@ -60,11 +60,9 @@ namespace HelloWindowsIot
                 catch (Exception ex)
                 {
                     error = ex;
-                }
-
-                if (error != null)
-                {
                     await Dal.SaveLogEntry(LogType.Error, error.Message);
+                    Dal.DeletePicture(item);
+                    return null;
                 }
 
                 // Save the retrieved stream 

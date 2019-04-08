@@ -11,9 +11,9 @@
     xmlns:uc="using:HelloWindowsIot.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <loc:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
         <loc:StringFormatConverter x:Key="DateStringFormatConverter" StringFormat=" {0:dd.MM.yyyy}: "/>
-        <local:StringFormatConverter x:Key="TimeStringFormatConverter" StringFormat=" {0:HH:mm:ss}"/>
+        <local:StringFormatConverter x:Key="TimeStringFormatConverter" StringFormat=" {0:HH:mm:ss} "/>
+        <loc:BooleanToVisibilityConverter x:Key="BooleanToVisibility" True="Collapsed" False="Visible"/>
         <!-- This Style adds the per-location buttons to the ListViewItem control template.
              Using a control template is necessary here in order to enable the panel Visibility property 
              to use TemplatedParent binding to the ListViewItem.IsSelected property. That way, the buttons
@@ -47,11 +47,15 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="3"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="3"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <!--<TextBlock Text="{x:Bind StartDateTime, Mode=OneWay, TargetNullValue=''}" FontSize="9" TextWrapping="Wrap"/>-->
                 <TextBlock Grid.Column="0" Grid.Row="0"  Text="{x:Bind StartDateTime, Converter={StaticResource DateStringFormatConverter},Mode=OneWay}" FontSize="12" FontFamily="Segoe UI"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" FontSize="12" FontFamily="Segoe UI"></TextBlock>
-                <TextBlock Grid.Column="2" Grid.Row="0" Text="{x:Bind Subject, Mode=OneWay, TargetNullValue=''}" FontSize="12" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Column="1" Grid.Row="0" FontSize="12" FontFamily="Segoe UI"></TextBlock>
+                <TextBlock Grid.Column="2" Grid.Row="0"  Text="{x:Bind StartDateTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}" Visibility="{x:Bind IsAllDay, Mode=OneWay, Converter={StaticResource BooleanToVisibility}}" FontSize="12" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Column="3" Grid.Row="0" FontSize="12" FontFamily="Segoe UI"></TextBlock>
+                <TextBlock Grid.Column="4" Grid.Row="0" Text="{x:Bind Subject, Mode=OneWay, TargetNullValue=''}" FontSize="12" FontFamily="Segoe UI"/>
             </Grid>
         </DataTemplate>
 
@@ -87,7 +91,8 @@
                 <ListView x:Name="EventsView" Grid.Row="2" Width="277" HorizontalAlignment="Right"
             ItemsSource="{x:Bind Path=ViewModel.TodayCalendarEvents, Mode=OneWay}" 
             ItemTemplate="{StaticResource EventTemplate}" 
-            ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
+            ItemContainerStyle="{StaticResource EventsViewItemStyle}"
+                          />
                 
                 <!-- Grid.Row 3-->
                 <TextBlock Text="Nächste Termine"  Padding="5,10,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="3"></TextBlock>

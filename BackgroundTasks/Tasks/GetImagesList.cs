@@ -147,24 +147,40 @@ namespace RWPBGTasks
                         }
                         int totalFiles = children.Count;
                         int filesProcessed = 0;
-                        await Dal.DeleteAllPictures();
+                        //await Dal.DeleteAllPictures();
                         foreach (var iri in children)
                         {
                             filesProcessed++;
                             _progress = (uint)((double)filesProcessed / totalFiles * 100);
                             _taskInstance.Progress = _progress; ///=> !!!!!!!!
-                            var fp = new FavoritePic();
-                            fp.DownloadedFromOneDrive = true;
-                            fp.Viewed = false;
-                            fp.DownloadUrl = iri.DownloadUrl;
-                            fp.Name = iri.Name;
-                            fp.OneDriveId = iri.Id;
-                            await Dal.SavePicture(fp);
+                            var dbPic = Dal.GetPictureByOneDriveId(iri.Id);
+                            if (dbPic == null)
+                            {
+                                var fp = new FavoritePic();
+                                fp.DownloadedFromOneDrive = true;
+                                fp.Viewed = false;
+                                fp.Name = iri.Name;
+                                fp.DownloadUrl = iri.DownloadUrl;
+                                fp.Name = iri.Name;
+                                fp.OneDriveId = iri.Id;
+                                fp.Status = "UpToDate";
+                                await Dal.SavePicture(fp);
+                            } else
+                            {
+                                var fp = dbPic;
+                                fp.Status = "UpToDate";
+                                await Dal.SavePicture(fp);
+                            }
                         }
+                        
                     }
                     catch (Exception ex)
                     {
                         await Dal.SaveLogEntry(LogType.Error, error.Message);
+                    }
+                    finally
+                    {
+                        await Dal.DelIndefinablePics();
                     }
                 }
                 catch (Exception ex)

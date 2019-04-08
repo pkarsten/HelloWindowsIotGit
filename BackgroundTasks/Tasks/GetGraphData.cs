@@ -131,7 +131,10 @@ namespace RWPBGTasks
                                 var ce = new CalendarEvent();
                                 ce.Subject = o.Subject;
                                 ce.TodayEvent = true;
-                                ce.StartDateTime = o.StartDateTime.dateTime;
+                                ce.IsAllDay = o.IsAllDay;
+                                //if (!o.IsAllDay)
+                                    ce.StartDateTime = o.StartDateTime.dateTime.AddHours(3);
+
                                 await Dal.SaveCalendarEvent(ce);
                             }
                             //Settings.TodayEvents = myeventstoday.ToObservableCollection();
@@ -145,6 +148,7 @@ namespace RWPBGTasks
                                 var ce = new CalendarEvent();
                                 ce.Subject = o.Subject;
                                 ce.TodayEvent = false;
+                                ce.IsAllDay = o.IsAllDay;
                                 ce.StartDateTime = o.StartDateTime.dateTime;
                                 await Dal.SaveCalendarEvent(ce);
                             }

@@ -22,6 +22,12 @@ namespace MSGraph.Response
             get;
             set;
         }
+        [JsonProperty("isAllDay")]
+        public bool IsAllDay
+        {
+            get;
+            set;
+        }
     }
 
     public class DateInfoResponse

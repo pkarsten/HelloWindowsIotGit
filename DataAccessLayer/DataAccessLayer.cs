@@ -416,6 +416,28 @@ namespace UwpSqliteDal
             }
         }
 
+        public static async Task DelIndefinablePics()
+        {
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                db.Execute("DELETE FROM FavoritePic WHERE Status = ?","");
+            }
+
+
+            await UpdateAllPicStatus();
+        }
+
+        public static async Task UpdateAllPicStatus()
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                db.Execute("UPDATE FavoritePic SET Status=?", "");
+                Dal.SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
+
+            }
+        }
+
         public static IList<FavoritePic> GetAllPictures()
         {
             IList<FavoritePic> models;
@@ -486,6 +508,18 @@ namespace UwpSqliteDal
                 //db.TraceListener = new DebugTraceListener();
                 FavoritePic m = (from p in db.Table<FavoritePic>()
                                  where p.Id == Id
+                                 select p).FirstOrDefault();
+                return m;
+            }
+        }
+
+        public static FavoritePic GetPictureByOneDriveId(string id)
+        {
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                FavoritePic m = (from p in db.Table<FavoritePic>()
+                                 where p.OneDriveId == id
                                  select p).FirstOrDefault();
                 return m;
             }

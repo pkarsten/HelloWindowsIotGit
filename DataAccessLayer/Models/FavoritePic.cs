@@ -36,5 +36,13 @@ namespace UwpSqliteDal
         public string OneDriveId { get; set; }
 
         public string DownloadUrl { get; set; }
+
+        public string Status { get; set; }
     }
 }
+
+    public enum PicStatus
+    {
+        UpToDate, Indefinable
+    }
+

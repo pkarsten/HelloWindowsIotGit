@@ -216,6 +216,7 @@ namespace HelloWindowsIot
             if (MyBgTask != null)
             {
 
+                await Dal.DeleteAllPictures();
                 BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
 
                 ApplicationTrigger trigger3 = new ApplicationTrigger();

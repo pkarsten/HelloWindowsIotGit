@@ -79,6 +79,13 @@ namespace HelloWindowsIot
             get { return this.purchtasksubject; }
             set { this.SetProperty(ref this.purchtasksubject, value); }
         }
+
+        private bool todayeventNotnull;
+        public bool TodayEventNotNull
+        {
+            get { return this.todayeventNotnull; }
+            set { this.SetProperty(ref this.todayeventNotnull, value); }
+        }
         #endregion
 
         #region constructor
@@ -153,6 +160,7 @@ namespace HelloWindowsIot
                     this.OnPropertyChanged("PurchTaskContent");
                     this.OnPropertyChanged("PurchTaskSubject");
                     this.OnPropertyChanged("EnableCLock");
+                    this.OnPropertyChanged("CurrentTime");
                 }
                 , CoreDispatcherPriority.Normal);
         }
@@ -165,7 +173,9 @@ namespace HelloWindowsIot
             await DispatcherHelper.ExecuteOnUIThreadAsync(
                 async () =>
                     {
-                        DashImage = await HelperFunc.StreamImageFromOneDrive();
+                        var getimage = await HelperFunc.StreamImageFromOneDrive();
+                        if (getimage != null)
+                            DashImage = getimage;
                     }
                     , CoreDispatcherPriority.High);
 
@@ -256,8 +266,15 @@ namespace HelloWindowsIot
         private async Task LoadCalendarEvents()
         {
             var t = Dal.GetNextEvents().ToObservableCollection();
-            if (t!= null)
+            if (t != null)
+            {
                 nextcalendarEvents = t;
+            }
+
+            if (t == null)
+            {
+
+            }
 
             var t1 = Dal.GetTodayEvents().ToObservableCollection();
             if (t1!=null)

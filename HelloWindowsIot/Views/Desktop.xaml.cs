@@ -63,7 +63,7 @@ namespace HelloWindowsIot
             var graphService = new GraphService(accessToken);
             //CalendarText.Text = await graphService.GetCalendarViewTest();
             string s = "";
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents(20);
             foreach (CalendarEventItem ce in myevents)
             {
                 string d = String.Format("{0:dd.MM/yyyy}", ce.StartDateTime.dateTime);  // "03/09/2008"

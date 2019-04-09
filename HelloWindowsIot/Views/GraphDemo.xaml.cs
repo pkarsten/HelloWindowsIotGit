@@ -198,7 +198,7 @@ namespace HelloWindowsIot
             var accessToken = await GraphService.GetTokenForUserAsync();
             var graphService = new GraphService(accessToken);
             //CalendarText.Text = await graphService.GetCalendarViewTest();
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents(20);
             foreach (CalendarEventItem ce in myevents)
             {
                 System.Diagnostics.Debug.WriteLine("Date : " + ce.StartDateTime.dateTime + " Subject: " + ce.Subject);

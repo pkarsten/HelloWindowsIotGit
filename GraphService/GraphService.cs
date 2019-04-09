@@ -229,14 +229,30 @@ namespace MSGraph
             }
         }
 
-        public async Task<IList<CalendarEventItem>> GetCalendarEvents()
+        public async Task<IList<CalendarEventItem>> GetCalendarEvents(int nextXDays)
         {
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
             {
-                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1));  // "2018-03-09""
-                string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1).AddDays(60));  // "2018-03-09""
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}&enddatetime={xdays}&select=subject,start,end,isallday");
+                //string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1));  // "2018-03-09""
+                //string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1).AddDays(60));  // "2018-03-09""
+
+                DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                DateTime endDT = startDT.AddDays(nextXDays);
+                string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);
+                string strEndDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", endDT);
+                System.Diagnostics.Debug.WriteLine("Local Time Start: " + strStarDT + " End " + strEndDT);
+
+                var utcstartDT = startDT.ToUniversalTime();
+                var utcendDT = endDT.ToUniversalTime();
+                string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcstartDT);
+                string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
+                System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart + " End " + strUtcEnd);
+
+
+
+
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}.000Z&enddatetime={strUtcEnd}.000Z&select=subject,start,end,isallday");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }
@@ -253,8 +269,21 @@ namespace MSGraph
             // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-04-08T06:00:00.014Z&enddatetime=2019-04-08T23:30:00.014Z&select=subject,start,end,isallday
             try
             {
-                string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now);  // "2018-03-09""
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={today}T06:00:00.014Z&enddatetime={today}T23:30:00.014Z&select=subject,start,end,isallday");
+
+                DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0,0,0);
+                DateTime endDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day, 0, 0, 0);
+                string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);
+                string strEndDT= String.Format("{0:yyyy-MM-ddTHH:mm:ss}", endDT);
+                System.Diagnostics.Debug.WriteLine("Local Time Start: " + strStarDT + " End " + strEndDT);
+
+                var utcstartDT = startDT;//.ToUniversalTime();
+                var utcendDT = endDT.ToUniversalTime();
+                string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcstartDT);
+                string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
+                System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart+ " End " + strUtcEnd);
+
+                
+                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}&enddatetime={strUtcEnd}&select=subject,start,end,isallday");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
                 return calendarevents.Value;
             }

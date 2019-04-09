@@ -39,7 +39,7 @@ namespace HelloWindowsIot.Controls
             var graphService = new GraphService(accessToken);
             string s = "";
 
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents();
+            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents(20);
             foreach (CalendarEventItem ce in myevents)
             {
                 s = s + "Date : " + ce.StartDateTime.dateTime + " Subject: " + ce.Subject + " \n";

@@ -80,11 +80,15 @@ namespace HelloWindowsIot
             set { this.SetProperty(ref this.purchtasksubject, value); }
         }
 
-        private bool todayeventNotnull;
-        public bool TodayEventNotNull
+        private bool hideTodayEvents;
+        public bool HideTodayEvents
         {
-            get { return this.todayeventNotnull; }
-            set { this.SetProperty(ref this.todayeventNotnull, value); }
+            get { return this.hideTodayEvents; }
+            set
+            {
+                this.SetProperty(ref this.hideTodayEvents, value);
+                System.Diagnostics.Debug.WriteLine("Hide today " + value +  " ~ " + this.hideTodayEvents);
+            }
         }
         #endregion
 
@@ -161,6 +165,7 @@ namespace HelloWindowsIot
                     this.OnPropertyChanged("PurchTaskSubject");
                     this.OnPropertyChanged("EnableCLock");
                     this.OnPropertyChanged("CurrentTime");
+                    this.OnPropertyChanged("HideTodayEvents");
                 }
                 , CoreDispatcherPriority.Normal);
         }
@@ -273,12 +278,22 @@ namespace HelloWindowsIot
 
             if (t == null)
             {
-
+                nextcalendarEvents = null;
             }
 
             var t1 = Dal.GetTodayEvents().ToObservableCollection();
-            if (t1!=null)
+            if (t1.Count > 0)
+            {
                 todayEvents = t1;
+                hideTodayEvents = false;
+                HideTodayEvents = false;
+            }
+            else
+            {
+                todayEvents = null;
+                hideTodayEvents = true;
+                HideTodayEvents = true;
+            }
         }
         #endregion
 

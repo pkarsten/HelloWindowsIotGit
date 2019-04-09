@@ -132,8 +132,9 @@ namespace RWPBGTasks
                                 ce.Subject = o.Subject;
                                 ce.TodayEvent = true;
                                 ce.IsAllDay = o.IsAllDay;
-                                //if (!o.IsAllDay)
-                                    ce.StartDateTime = o.StartDateTime.dateTime.AddHours(3);
+                                //TODO: It seems that sqlite all the time saves datetime  as UTC , 
+                                // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
 
                                 await Dal.SaveCalendarEvent(ce);
                             }
@@ -141,7 +142,7 @@ namespace RWPBGTasks
                         }
                         if (s.EnableCalendarNextEvents)
                         {
-                            IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents();
+                            IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents(s.NextEventDays);
                             Settings.NextEvents = nextevents.ToObservableCollection();
                             foreach (var o in nextevents)
                             {
@@ -149,7 +150,20 @@ namespace RWPBGTasks
                                 ce.Subject = o.Subject;
                                 ce.TodayEvent = false;
                                 ce.IsAllDay = o.IsAllDay;
-                                ce.StartDateTime = o.StartDateTime.dateTime;
+                                
+                                //TODO: It seems that sqlite all the time saves datetime  as UTC , 
+                                // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
+                                //ce.StartDateTime.ToLocalTime();
+                                //string us = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", o.StartDateTime.dateTime);
+                                //System.Diagnostics.Debug.WriteLine("UTC Time: " + us + " " + o.Subject);
+                                //DateTime locDT = o.StartDateTime.dateTime.ToLocalTime();
+                                //string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", locDT);
+                                //System.Diagnostics.Debug.WriteLine("Loc Time: " + strutcStart + " " + o.Subject);
+
+                                //ce.StartDateTime = new DateTime(locDT.Year,locDT.Month,locDT.Day, locDT.Hour,locDT.Minute,locDT.Second);
+//                                ce.StartDateTime = new DateTime(2019, 4, 16, 22, 22, 22);
+
                                 await Dal.SaveCalendarEvent(ce);
                             }
                         }

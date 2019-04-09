@@ -85,7 +85,7 @@
                     <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}"  FontSize="36" FontFamily="Cambria"/>
                 </StackPanel>
                 <!-- Grid.Row 1-->
-                <TextBlock Text="Heute" Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="1"></TextBlock>
+                <TextBlock Text="Heute" Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="1" Visibility="{x:Bind ViewModel.HideTodayEvents,Mode=TwoWay, Converter={StaticResource BooleanToVisibility}}"></TextBlock>
                 
                 <!-- Grid.Row 2-->
                 <ListView x:Name="EventsView" Grid.Row="2" Width="277" HorizontalAlignment="Right"

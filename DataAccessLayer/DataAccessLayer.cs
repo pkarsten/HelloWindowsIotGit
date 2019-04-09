@@ -601,7 +601,6 @@ namespace UwpSqliteDal
                 models = (from p in db.Table<CalendarEvent>()
                           select p).Where(c => c.TodayEvent == false).ToList();
             }
-
             return models;
         }
         #endregion

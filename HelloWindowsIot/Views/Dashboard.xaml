@@ -76,9 +76,9 @@
                 </Grid.RowDefinitions>
                 <!-- Grid.Row 0-->
                 <Border Grid.Row="0" HorizontalAlignment="Right" Margin="0,20,0,0" Background="SteelBlue" Opacity="0.9" CornerRadius="10" Width="{x:Bind EventsView.Width}">
-                    <StackPanel  Grid.Row="0" Orientation="Vertical">
+                    <StackPanel  Grid.Row="0" Orientation="Horizontal">
                         <Button Background="SteelBlue" Click="Button_Click" Opacity="0.3">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EE;"/>
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE774;"/>
                         </Button>
                         <!--<uc:ClockControl CurrentTime="{x:Bind ViewModel.CurrentTime}" EnableClock="{x:Bind ViewModel.EnableClock}" Visibility="{x:Bind ViewModel.EnableClock, Converter={StaticResource BoolToVisibility}}" />-->
                         <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}"  FontSize="36" FontFamily="Cambria"/>

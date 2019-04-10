@@ -1,2 +1,3 @@
 ﻿- Multilanguage needed ? 
 - Ask for Actual GetGraphData if Day Changes on 0:00 LocalTime (e.g. Unregister BG Task and run AppTrigger like the search Picture task on settingspage) 
+- Bei Uhrzeit Tag ausschreiben und Datum? Ähnlich wie Sperrbildschirm Win10 ? 

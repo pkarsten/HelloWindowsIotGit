@@ -103,7 +103,7 @@
             ItemContainerStyle="{StaticResource EventsViewItemStyle}"/>
                 <!--<Border BorderThickness="1" BorderBrush="White" CornerRadius="10"/>-->
                     <StackPanel Orientation="Vertical" Grid.Row="5">
-                    <uc:PurchaseTaskControl PurchTaskSubject="{x:Bind ViewModel.PurchTaskSubject,Mode=OneWay}" PurchTaskHtml="{x:Bind ViewModel.PurchTaskContent,Mode=OneWay}"></uc:PurchaseTaskControl>
+                    <uc:PurchaseTaskControl  PurchTaskSubject="{x:Bind ViewModel.PurchTaskSubject,Mode=OneWay}" PurchTaskHtml="{x:Bind ViewModel.PurchTaskContent,Mode=OneWay}"></uc:PurchaseTaskControl>
                     </StackPanel>
             </Grid>
         </Border>

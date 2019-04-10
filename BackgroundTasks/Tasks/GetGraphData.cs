@@ -157,6 +157,17 @@ namespace RWPBGTasks
                                     ce.TodayEvent = false;
 
                                 ce.IsAllDay = o.IsAllDay;
+
+                                //TODO: more test for this here, perhaps there are Events that we would see , then don't ignore them 
+                                // Problem is when StartTime is between 0:00-02:00 , example: exists an IsAllDay Event on 10.04.19 LocalTime (Begins 0:00, Ends at 11.04.19 0:00)
+                                //when the day changes (Localtime) on 0:00 Uhr, then it will list this event as Today Event (because it ends on 11.04) ...
+                                if (ce.StartDateTime.Day+1 == DateTime.Now.Day)
+                                {
+                                    if (ce.IsAllDay)
+                                    {
+                                        ce.IgnoreEvent = true;
+                                    }
+                                }
                                 
                                
                                 //ce.StartDateTime.ToLocalTime();

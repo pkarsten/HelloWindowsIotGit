@@ -9,14 +9,14 @@
     mc:Ignorable="d"
     d:DesignHeight="200"
     d:DesignWidth="200">
-    <Grid Background="SteelBlue">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <TextBlock x:Name="TaskSubject" Text="{x:Bind PurchTaskSubject,Mode=OneWay}" MinHeight="10"  FontSize="20" FontFamily="Segoe UI" Foreground="White"/>
-            <WebView x:Name="TaskWebView" local1:Extensions.HTML="{x:Bind PurchTaskHtml, Mode=OneWay}" MinHeight="30" Height="30" Width="175" DefaultBackgroundColor="SteelBlue"  Opacity="0.6" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Stretch" ></WebView>
+            <WebView x:Name="TaskWebView" local1:Extensions.HTML="{x:Bind PurchTaskHtml, Mode=OneWay}" MinHeight="30" Height="30" Width="175" DefaultBackgroundColor="Transparent" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Stretch"></WebView>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -19,5 +19,6 @@ namespace UwpSqliteDal
         public DateTime StartDateTime {get;set;}
         public bool TodayEvent{ get; set; }
         public bool IsAllDay { get; set; }
+        public bool IgnoreEvent { get; set; }
     }
 }

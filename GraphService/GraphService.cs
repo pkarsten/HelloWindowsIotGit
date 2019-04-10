@@ -260,36 +260,36 @@ namespace MSGraph
             }
         }
 
-        public async Task<IList<CalendarEventItem>> GetTodayCalendarEvents()
-        {
-            //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
-            // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-04-08T06:00:00.014Z&enddatetime=2019-04-08T23:30:00.014Z&select=subject,start,end,isallday
-            try
-            {
+        //public async Task<IList<CalendarEventItem>> GetTodayCalendarEvents()
+        //{
+        //    //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
+        //    // https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=2019-04-08T06:00:00.014Z&enddatetime=2019-04-08T23:30:00.014Z&select=subject,start,end,isallday
+        //    try
+        //    {
 
-                DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0,0,0);
-                DateTime endDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day, 0, 0, 0);
-                string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);
-                string strEndDT= String.Format("{0:yyyy-MM-ddTHH:mm:ss}", endDT);
-                System.Diagnostics.Debug.WriteLine("Local Time Start: " + strStarDT + " End " + strEndDT);
+        //        DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0,0,0);
+        //        DateTime endDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day, 0, 0, 0);
+        //        string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);
+        //        string strEndDT= String.Format("{0:yyyy-MM-ddTHH:mm:ss}", endDT);
+        //        System.Diagnostics.Debug.WriteLine("Local Time Start: " + strStarDT + " End " + strEndDT);
 
-                var utcstartDT = startDT;//.ToUniversalTime();
-                var utcendDT = endDT.ToUniversalTime();
-                string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcstartDT);
-                string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
-                System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart+ " End " + strUtcEnd);
+        //        var utcstartDT = startDT;//.ToUniversalTime();
+        //        var utcendDT = endDT.ToUniversalTime();
+        //        string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcstartDT);
+        //        string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
+        //        System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart+ " End " + strUtcEnd);
 
                 
-                var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}&enddatetime={strUtcEnd}&select=subject,start,end,isallday");
-                var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
-                return calendarevents.Value;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error in GetCalendarEvents" + ex.Message);
-                return null;
-            }
-        }
+        //        var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}&enddatetime={strUtcEnd}&select=subject,start,end,isallday");
+        //        var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
+        //        return calendarevents.Value;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Error in GetCalendarEvents" + ex.Message);
+        //        return null;
+        //    }
+        //}
 
         public async Task<DriveItem> GetOneDriveItemAsync(string itemId)
         {

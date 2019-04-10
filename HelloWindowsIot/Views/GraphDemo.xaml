@@ -25,10 +25,6 @@
                         HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
                         Foreground="Black"
                         />
-                <Button Content="Go To Desktop"
-                        Click="GoToDesktopClick"
-                        Foreground="Black"
-                        />
                 <Button Content="Get Purchase ToDO Task"
                     Click="GetPurchList_Click"
                         HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"

@@ -586,7 +586,7 @@ namespace UwpSqliteDal
             {
 
                 models = (from p in db.Table<CalendarEvent>()
-                          select p).Where(c => c.TodayEvent == true).ToList();
+                          select p).Where(c => c.TodayEvent == true).OrderBy(u => u.StartDateTime).ToList();
             }
 
             return models;
@@ -599,7 +599,7 @@ namespace UwpSqliteDal
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
                 models = (from p in db.Table<CalendarEvent>()
-                          select p).Where(c => c.TodayEvent == false).ToList();
+                          select p).Where(c => c.TodayEvent == false).OrderBy(u => u.StartDateTime).ToList();
             }
             return models;
         }

@@ -258,12 +258,6 @@ namespace HelloWindowsIot
             PleaseWaitCache.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void GoToDesktopClick(object sender, RoutedEventArgs e)
-        {
-
-            this.Frame.Navigate(typeof(Desktop));
-        }
-
         private void Retrieve_Click(object sender, RoutedEventArgs e)
         {
             string text = "";

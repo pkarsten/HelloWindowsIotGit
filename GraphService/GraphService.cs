@@ -234,9 +234,6 @@ namespace MSGraph
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
             {
-                //string today = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1));  // "2018-03-09""
-                //string xdays = String.Format("{0:yyyy-MM-dd}", DateTime.Now.AddDays(1).AddDays(60));  // "2018-03-09""
-
                 DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                 DateTime endDT = startDT.AddDays(nextXDays);
                 string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);

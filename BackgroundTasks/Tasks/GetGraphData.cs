@@ -123,23 +123,23 @@ namespace RWPBGTasks
                     {
                         await Dal.DeleteAllCalendarEvents();
                         //Graphservice for get Calendar Events
-                        if (s.EnableTodayEvents)
-                        {
-                            IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-                            foreach(var o in myeventstoday)
-                            {
-                                var ce = new CalendarEvent();
-                                ce.Subject = o.Subject;
-                                ce.TodayEvent = true;
-                                ce.IsAllDay = o.IsAllDay;
-                                //TODO: It seems that sqlite all the time saves datetime  as UTC , 
-                                // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
+                        //if (s.EnableTodayEvents)
+                        //{
+                        //    IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
+                        //    foreach(var o in myeventstoday)
+                        //    {
+                        //        var ce = new CalendarEvent();
+                        //        ce.Subject = o.Subject;
+                        //        ce.TodayEvent = true;
+                        //        ce.IsAllDay = o.IsAllDay;
+                        //        //TODO: It seems that sqlite all the time saves datetime  as UTC , 
+                        //        // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
+                        //        ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
 
-                                await Dal.SaveCalendarEvent(ce);
-                            }
-                            //Settings.TodayEvents = myeventstoday.ToObservableCollection();
-                        }
+                        //        await Dal.SaveCalendarEvent(ce);
+                        //    }
+                        //    //Settings.TodayEvents = myeventstoday.ToObservableCollection();
+                        //}
                         if (s.EnableCalendarNextEvents)
                         {
                             IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents(s.NextEventDays);
@@ -147,13 +147,18 @@ namespace RWPBGTasks
                             foreach (var o in nextevents)
                             {
                                 var ce = new CalendarEvent();
+                                //TODO: It seems that sqliteDB all the time saves datetime  as UTC , 
+                                // no way to save it to localtime or other Format? So add here 4 Houts for my timezone 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
                                 ce.Subject = o.Subject;
-                                ce.TodayEvent = false;
+                                if (ce.StartDateTime.Day == DateTime.Now.Day)
+                                    ce.TodayEvent = true;
+                                else
+                                    ce.TodayEvent = false;
+
                                 ce.IsAllDay = o.IsAllDay;
                                 
-                                //TODO: It seems that sqlite all the time saves datetime  as UTC , 
-                                // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
+                               
                                 //ce.StartDateTime.ToLocalTime();
                                 //string us = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", o.StartDateTime.dateTime);
                                 //System.Diagnostics.Debug.WriteLine("UTC Time: " + us + " " + o.Subject);

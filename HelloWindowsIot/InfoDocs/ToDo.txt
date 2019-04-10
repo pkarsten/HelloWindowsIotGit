@@ -1,7 +1,2 @@
 ﻿- Multilanguage needed ? 
-- Test BackgroundTasks
-- MVVM Model for User Control 
-- Refresh CalendarEvent MVVM with BG Task 
-- Refreseh Task Purchase every X Min with BG Task 
-- Buttons for Test BG Tasks Functions
-- Settingspage for select PurchTask , Folder where are Photos (Family Folder?) 
+- Ask for Actual GetGraphData if Day Changes on 0:00 LocalTime (e.g. Unregister BG Task and run AppTrigger like the search Picture task on settingspage) 

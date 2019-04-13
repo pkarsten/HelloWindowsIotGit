@@ -23,15 +23,14 @@ namespace AppSettings
                 Settings.CreateMessageTaskName,
                 Settings.LoadImagesFromOneDriveTaskName
             };
-        // Settings are saved in DB and 
-        // public static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
 
+        // BG Tasks for Register
         public static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
         {
-            new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
             new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
             new BGTaskModel{Name =Settings.LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphData",Registered=false},
         };
+        // new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
 
         public static bool RegisterAllBackgroundTasks { get; } = true;
         public static bool RegisterSystemTriggerBackgroundTasks { get; } = false;

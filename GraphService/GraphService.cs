@@ -199,10 +199,29 @@ namespace MSGraph
         {
             try
             {
-                
+                List<ItemInfoResponse> myList = new List<ItemInfoResponse>();
+                string nextLink =null;
                 var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image,name"); //get only the id's add "?select=id" at end  
                 var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
-                return l.Value;
+                nextLink = l.NextLink;
+                myList.AddRange(l.Value);
+
+                if (nextLink != null)
+                {
+                    do
+                    {
+                        HttpResponseMessage rm = await MakeGraphCall(HttpMethod.Get, "", null, 0, nextLink); //get only the id's add "?select=id" at end  
+                        ParseChildrenResponse cr = JsonConvert.DeserializeObject<ParseChildrenResponse>(await rm.Content.ReadAsStringAsync());
+                        if (cr != null)
+                        {
+                            myList.AddRange(cr.Value);
+                            nextLink = cr.NextLink;
+                        }
+                    }
+                    while (nextLink != null);
+                }
+
+                return myList;
             }
             catch (Exception ex)
             {
@@ -246,12 +265,29 @@ namespace MSGraph
                 string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
                 System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart + " End " + strUtcEnd);
 
-
-
-
+                List<CalendarEventItem> myList = new List<CalendarEventItem>();
+                string nextLink = null;
                 var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}.000Z&enddatetime={strUtcEnd}.000Z&select=subject,start,end,isallday");
                 var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
-                return calendarevents.Value;
+                nextLink = calendarevents.NextLink;
+                myList.AddRange(calendarevents.Value);
+                System.Diagnostics.Debug.WriteLine("NEXT LINK : " + nextLink);
+                if (nextLink != null)
+                {
+                    do
+                    {
+                        HttpResponseMessage rm = await MakeGraphCall(HttpMethod.Get, "", null, 0, nextLink);
+                        ParseCalendarEventResponse cr = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await rm.Content.ReadAsStringAsync());
+                        if (cr != null)
+                        {
+                            myList.AddRange(cr.Value);
+                            nextLink = cr.NextLink;
+                        }
+                    }
+                    while (nextLink != null);
+                }
+
+                return myList;
             }
             catch (Exception ex)
             {
@@ -594,9 +630,10 @@ namespace MSGraph
         //    var response = await MakeGraphCall(HttpMethod.Delete, $"/groups/{groupId}");
         //}
 
-        private async Task<HttpResponseMessage> MakeGraphCall(HttpMethod method, string uri, object body = null, int retries = 0, string version = "")
+
+        private async Task<HttpResponseMessage> MakeGraphCall(HttpMethod method, string uri, object body = null, int retries = 0, string nextdatalink = "")
         {
-            version = graphVersion;
+            string useversion = graphVersion;
             // Initialize retry delay to 3 secs
             int retryDelay = 3;
 
@@ -608,7 +645,10 @@ namespace MSGraph
                 payload = JsonConvert.SerializeObject(body, jsonSettings);
             }
 
-            System.Diagnostics.Debug.WriteLine("Graph Request URL :" + graphEndpoint + version + uri + "");
+            if(nextdatalink =="")
+                System.Diagnostics.Debug.WriteLine("Graph Request URL :" + graphEndpoint + useversion + uri + "");
+            else
+                System.Diagnostics.Debug.WriteLine("Graph Request URL :" + nextdatalink + "");
 
             //if (logger != null)
             //{
@@ -619,8 +659,11 @@ namespace MSGraph
             do
             {
                 // Create the request
-                var request = new HttpRequestMessage(method, $"{graphEndpoint}{version}{uri}");
-
+                HttpRequestMessage request;
+                if (nextdatalink == "")
+                    request = new HttpRequestMessage(method, $"{graphEndpoint}{useversion}{uri}");
+                else
+                    request = new HttpRequestMessage(method, $"{nextdatalink}");
 
                 if (!string.IsNullOrEmpty(payload))
                 {

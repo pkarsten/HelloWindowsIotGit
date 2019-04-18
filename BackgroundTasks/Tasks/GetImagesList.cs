@@ -128,6 +128,7 @@ namespace RWPBGTasks
                     folder = await graphService.GetPhotosAndImagesFromFolder(s.OneDrivePictureFolder);
                     children = await graphService.PopulateChildren(folder);
 
+
                     try
                     {
 

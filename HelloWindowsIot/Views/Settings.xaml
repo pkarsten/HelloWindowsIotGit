@@ -56,7 +56,7 @@
                         </Style>
                     </ItemsControl.Resources>
                     <TextBlock Text="Picture Show" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
-                    <TextBlock Text="Picturefolder for DiaShow:" Margin="0,10,0,0" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Picturefolder for DiaShow:" Margin="0,0,0,0" FontFamily="Segoe UI"></TextBlock>
                     
                     <TextBox x:Name="OneDriveFolderPathText"
                          PlaceholderText="Enter a OneDrive path without leading '/'"
@@ -66,19 +66,16 @@
                         x:Name="PicTaskRunNowButton"
                         Style="{StaticResource ButtonStyle}" 
                         Command="{x:Bind ViewModel.LoadPicsCommand}" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource NegateBooleanConverter},  Mode=TwoWay}"/>
-                        <StackPanel>
                         <TextBlock FontSize="12" Foreground="Silver" Text="{x:Bind ViewModel.TaskProgress, Mode=OneWay}"/>
                         <TextBlock FontSize="12" Foreground="Silver" Text="{x:Bind ViewModel.TaskResult,Mode=OneWay}"/>
-                        </StackPanel>
-
-                    <TextBlock Text="Interval (min. 10 Seconds) for Diashow:" Margin="0,10,0,0"></TextBlock>
+                    <TextBlock Text="Interval (min. 10 Seconds) for Diashow:" Margin="0,0,0,0"></TextBlock>
                     <TextBox x:Name="DiaShowInterval" Text="{x:Bind ViewModel.SetupSettings.IntervalForDiashow, Mode=TwoWay}"
                          PlaceholderText="10"
                          Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePictureAddOn, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Enable Picture Show</CheckBox>
 
-                    <TextBlock Text="Tasks" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,40,0,0"/>
-                    <TextBlock Text="Choose Task Folder:" Margin="0,10,0,0"></TextBlock>
+                    <TextBlock Text="Tasks" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,10,0,0"/>
+                    <TextBlock Text="Choose Task Folder:" Margin="0,0,0,0"></TextBlock>
                     
                     <ComboBox x:Name="cmbTaskFolders" 
                           ItemsSource="{x:Bind ViewModel.MyOutlookTaskFolders, Mode=OneWay}"
@@ -88,7 +85,7 @@
                           HorizontalAlignment="Stretch"
                           >
                     </ComboBox>
-                    <TextBlock Text="Choose your Purchase Task :" Margin="0,10,0,0"></TextBlock>
+                    <TextBlock Text="Choose your Purchase Task :" Margin="0,0,0,0"></TextBlock>
                     <!-- How bind ! invert booean -->
                     <ComboBox x:Name="cmbTaskList"
                           ItemsSource="{x:Bind ViewModel.MyOutlookTasks, Mode=OneWay}" 
@@ -99,8 +96,8 @@
                           >
                     </ComboBox>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Purch Task on  Dashboard</CheckBox>
-                    <TextBlock Text="Calendar"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
-                    <TextBlock Text="Show Next Events for x Days:" Margin="0,10,0,0"></TextBlock>
+                    <TextBlock Text="Calendar"  Margin="0,10,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Show Next Events for x Days:" Margin="0,0,0,0"></TextBlock>
                     <TextBox x:Name="CalendarNextEventsInterval"
                              Text="{x:Bind ViewModel.SetupSettings.NextEventDays, Mode=TwoWay}"
                          PlaceholderText="10"
@@ -109,20 +106,21 @@
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableCalendarNextEvents, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Next Events on Dashboard</CheckBox>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableTodayEvents, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Today  Events on Dashboard</CheckBox>
 
-                    <TextBlock Text="Clock"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Clock"  Margin="0,10,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnableClock, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Clock on Dashboard?</CheckBox>
-
-                    <TextBlock Text="Background Tasks"  Margin="0,40,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
+                    <TextBlock Text="Background Tasks"  Margin="0,10,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <TextBlock Text="Time Interval for Load Picture List from OneDrive (min. 15 minutes)" Margin="0,10,0,0"></TextBlock>
                     <TextBox x:Name="LoadPicturesInterval" Text="{x:Bind ViewModel.SetupSettings.IntervalForLoadPictures, Mode=TwoWay}"
                          PlaceholderText="15"
                          Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
-                    <TextBlock Text="Time Interval for Update Calendar and Tasks (min. 15 minutes)" Margin="0,10,0,0"></TextBlock>
+                    <TextBlock Text="Time Interval for Update Calendar and Tasks (min. 15 minutes)" Margin="0,0,0,0"></TextBlock>
                     <TextBox Text="{x:Bind ViewModel.SetupSettings.IntervalForLoadCalendarAndTasksInterval, Mode=TwoWay}"
                          PlaceholderText="15"
                          Style="{StaticResource TextBoxStyle}"  Margin="0,0,0,0"/>
 
-                    <Button Content="Apply Settings"  Margin="0,40,0,0" Command="{x:Bind ViewModel.Submit}" IsEnabled="{x:Bind ViewModel.CanExecute, Mode=TwoWay}"></Button>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.SetupSettings.EnableLogging, Mode=TwoWay}" Margin="0,0,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI">Logging</ToggleSwitch>
+
+                    <Button Content="Apply Settings"  Margin="0,0,0,0" Command="{x:Bind ViewModel.Submit}" IsEnabled="{x:Bind ViewModel.CanExecute, Mode=TwoWay}"></Button>
                 </ItemsControl>
             </RelativePanel>
         </ScrollViewer>

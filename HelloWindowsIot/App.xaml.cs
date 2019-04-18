@@ -44,6 +44,7 @@ namespace HelloWindowsIot
         private async Task Initialize()
         {
             Dal.CreateDatabase();
+            Dal.DeleteAllLogEntries();
             BackgroundTaskConfig.UnregisterALlTasks();
             await BackgroundTaskConfig.RegisterNeededTasks();
         }

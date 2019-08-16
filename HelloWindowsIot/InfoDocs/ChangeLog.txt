@@ -1,4 +1,4 @@
-﻿
+﻿2019-08-16 Implement / CHange Task List, Get a Task List from Outlook TO DO, One Task in this List is one Choice for Purchase
 2019-04-18 Implement Logging ToogleSwitch in SettingsPage, If isOn then Log Errors only 
 2019-04-18 Handle odata.nextlink for CalendarEvent List "1.0.2.0"
 2019-04-18 Handle odata.nextlink when PopulateChildren (more than 200 files in List, get next pages until link is null)"1.0.2.0"

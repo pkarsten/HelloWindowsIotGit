@@ -4,4 +4,6 @@
 - Sekunden bei Uhrzeit weg
 - Remove AppSettings.dll
 - Logging Options Errors, Warnings, Debug...
-- Remove 
+- Remove PurchTask second Option for choose Task , Rename PurchTasks FUnctions, Settings (TO DO Task) 
+- Restart Possibility at Night? Settings? 
+

@@ -632,19 +632,18 @@ namespace UwpSqliteDal
                 db.Execute("DELETE FROM PurchTask");
             }
         }
-        public static async Task<PurchTask> GetPurchTask()
+        public static IList<PurchTask> GetToDoTasks()
         {
-            PurchTask model;
+            IList<PurchTask> taskList;
 
             // Create a new connection
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
 
-                model = (from p in db.Table<PurchTask>()
-                          select p).FirstOrDefault();
+                taskList = (from p in db.Table<PurchTask>() select p).ToList();
             }
 
-            return model;
+            return taskList;
         }
         #endregion
 
@@ -877,7 +876,7 @@ namespace UwpSqliteDal
 
             try
             {
-                tasks = await graphService.GetTasksInFolder(taskfolderId);
+                tasks = await graphService.GetTasksFromToDoTaskList(taskfolderId);
                 foreach (TaskResponse t in tasks)
                 {
                     System.Diagnostics.Debug.WriteLine("Name: " + t.Subject+ " - Id: " + t.Id);

@@ -360,10 +360,8 @@ namespace MSGraph
 
         public async Task<IList<TaskFolder>> GeTaskFolders()
         {
+            // Doku https://docs.microsoft.com/en-us/graph/api/outlooktaskfolder-list-tasks?view=graph-rest-beta&tabs=http
             //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
-            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
-            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
-
             try
             {
                 var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders");
@@ -379,15 +377,17 @@ namespace MSGraph
             }
         }
 
-        public async Task<IList<TaskResponse>> GetTasksInFolder(string taskfolderId)
+        public async Task<IList<TaskResponse>> GetTasksFromToDoTaskList(string taskfolderId)
         {
             //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
-            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
-            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
+            //List Tasks in Task (ToDO) List: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
+            //Filtered status = nonStarted
+            // https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAplWC_4AAAA=/tasks?$filter=status eq 'notStarted'
+            //Get TasksCOntent from One Task e.g. (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
 
             try
             {
-                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders/{taskfolderId}/tasks");
+                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders/{taskfolderId}/tasks?$filter=status eq 'notStarted'");
                 var tasks = JsonConvert.DeserializeObject<ParseTaskResponse>(await response.Content.ReadAsStringAsync());
                 return tasks.Value;
 
@@ -402,8 +402,6 @@ namespace MSGraph
 
         public async Task<TaskResponse> GetPurchaseTask()
         {
-            //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
-            //List Tasks in Folder: https://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=/tasks
             //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
 
             try

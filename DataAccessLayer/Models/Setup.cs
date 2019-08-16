@@ -49,16 +49,16 @@ namespace UwpSqliteDal
         public bool EnablePictureAddOn { get; set; }
         #endregion
 
-        #region Tasks
+        #region Tasks TO DO 
         /// <summary>
         /// get or sets the Task Folder Path where we are looking for Outlook Tasks
         /// </summary>
-        public string TaskFolder { get; set; }
+        public string ToDoTaskListID { get; set; }
 
         /// <summary>
         /// Gets or sets the ID which represents the Purchase Task 
         /// </summary>
-        public string PurchaseTaskID { get; set; }
+        public string ToDoTaskId { get; set; }
 
         /// <summary>
         /// get or sets if Purchase Task should be seen on Dashboard

@@ -65,7 +65,7 @@ namespace HelloWindowsIot
                 //handle your "event" here... 
                 //h ttps://social.msdn.microsoft.com/Forums/sqlserver/en-US/c286f324-50fb-4641-a0d0-b36258de3847/uwp-xbind-event-handling-and-mvvm?forum=wpdevelop
                 System.Diagnostics.Debug.WriteLine("Selected Item " + selectedTaskFolder.Name + " id " + selectedTaskFolder.Id);
-                this.SetupSettings.TaskFolder = selectedTaskFolder.Id;
+                this.SetupSettings.ToDoTaskListID = selectedTaskFolder.Id;
                 if (!string.IsNullOrEmpty(selectedTaskFolder.Id))
                 {
                     LoadTaskList();
@@ -87,7 +87,7 @@ namespace HelloWindowsIot
                 //handle your "event" here... 
                 //System.Diagnostics.Debug.WriteLine("Selected Task " + selectedPurchaseTask.Subject+ " id " + selectedPurchaseTask.Id);
                 if(this.selectedPurchaseTask != null)
-                    this.SetupSettings.PurchaseTaskID = selectedPurchaseTask.Id;
+                    this.SetupSettings.ToDoTaskId = selectedPurchaseTask.Id;
             }
         }
         /// <summary>
@@ -180,7 +180,7 @@ namespace HelloWindowsIot
                 SetupSettings = await Dal.GetSetup();
                 IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
-                selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.TaskFolder);
+                selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.ToDoTaskListID);
                 this.OnPropertyChanged("MyOutlookTaskFolders");
                 this.OnPropertyChanged("SelectedTaskFolder");
 
@@ -318,7 +318,7 @@ namespace HelloWindowsIot
                         
                         if (taskList.Count() !=0)
                         {
-                            var ptask = tasksinFolder.FirstOrDefault(t => t.Id == SetupSettings.PurchaseTaskID);
+                            var ptask = tasksinFolder.FirstOrDefault(t => t.Id == SetupSettings.ToDoTaskId);
                             if (ptask != null)
                             {
                                 selectedPurchaseTask = ptask;

@@ -4,3 +4,4 @@
 - Sekunden bei Uhrzeit weg
 - Remove AppSettings.dll
 - Logging Options Errors, Warnings, Debug...
+- Remove 

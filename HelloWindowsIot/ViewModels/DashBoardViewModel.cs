@@ -32,7 +32,7 @@ namespace HelloWindowsIot
         private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
         private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
         private ObservableCollection<CalendarEvent> nextcalendarEvents = new ObservableCollection<CalendarEvent>();
-        private PurchTask purchtask =new PurchTask();
+        private ObservableCollection<PurchTask> purchtasks =new ObservableCollection<PurchTask>();
         private string purchtaskcontent = "";
         private string purchtasksubject ="";
         #endregion
@@ -61,12 +61,12 @@ namespace HelloWindowsIot
             get { return this.todayEvents; }
             set { this.SetProperty(ref this.todayEvents, value); }
         }
-        public PurchTask PurchTask
+        public ObservableCollection<PurchTask> PurchTasks
         {
-            get { return this.purchtask; }
+            get { return this.purchtasks; }
             set
             {
-                this.SetProperty(ref this.purchtask, value);
+                this.SetProperty(ref this.purchtasks, value);
             }
         }
         public string PurchTaskContent
@@ -161,6 +161,7 @@ namespace HelloWindowsIot
                     System.Diagnostics.Debug.WriteLine("UpdateUI()");
                     this.OnPropertyChanged("TodayCalendarEvents");
                     this.OnPropertyChanged("NextCalendarEvents");
+                    this.OnPropertyChanged("PurchTasks");
                     this.OnPropertyChanged("PurchTaskContent");
                     this.OnPropertyChanged("PurchTaskSubject");
                     this.OnPropertyChanged("EnableCLock");
@@ -300,9 +301,11 @@ namespace HelloWindowsIot
         #region PurchTask
         private async Task LoadPurchTask()
         {
-            var pt = await Dal.GetPurchTask();
-            purchtaskcontent = pt.BodyText.Replace("<li> </li>", "");
-            purchtasksubject = pt.Subject;
+            var pt = Dal.GetToDoTasks().ToObservableCollection(); ;
+            if (pt != null)
+            {
+                purchtasks = pt;
+            }
         }
         #endregion
 

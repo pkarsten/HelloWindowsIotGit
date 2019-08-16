@@ -190,14 +190,18 @@ namespace RWPBGTasks
                     {
                         await Dal.DeletePurchTask();
                         //Graph Service for get Tasks
-                        var mypurchtask = await graphService.GetPurchaseTask();
+                        //var mypurchtask = await graphService.GetPurchaseTask(); //PKA160819a Comment Out
+                        var mypurchtask = await graphService.GetTasksFromToDoTaskList(s.ToDoTaskListID); //PKA160819a 
 
-                        if(mypurchtask != null)
+                        if (mypurchtask != null)
                         {
-                            var pt = new PurchTask();
-                            pt.Subject = mypurchtask.Subject;
-                            pt.BodyText = mypurchtask.TaskBody.Content;
-                            await Dal.SavePurchTask(pt);
+                            foreach (TaskResponse p in mypurchtask)
+                            {
+                                var pt = new PurchTask();
+                                pt.Subject = p.Subject;
+                                pt.BodyText = p.TaskBody.Content;
+                                await Dal.SavePurchTask(pt);
+                            }
                         }
                     }
                     //Settings.DashBoardImage = bitmapimage;

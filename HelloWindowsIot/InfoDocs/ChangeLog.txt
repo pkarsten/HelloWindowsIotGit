@@ -2,4 +2,5 @@
 2019-04-18 Implement Logging ToogleSwitch in SettingsPage, If isOn then Log Errors only 
 2019-04-18 Handle odata.nextlink for CalendarEvent List "1.0.2.0"
 2019-04-18 Handle odata.nextlink when PopulateChildren (more than 200 files in List, get next pages until link is null)"1.0.2.0"
-2019-03-13 Runs on Raspberry 3 IOT 
+2019-03-13 Runs on Raspberry 3 IOT
+2019-10-18 Migrate Project to Visual Studio 2019 and GitHub 

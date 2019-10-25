@@ -36,6 +36,7 @@ namespace MSGraph
         private static readonly string teamsEndpoint = Environment.GetEnvironmentVariable("TeamsEndpoint");
         private static readonly string sharePointEndpoint = Environment.GetEnvironmentVariable("SharePointEndPoint");
 
+        //TODO: Remove my ID Here 
         // Below are the clientId (Application Id) of your app registration and the tenant information. 
         // You have to replace:
         // - the content of ClientID with the Application Id for your app registration

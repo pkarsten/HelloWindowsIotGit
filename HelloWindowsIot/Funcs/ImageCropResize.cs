@@ -7,6 +7,7 @@
 
 //namespace HelloWindowsIot
 //{
+// hmm TODO? Check if photo can show on display? 
 //    public class ImageHelper
 //    {
 

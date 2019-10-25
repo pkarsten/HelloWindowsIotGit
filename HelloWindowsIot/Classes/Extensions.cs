@@ -16,6 +16,7 @@ namespace HelloWindowsIot
         }
 
         #region WebView Extension
+        // TODO: For what is this? WebView = some thing like IFRAMe? Need it? 
         //h ttps://code.msdn.microsoft.com/windowsapps/How-to-bind-HTML-from-a-7a6ff47c
         public static string GetHTML(DependencyObject obj)
         {

@@ -112,7 +112,6 @@
     </Compile>
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\ComboBoxItemConvert.cs" />
-    <Compile Include="Converter\IListToObservableCollection.cs" />
     <Compile Include="Converter\NegateBoolean.cs" />
     <Compile Include="Converter\NUllableBooleanToBooleanConverter.cs" />
     <Compile Include="Converter\ScenarioBinding.cs" />

@@ -12,19 +12,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.ViewManagement; //ApplicationView
-using Windows.ApplicationModel.Core; //CoreApplicationViewTitleBar
-using Windows.ApplicationModel.Background; //BackgroundTasks
-using Windows.Media.Playback; //BackgroundMediaPlayer
-using System.Threading.Tasks; //Tasks
-using Windows.UI.Popups; //Messagebox MessageDialog
-using RWPBGTasks;
-using Windows.UI.Core;
-using Windows.Storage;
-using Windows.ApplicationModel;
-using System.Windows.Input;
-using Windows.Globalization;
-using UwpSqliteDal;
 
 namespace HelloWindowsIot
 {

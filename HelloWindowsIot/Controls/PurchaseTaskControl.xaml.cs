@@ -9,13 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-// Die Elementvorlage "Benutzersteuerelement" wird unter https://go.microsoft.com/fwlink/?LinkId=234236 dokumentiert.
 
 namespace HelloWindowsIot.Controls
 {
@@ -42,6 +36,7 @@ namespace HelloWindowsIot.Controls
         {
             this.InitializeComponent();
             TaskWebView.NavigationCompleted += WebView_NavigationCompleted;
+            // TODO: See extension function, remove it? 
             //TaskWebView.NavigateToString(PurchTaskHtml);
             //GetPurchList();
         }

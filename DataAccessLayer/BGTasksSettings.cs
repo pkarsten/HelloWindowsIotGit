@@ -4,15 +4,35 @@ using Windows.UI.Xaml.Media.Imaging;
 using MSGraph;
 using System.Collections.ObjectModel;
 using MSGraph.Response;
+using HelloWindowsIot.Models;
 
 namespace AppSettings
 {
-    public static class Settings
+    public static class BGTasksSettings
     {
         #region Background Tasks
+        /// <summary>
+        /// Name for the CreateMessage Background Task 
+        /// </summary>
         public const string CreateMessageTaskName = "CreateMessageTask";
+        /// <summary>
+        /// Name for the Load Images From OneDrive Background Task 
+        /// </summary>
         public const string LoadImagesFromOneDriveTaskName = "LoadImagesFromOneDriveTask";
+
+        /// <summary>
+        /// Name for the Load MS Graph Data (Calendar, Tasks...) Background Task 
+        /// </summary>
         public const string LoadGraphDataTaskName = "LoadGraphDataTask";
+
+        /// <summary>
+        /// List where we put the Backgroundstask for register wenn the App Runs, the CreateMessageTask is more for testing/debugging purposes
+        /// </summary>
+        public static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
+        {
+            new BGTaskModel{Name =LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
+            new BGTaskModel{Name =LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphData",Registered=false},
+        };
 
         public static BitmapImage DashBoardImage { get; set; }
         public static ObservableCollection<CalendarEventItem> NextEvents { get; set; } = new ObservableCollection<CalendarEventItem>();
@@ -20,22 +40,19 @@ namespace AppSettings
 
         public static List<string> TaskList { get; } = new List<string>
             {
-                Settings.CreateMessageTaskName,
-                Settings.LoadImagesFromOneDriveTaskName
+                BGTasksSettings.CreateMessageTaskName,
+                BGTasksSettings.LoadImagesFromOneDriveTaskName
             };
 
-        // BG Tasks for Register
-        public static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
-        {
-            new BGTaskModel{Name =Settings.LoadImagesFromOneDriveTaskName,EntryPoint="RWPBGTasks.GetImageListFromOneDrive",Registered=false},
-            new BGTaskModel{Name =Settings.LoadGraphDataTaskName,EntryPoint="RWPBGTasks.LoadGraphData",Registered=false},
-        };
+        
+
+
         // new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
 
         public static bool RegisterAllBackgroundTasks { get; } = true;
         public static bool RegisterSystemTriggerBackgroundTasks { get; } = false;
 
-        public static void UpdateTaskRegisteredSettings(string taskname, bool taskregistered)
+        /*public static void UpdateTaskRegisteredSettings(string taskname, bool taskregistered)
         {
             int index = ListBgTasks.FindIndex(m => m.Name == taskname);
             if (index >= 0)
@@ -60,37 +77,8 @@ namespace AppSettings
             }
         }
 
-        public static BGTaskModel TaskSettings(string taskname)
-        {
-            BGTaskModel myTask = null;
-            int index = ListBgTasks.FindIndex(m => m.Name == taskname);
-            if (index >= 0)
-            {
-                myTask = ListBgTasks[index];
-            }
-            return myTask;
-        }
+        */
 
         #endregion
-
-        #region UI
-        public const string APP_NAME = "Hello WIndows IOT";
-        public const string ProductIdinStore = "";
-        public const string SupportEmail = "pkarsten@live.de";
-        public const string SupporterFirstName = "Peter";
-        public static bool LoadPictureListManually { get; set; }
-
-        #endregion
-
-    }
-
-    public class BGTaskModel
-    {
-
-        public string Name { get; set; }
-        public string EntryPoint { get; set; }
-        public string Result { get; set; }
-        public string Progress { get; set; }
-        public bool Registered { get; set; }
     }
 }

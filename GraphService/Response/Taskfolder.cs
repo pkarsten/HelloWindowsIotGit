@@ -36,5 +36,11 @@ namespace MSGraph.Response
             get;
             set;
         }
+        [JsonProperty("@odata.nextLink")]
+        public string NextLink
+        {
+            get;
+            set;
+        }
     }
 }

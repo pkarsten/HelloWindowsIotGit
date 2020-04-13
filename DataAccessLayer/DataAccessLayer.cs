@@ -250,10 +250,10 @@ namespace UwpSqliteDal
 
             switch (taskname)
             {
-                case Settings.LoadGraphDataTaskName:
+                case BGTasksSettings.LoadGraphDataTaskName:
                     minutesForTrigger = (uint)s.IntervalForLoadCalendarAndTasksInterval;
                     break;
-                case Settings.LoadImagesFromOneDriveTaskName:
+                case BGTasksSettings.LoadImagesFromOneDriveTaskName:
                     minutesForTrigger = (uint)s.IntervalForLoadCalendarAndTasksInterval;
                     break;
                 default:
@@ -315,6 +315,7 @@ namespace UwpSqliteDal
 
         public static async Task SaveLogEntry(LogType ltype, string logDescription)
         {
+            
             // 
             // CHeck when Must Save Log Entry 
             //
@@ -337,15 +338,17 @@ namespace UwpSqliteDal
                     using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
                     {
                         // New
-                        db.Insert(lentry);
+                        //db.Insert(lentry);
                         System.Diagnostics.Debug.WriteLine("Log: " + lentry.LogType + " " + logDescription);
                     }
                 }
                 catch (Exception ex)
                 {
-                    SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
+                    //SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
+                    System.Diagnostics.Debug.WriteLine(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                 }
             }
+            
         }
         #endregion
 

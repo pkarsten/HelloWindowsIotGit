@@ -1,18 +1,23 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using Windows.UI.Xaml.Media.Imaging;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Windows.ApplicationModel.Background;
-//using Windows.Storage;
-//using Windows.Storage.Search;
-//using System.Collections.ObjectModel;
+﻿using HelloWindowsIot.Models;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media.Imaging;
 
-//namespace AppSettings
-//{
-//    public static class Settings
-//    {
+namespace HelloWindowsIot
+{
+    public static class Settings
+    {
+        #region UI
+        public const string APP_NAME = "Hello WIndows IOT";
+        public const string ProductIdinStore = "";
+        public const string SupportEmail = "pkarsten@live.de";
+        public const string SupporterFirstName = "Peter";
+        public static bool LoadPictureListManually { get; set; }
+        #endregion
+
+    }
+
+}
 //        #region Background Tasks
 //        public const string ChangeWallpaperTaskEntryPoint = "RWPBGTasks.ChangeWallpaper";
 //        public const string ChangeWallpaperTaskName = "ChangeWallpaperTask";

@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Data;
 using UwpSqliteDal;
 using AppSettings;
 using System.Linq;
+using HelloWindowsIot;
+using HelloWindowsIot.Models;
 
 namespace RWPBGTasks
 {
@@ -103,7 +105,7 @@ namespace RWPBGTasks
         }
         private static async Task<bool> InternalRegisterNeededTasks()
         {
-            foreach (BGTaskModel b in Settings.ListBgTasks)
+            foreach (BGTaskModel b in BGTasksSettings.ListBgTasks)
             {
                 if(b.Registered == false)
                 {
@@ -126,7 +128,7 @@ namespace RWPBGTasks
         public static String GetBackgroundTaskStatus(String name)
         {
             var registered = false;
-            var ts = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
+            var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
             registered = ts.Registered;
 
             var status = registered ? "Registered" : "Unregistered";
@@ -165,7 +167,7 @@ namespace RWPBGTasks
         /// <param name="name">Name of background task to query background access requirement.</param>
         public static bool TaskRequiresBackgroundAccess(String name)
         {
-            var ts = Settings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
+            var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
             if (ts.Name == name)
             { 
                 Dal.SaveLogEntry(LogType.Info, name + "requires Background access");

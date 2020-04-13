@@ -45,6 +45,7 @@ namespace HelloWindowsIot
         }
         #endregion
 
+        #region functions
         /// <summary>
         /// Used to display messages to the user
         /// </summary>
@@ -76,6 +77,7 @@ namespace HelloWindowsIot
                 StatusPanel.Visibility = Visibility.Collapsed;
             }
         }
+        #endregion
 
         #region scenarios
         /// <summary>
@@ -129,11 +131,6 @@ namespace HelloWindowsIot
 
          }
 
-        async void Footer_Click(object sender, RoutedEventArgs e)
-        {
-            //await Windows.System.Launcher.LaunchUriAsync(new Uri(((HyperlinkButton)sender).Tag.ToString()));
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
@@ -143,7 +140,7 @@ namespace HelloWindowsIot
         #region Navigate
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // Populate the scenario list from the AppConfiguration.cs file
+            // Populate the scenario list from the UICOnfiguration.cs file
             // Scenarios for Top in Hamburger Menu
             ScenarioControl.ItemsSource = topScenarios;
             ScenarioControl.SelectedIndex = -1;

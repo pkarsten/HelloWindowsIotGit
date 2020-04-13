@@ -67,21 +67,21 @@ namespace HelloWindowsIot
 
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // App-Initialisierung nicht wiederholen, wenn das Fenster bereits Inhalte enthält.
-            // Nur sicherstellen, dass das Fenster aktiv ist.
+            // Don't Repeat App Initialisierung, if the window always contains content
+            // stay secure the windows is active
             if (rootFrame == null)
             {
-                // Frame erstellen, der als Navigationskontext fungiert und zum Parameter der ersten Seite navigieren
+                // Frame, for the navigation context and for parameter to g/navigate to the first page 
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+                // For load previous state of the app 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Zustand von zuvor angehaltener Anwendung laden
                 }
 
-                // Den Frame im aktuellen Fenster platzieren
+                // Place frame in current windows 
                 Window.Current.Content = rootFrame;
             }
 

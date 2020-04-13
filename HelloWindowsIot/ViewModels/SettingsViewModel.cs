@@ -12,6 +12,7 @@ using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using HelloWindowsIot.Models;
 
 namespace HelloWindowsIot
 {
@@ -170,7 +171,7 @@ namespace HelloWindowsIot
             IsBusy = true;
             try
             {
-                var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
+                var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == BGTasksSettings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
                 if (ts != null)
                 {
                     MyBgTask = ts;
@@ -186,7 +187,7 @@ namespace HelloWindowsIot
 
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
-                    if (task.Value.Name == Settings.LoadImagesFromOneDriveTaskName)
+                    if (task.Value.Name == BGTasksSettings.LoadImagesFromOneDriveTaskName)
                     {
                         System.Diagnostics.Debug.WriteLine("Task " + task.Value.Name+  " is registriert attach handler ");
                         AttachLoadPictureListProgressAndCompletedHandlers(task.Value);
@@ -217,12 +218,12 @@ namespace HelloWindowsIot
             {
 
                 await Dal.DeleteAllPictures();
-                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+                BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
 
                 ApplicationTrigger trigger3 = new ApplicationTrigger();
                 System.Diagnostics.Debug.WriteLine("Call RegisterBackgroundTask on Setttings ViewModel LoadPictures");
                 var task = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
-                                                                  Settings.LoadImagesFromOneDriveTaskName,
+                                                                  BGTasksSettings.LoadImagesFromOneDriveTaskName,
                                                                   trigger3,
                                                                   null);
                 _taskProgress = "Initializing LoadPictureList ...";
@@ -230,7 +231,7 @@ namespace HelloWindowsIot
 
                 // Reset the completion status
                 var settings = ApplicationData.Current.LocalSettings;
-                settings.Values.Remove(Settings.LoadImagesFromOneDriveTaskName);
+                settings.Values.Remove(BGTasksSettings.LoadImagesFromOneDriveTaskName);
 
                 //Signal the ApplicationTrigger
                 var result = await trigger3.RequestAsync();
@@ -291,11 +292,11 @@ namespace HelloWindowsIot
             if (Settings.LoadPictureListManually == true)
             {
                 //Unregister App Trigger 
-                BackgroundTaskConfig.UnregisterBackgroundTasks(Settings.LoadImagesFromOneDriveTaskName);
+                BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
                 //Register Backgroundtask 
                 var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
-                                                                           Settings.LoadImagesFromOneDriveTaskName,
-                                                                            await Dal.GetTimeIntervalForTask(Settings.LoadImagesFromOneDriveTaskName),
+                                                                           BGTasksSettings.LoadImagesFromOneDriveTaskName,
+                                                                            await Dal.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
                                                                            null);
             }
             _taskProgress = "List Loaded";

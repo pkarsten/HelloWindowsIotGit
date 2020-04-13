@@ -365,10 +365,30 @@ namespace MSGraph
             //Task Folders: https://graph.microsoft.com/beta/me/outlook/taskFolders
             try
             {
+                List<TaskFolder> myTaskFolders = new List<TaskFolder>();
+                string nextLink = null;
                 var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders");
                 var taskfolders = JsonConvert.DeserializeObject<ParseTaskFolderResponse>(await response.Content.ReadAsStringAsync());
-                return taskfolders.Value;
+                
+                nextLink = taskfolders.NextLink;
+                myTaskFolders.AddRange(taskfolders.Value);
+                System.Diagnostics.Debug.WriteLine("NEXT taskfolder LINK : " + nextLink);
+                if (nextLink != null)
+                {
+                    do
+                    {
+                        HttpResponseMessage rm = await MakeGraphCall(HttpMethod.Get, "", null, 0, nextLink);
+                        ParseTaskFolderResponse cr = JsonConvert.DeserializeObject<ParseTaskFolderResponse>(await rm.Content.ReadAsStringAsync());
+                        if (cr != null)
+                        {
+                            myTaskFolders.AddRange(cr.Value);
+                            nextLink = cr.NextLink;
+                        }
+                    }
+                    while (nextLink != null);
+                }
 
+                return myTaskFolders;
 
             }
             catch (Exception ex)

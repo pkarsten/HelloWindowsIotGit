@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage;
@@ -15,16 +14,18 @@ using Windows.UI.Xaml.Controls;
 
 namespace HelloWindowsIot
 {
+    /// <summary>
+    /// The Main Page
+    /// </summary>
     public partial class MainPage : Page
     {
-        // GlyphChar="\xE71C" 0> Filter Symbol
-        // GlyphChar="\xE8BA" Status Symbol 
-        //startpage GlyphChar="\xE80F"
+        // GlyphChar="\xE71C" 0 (Filter Symbol)
+        // GlyphChar="\xE8BA" (Status Symbol)
+        // GlyphChar="\xE80F" (House Symbol)
         List<Scenario> topScenarios = new List<Scenario>
         {
-            new Scenario() { Title="Settings", ClassType=typeof(SettingsPage), GlyphChar="\xE713"},
             new Scenario() { Title="Dashboard", ClassType=typeof(DashBoard), GlyphChar="\xE80F"},
-            new Scenario() { Title="GraphDemo", ClassType=typeof(GraphDemo), GlyphChar="\xE713"},
+            new Scenario() { Title="Settings", ClassType=typeof(SettingsPage), GlyphChar="\xE713"},
             new Scenario() { Title="Logs", ClassType=typeof(LogsPage), GlyphChar="\xE8F1"}
             
         };

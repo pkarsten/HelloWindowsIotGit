@@ -2,11 +2,10 @@
 {
 
     /// <summary>
-    /// Configuration for Windiows Runtime Component not accessible from extern 
+    /// Configuration for Windows Runtime Component not accessible from extern 
     /// </summary>
     public sealed class Configuration
     {
-        public static string PicFileNameInAppDataFolder { get; } = "mybgpicture";
         public static string DatabaseName { get; } = "HelloWindowsIotDB.Sqlite";
         public static Setup InitialSetupConfig { get; } = new Setup
         {

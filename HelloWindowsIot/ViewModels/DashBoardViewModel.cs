@@ -15,6 +15,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 using UwpSqLiteDal;
+using HelloWindowsIot.Models;
 
 namespace HelloWindowsIot
 {
@@ -198,7 +199,7 @@ namespace HelloWindowsIot
                 await LoadCalendarEvents();
                 await LoadPurchTask();
 
-                var ts = Settings.ListBgTasks.Where(g => g.Name == Settings.LoadGraphDataTaskName).FirstOrDefault();
+                var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == BGTasksSettings.LoadGraphDataTaskName).FirstOrDefault();
                 if (ts != null)
                 {
                     MyBgTask = ts;
@@ -206,7 +207,7 @@ namespace HelloWindowsIot
 
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
-                    if (task.Value.Name == Settings.LoadGraphDataTaskName)
+                    if (task.Value.Name == BGTasksSettings.LoadGraphDataTaskName)
                     {
                         System.Diagnostics.Debug.WriteLine("Task " + task.Value.Name + " is registriert attach handler ");
                         AttachGetGraphData_ProgressAndCompletedHandlers(task.Value);

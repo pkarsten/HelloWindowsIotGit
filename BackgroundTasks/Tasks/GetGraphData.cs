@@ -143,13 +143,13 @@ namespace RWPBGTasks
                         if (s.EnableCalendarNextEvents)
                         {
                             IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents(s.NextEventDays);
-                            Settings.NextEvents = nextevents.ToObservableCollection();
+                            BGTasksSettings.NextEvents = nextevents.ToObservableCollection();
                             foreach (var o in nextevents)
                             {
                                 var ce = new CalendarEvent();
                                 //TODO: It seems that sqliteDB all the time saves datetime  as UTC , 
                                 // no way to save it to localtime or other Format? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(2); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 
                                 ce.Subject = o.Subject;
                                 if (ce.StartDateTime.Day == DateTime.Now.Day)
                                     ce.TodayEvent = true;

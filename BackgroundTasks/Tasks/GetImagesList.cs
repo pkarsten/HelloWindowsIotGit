@@ -128,60 +128,75 @@ namespace RWPBGTasks
                     folder = await graphService.GetPhotosAndImagesFromFolder(s.OneDrivePictureFolder);
                     children = await graphService.PopulateChildren(folder);
 
-
-                    try
+                    if (children != null)
                     {
 
-                        //https://gunnarpeipman.com/csharp/foreach/
-                        ///TODO: Null Exception here when Children is null 
-                        foreach (ItemInfoResponse iir in children.ToList())
+                        try
                         {
-                            if (iir.Image != null)
+
+                            //https://gunnarpeipman.com/csharp/foreach/
+                            ///TODO: Null Exception here when Children is null 
+                            int xyz = 0;
+                            foreach (ItemInfoResponse iir in children.ToList())
                             {
-                                System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
-                                //iri = iir;
+                                if (iir.Image != null)
+                                {
+                                    //System.Diagnostics.Debug.WriteLine("PhotoName : " +xyz+ " - "  + iir.Name + "Id: " + iir.Id);
+                                    xyz += 1;
+                                    //iri = iir;
+                                }
+                                else
+                                {
+                                    children.Remove(iir);
+                                }
                             }
-                            else
+                            xyz =0;
+                            int totalFiles = children.Count;
+                            int filesProcessed = 0;
+                            //await Dal.DeleteAllPictures();
+                            foreach (var iri in children)
                             {
-                                children.Remove(iir);
+                                if (iri.Image != null)
+                                {
+
+                                    filesProcessed++;
+                                    _progress = (uint)((double)filesProcessed / totalFiles * 100);
+                                    _taskInstance.Progress = _progress; ///=> !!!!!!!!
+                                    var dbPic = Dal.GetPictureByOneDriveId(iri.Id);
+                                    if (dbPic == null)
+                                    {
+                                        var fp = new FavoritePic();
+                                        fp.DownloadedFromOneDrive = true;
+                                        fp.Viewed = false;
+                                        fp.Name = iri.Name;
+                                        fp.DownloadUrl = iri.DownloadUrl;
+                                        fp.Name = iri.Name;
+                                        fp.OneDriveId = iri.Id;
+                                        fp.Status = "UpToDate";
+                                        await Dal.SavePicture(fp);
+                                    }
+                                    else
+                                    {
+                                        var fp = dbPic;
+                                        fp.Status = "UpToDate";
+                                        await Dal.SavePicture(fp);
+                                    }
+                                    xyz += 1;
+                                    System.Diagnostics.Debug.WriteLine("PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
+                                }
+                                
                             }
+
                         }
-                        int totalFiles = children.Count;
-                        int filesProcessed = 0;
-                        //await Dal.DeleteAllPictures();
-                        foreach (var iri in children)
+                        catch (Exception ex)
                         {
-                            filesProcessed++;
-                            _progress = (uint)((double)filesProcessed / totalFiles * 100);
-                            _taskInstance.Progress = _progress; ///=> !!!!!!!!
-                            var dbPic = Dal.GetPictureByOneDriveId(iri.Id);
-                            if (dbPic == null)
-                            {
-                                var fp = new FavoritePic();
-                                fp.DownloadedFromOneDrive = true;
-                                fp.Viewed = false;
-                                fp.Name = iri.Name;
-                                fp.DownloadUrl = iri.DownloadUrl;
-                                fp.Name = iri.Name;
-                                fp.OneDriveId = iri.Id;
-                                fp.Status = "UpToDate";
-                                await Dal.SavePicture(fp);
-                            } else
-                            {
-                                var fp = dbPic;
-                                fp.Status = "UpToDate";
-                                await Dal.SavePicture(fp);
-                            }
+                            System.Diagnostics.Debug.WriteLine(" FP _ Exception ");
+                            await Dal.SaveLogEntry(LogType.Error, ex.Message);
                         }
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        await Dal.SaveLogEntry(LogType.Error, error.Message);
-                    }
-                    finally
-                    {
-                        await Dal.DelIndefinablePics();
+                        finally
+                        {
+                            await Dal.DelIndefinablePics();
+                        }
                     }
                 }
                 catch (Exception ex)

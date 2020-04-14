@@ -15,38 +15,30 @@ namespace HelloWindowsIot.Controls
 {
     public sealed partial class InfoBox : UserControl
     {
+        public InfoBoxViewModel ViewModel { get; set; }
         public InfoBox()
         {
+            System.Diagnostics.Debug.WriteLine("InfoBox InfoBoxInfoBoxInfoBoxInfoBoxInfoBoxInfoBoxInfoBoxInfoBoxInfoBox");
             this.InitializeComponent();
-            DataContext = this;
-            Timer.Tick += Timer_Tick;
-            Timer.Interval = new TimeSpan(0, 0, 1);
-            Timer.Start();
-
-            CalenderEventText();
+            this.ViewModel = new InfoBoxViewModel();
         }
 
-        public async void CalenderEventText()
+        public InfoModel IM 
         {
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-            string s = "";
-
-            IList<CalendarEventItem> myevents = await graphService.GetCalendarEvents(20);
-            foreach (CalendarEventItem ce in myevents)
-            {
-                s = s + "Date : " + ce.StartDateTime.dateTime + " Subject: " + ce.Subject + " \n";
-                System.Diagnostics.Debug.WriteLine("Date : " + ce.StartDateTime.dateTime + " Subject: " + ce.Subject);
-            }
-
-            MyEvents.Text = s;
+            get => (InfoModel)GetValue(IM_Property);
+            set{SetValue(IM_Property, value); this.ViewModel.PIM = value; System.Diagnostics.Debug.WriteLine("INFO INFO : " + value.TotalPicsinDB); }
         }
 
-        DispatcherTimer Timer = new DispatcherTimer();
+        public static readonly DependencyProperty IM_Property =
+            DependencyProperty.Register("IM_Property", typeof(InfoModel), typeof(InfoBox), new PropertyMetadata(false));
 
-        private void Timer_Tick(object sender, object e)
+        public string t1
         {
-            MyTime.Text = DateTime.Now.ToString("h:mm:ss tt");
+            get => (string)GetValue(t1_Property);
+            set { SetValue(t1_Property, value); System.Diagnostics.Debug.WriteLine("INFO t1 INFO : " + value); }
         }
+
+        public static readonly DependencyProperty t1_Property =
+            DependencyProperty.Register("t1_Property", typeof(string), typeof(InfoBox), new PropertyMetadata(false));
     }
 }

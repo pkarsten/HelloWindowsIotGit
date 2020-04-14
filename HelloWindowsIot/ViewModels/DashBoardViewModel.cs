@@ -34,6 +34,7 @@ namespace HelloWindowsIot
         private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
         private ObservableCollection<CalendarEvent> nextcalendarEvents = new ObservableCollection<CalendarEvent>();
         private ObservableCollection<PurchTask> purchtasks =new ObservableCollection<PurchTask>();
+        private InfoModel _infoM = new InfoModel();
         private string purchtaskcontent = "";
         private string purchtasksubject ="";
         #endregion
@@ -69,6 +70,12 @@ namespace HelloWindowsIot
             {
                 this.SetProperty(ref this.purchtasks, value);
             }
+        }
+
+        public InfoModel InfoM
+        {
+            get { return this._infoM; }
+            set { this.SetProperty(ref this._infoM, value); }
         }
         public string PurchTaskContent
         {
@@ -168,6 +175,7 @@ namespace HelloWindowsIot
                     this.OnPropertyChanged("EnableCLock");
                     this.OnPropertyChanged("CurrentTime");
                     this.OnPropertyChanged("HideTodayEvents");
+                    this.OnPropertyChanged("InfoM");
                 }
                 , CoreDispatcherPriority.Normal);
         }
@@ -177,7 +185,9 @@ namespace HelloWindowsIot
         /// </summary>
         private async Task UpdateDashBoardImageAsync()
         {
-            await DispatcherHelper.ExecuteOnUIThreadAsync(
+            try
+            {
+                await DispatcherHelper.ExecuteOnUIThreadAsync(
                 async () =>
                     {
                         var getimage = await HelperFunc.StreamImageFromOneDrive();
@@ -185,8 +195,23 @@ namespace HelloWindowsIot
                             DashImage = getimage;
                     }
                     , CoreDispatcherPriority.High);
+            }
+            catch (Exception ex) { }
+            finally
+            {
+                UpdateUI();
+            }
 
-            UpdateUI();
+            try
+            {
+                await LoadDatabaseInfos();
+            }
+            catch (Exception ex) { }
+            finally
+            {
+                UpdateUI();
+            }
+            
         }
         /// <summary>
         /// Load Initial Settings /Setup Data for the ViewModel
@@ -198,6 +223,7 @@ namespace HelloWindowsIot
                 await this.UpdateDashBoardImageAsync();
                 await LoadCalendarEvents();
                 await LoadPurchTask();
+                await LoadDatabaseInfos();
 
                 var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == BGTasksSettings.LoadGraphDataTaskName).FirstOrDefault();
                 if (ts != null)
@@ -299,7 +325,7 @@ namespace HelloWindowsIot
         }
         #endregion
 
-        #region PurchTask
+        #region ToDoTasks
         private async Task LoadPurchTask()
         {
             var pt = Dal.GetToDoTasks().ToObservableCollection(); ;
@@ -307,6 +333,17 @@ namespace HelloWindowsIot
             {
                 purchtasks = pt;
             }
+        }
+        #endregion
+
+        #region DataBaseInfos
+        private async Task LoadDatabaseInfos()
+        {
+            System.Diagnostics.Debug.WriteLine("Load Database Infos");
+            _infoM.TotalPicsinDB = "Total Bilder: " + await Dal.CountPicsInTable();
+            _infoM.ViewedPics = "Bereits angezeigt: " + await Dal.CountPicsInTable(true);
+            _infoM.NonViewedPics  = "Fehlen noch" + await Dal.CountPicsInTable(false);
+            UpdateUI();
         }
         #endregion
 

@@ -650,6 +650,33 @@ namespace UwpSqliteDal
         }
         #endregion
 
+        #region DatabaseInfos
+        public static async Task<int> CountPicsInTable()
+        {
+            int pics=0;
+            // Create a new connection
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            {
+                pics = (from p in db.Table<FavoritePic>() select p).Count();
+            }
+            return pics;
+        }
+
+        public static async Task<int> CountPicsInTable(bool viewed) 
+        {
+            int pics = 0;
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath)){
+                
+                if (viewed == true)
+                    pics = (from p in db.Table<FavoritePic>() select p).Where(v => v.Viewed == true).Count();
+
+                if (viewed == false)
+                    pics = (from p in db.Table<FavoritePic>() select p).Where(v => v.Viewed == false).Count();
+            }
+            return pics;
+        }
+        #endregion
+
         #region BGTasks
         public static void DeleteAllTaskStatus()
         {
@@ -810,7 +837,7 @@ namespace UwpSqliteDal
                         children.Remove(iir);
                     }
                 }
-                DeleteAllPictures();
+                //DeleteAllPictures();
                 foreach (var iri in children)
                 {
                     var fp = new FavoritePic();

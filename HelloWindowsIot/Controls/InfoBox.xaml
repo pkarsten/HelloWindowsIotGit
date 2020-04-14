@@ -10,9 +10,10 @@
     d:DesignWidth="400">
     <Grid BorderBrush="White" BorderThickness="6" CornerRadius="12" Padding="12">
         <StackPanel Orientation="Vertical">
-            <TextBlock x:Name="MyTime" Text="22:11:33" FontSize="36" FontFamily="Cambria"></TextBlock>
-            <TextBlock Text="Nächste Termine:" FontSize="20" FontFamily="Segoe UI"></TextBlock>
-            <TextBlock x:Name="MyEvents" TextWrapping="Wrap" Text="Datum Subject " FontSize="20" FontFamily="Segoe UI"></TextBlock>
+            <TextBlock Text="InfoBox" FontSize="36" FontFamily="Cambria"></TextBlock>
+            <TextBlock x:Name="TotalPicsinDB"  Text="{x:Bind IM.TotalPicsinDB}" FontSize="20" FontFamily="Segoe UI"></TextBlock>
+            <TextBlock x:Name="ViewedPics" Text="{x:Bind TotalPicsinDB}" FontSize="20" FontFamily="Segoe UI"></TextBlock>
+            <TextBlock x:Name="NonViewedPics"  Text="{x:Bind t1}" FontSize="20" FontFamily="Segoe UI"></TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

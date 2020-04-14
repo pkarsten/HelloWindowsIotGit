@@ -119,10 +119,12 @@
     <Compile Include="Converter\ThumbnailToImageConverter.cs" />
     <Compile Include="Funcs\ImageCropResize.cs" />
     <Compile Include="Funcs\StreamImage.cs" />
+    <Compile Include="Models\InfoModel.cs" />
     <Compile Include="ViewModels\ClockViewModel.cs" />
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="Models\SampleDashBoardData.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\InfoBoxViewModel.cs" />
     <Compile Include="ViewModels\InfoViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\DashBoard.xaml.cs">

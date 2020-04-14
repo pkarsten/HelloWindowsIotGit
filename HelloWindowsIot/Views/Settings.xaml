@@ -62,7 +62,7 @@
                          PlaceholderText="Enter a OneDrive path without leading '/'"
                          Style="{StaticResource TextBoxStyle}"
                             Text="{x:Bind ViewModel.SetupSettings.OneDrivePictureFolder, Mode=TwoWay}" />
-                        <Button Content="Load Images From Path"
+                        <Button Content="Load Images From Path now"
                         x:Name="PicTaskRunNowButton"
                         Style="{StaticResource ButtonStyle}" 
                         Command="{x:Bind ViewModel.LoadPicsCommand}" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource NegateBooleanConverter},  Mode=TwoWay}"/>
@@ -85,17 +85,8 @@
                           HorizontalAlignment="Stretch"
                           >
                     </ComboBox>
-                    <TextBlock Text="Choose your Purchase Task :" Margin="0,0,0,0"></TextBlock>
-                    <!-- How bind ! invert booean -->
-                    <ComboBox x:Name="cmbTaskList"
-                          ItemsSource="{x:Bind ViewModel.MyOutlookTasks, Mode=OneWay}" 
-                          SelectedValuePath="Id" 
-                          SelectedItem="{x:Bind ViewModel.SelectedPurchaseTask, Mode=TwoWay, Converter={StaticResource ComboBoxTaskResponseItemConvert}}"                              
-                          DisplayMemberPath="Subject"
-                          HorizontalAlignment="Stretch"
-                          >
-                    </ComboBox>
-                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Purch Task on  Dashboard</CheckBox>
+
+                    <CheckBox IsChecked="{x:Bind ViewModel.SetupSettings.EnablePurchaseTask, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=TwoWay}">Show Tasks from Folder on  Dashboard</CheckBox>
                     <TextBlock Text="Calendar"  Margin="0,10,0,0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"></TextBlock>
                     <TextBlock Text="Show Next Events for x Days:" Margin="0,0,0,0"></TextBlock>
                     <TextBox x:Name="CalendarNextEventsInterval"

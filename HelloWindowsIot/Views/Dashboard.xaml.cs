@@ -30,20 +30,6 @@ namespace HelloWindowsIot
         {
             this.InitializeComponent();
             this.ViewModel = new DashBoardViewModel();
-            
-            
-            // MappedLocations is a superset of Locations, so any changes in Locations
-            // need to be reflected in MappedLocations. 
-            //this.ViewModel.TodayCalendarEvents.CollectionChanged += (s, e) =>
-            //{
-            //    if (e.NewItems != null) foreach (CalendarEventItem item in e.NewItems) this.ViewModel.TodayCalendarEvents.Add(item);
-            //    if (e.OldItems != null) foreach (CalendarEventItem item in e.OldItems) this.ViewModel.TodayCalendarEvents.Remove(item);
-            //};
-            //this.ViewModel.NextCalendarEvents.CollectionChanged += (s, e) =>
-            //{
-            //    if (e.NewItems != null) foreach (CalendarEventItem item in e.NewItems) this.ViewModel.NextCalendarEvents.Add(item);
-            //    if (e.OldItems != null) foreach (CalendarEventItem item in e.OldItems) this.ViewModel.NextCalendarEvents.Remove(item);
-            //};
         }
 
         
@@ -61,24 +47,13 @@ namespace HelloWindowsIot
         }
 
         /// <summary>
-        /// Loads the saved Dashboard data on first navigation, and 
-        /// attaches a Geolocator.StatusChanged event handler. 
+        /// Loads the saved Dashboard data on first navigation
         /// </summary>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
                 var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
-                //ViewModel = dashboarddata;
                 await ViewModel.LoadData();
-
-            //var locations = await LocationDataStore.GetLocationDataAsync();
-            //if (locations.Count == 0) locations = await LocationDataStore.GetSampleLocationDataAsync();
-            //foreach (var location in locations) this.Locations.Add(location);
-
-            // Start handling Geolocator and network status changes after loading the data 
-            // so that the view doesn't get refreshed before there is something to show.
-            //LocationHelper.Geolocator.StatusChanged += Geolocator_StatusChanged;
-            //NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

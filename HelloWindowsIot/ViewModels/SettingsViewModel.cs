@@ -21,7 +21,6 @@ namespace HelloWindowsIot
     /// </summary>
     public class SettingsViewModel : BindableBase
     {
-        //TDODO: Implement time for Backgroundtask Search Load Pictures 
         
         #region Fields
         private ObservableCollection<TaskFolder> taskfolder = new ObservableCollection<TaskFolder>();
@@ -239,10 +238,6 @@ namespace HelloWindowsIot
                 Settings.LoadPictureListManually = true;
                 UpdateUI();
             }
-                
-            //TODO: Run this on Backgroundtask ???? and notify progress on UI because when run blocks the UI 
-            //await Dal.LoadImagesFromOneDriveInDBTable(SetupSettings.OneDrivePictureFolder);
-            //IsBusy = false;
         }
 
         private async void UpdateUI()

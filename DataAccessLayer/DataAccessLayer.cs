@@ -315,8 +315,8 @@ namespace UwpSqliteDal
 
         public static async Task SaveLogEntry(LogType ltype, string logDescription)
         {
-            
-            // 
+
+            /*// 
             // CHeck when Must Save Log Entry 
             //
             Setup n = await GetSetup();
@@ -347,7 +347,7 @@ namespace UwpSqliteDal
                     //SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                     System.Diagnostics.Debug.WriteLine(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                 }
-            }
+            }*/
             
         }
         #endregion
@@ -401,6 +401,9 @@ namespace UwpSqliteDal
                 // Object model:
                 //db.Delete(person);
 
+                System.Diagnostics.Debug.WriteLine(" ");
+                System.Diagnostics.Debug.WriteLine("DELETE DeletePicture(FavoritePic pic)");
+                System.Diagnostics.Debug.WriteLine(" ");
                 // SQL Syntax:
                 db.Execute("DELETE FROM FavoritePic WHERE Id = ?", pic.Id);
             }
@@ -414,6 +417,10 @@ namespace UwpSqliteDal
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
 
+                System.Diagnostics.Debug.WriteLine(" ");
+                System.Diagnostics.Debug.WriteLine("DELETE DeleteAllPictures");
+                System.Diagnostics.Debug.WriteLine(" ");
+
                 // SQL Syntax:
                 db.Execute("DELETE FROM FavoritePic");
             }
@@ -423,7 +430,7 @@ namespace UwpSqliteDal
         {
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
             {
-                db.Execute("DELETE FROM FavoritePic WHERE Status = ?","");
+                //TODO: db.Execute("DELETE FROM FavoritePic WHERE Status = ?","");
             }
 
 

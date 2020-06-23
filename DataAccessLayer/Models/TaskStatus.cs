@@ -1,5 +1,4 @@
-﻿//using SQLite;
-using SQLite.Net.Attributes;
+﻿using SQLite;
 using System;
 using Windows.Storage;
 

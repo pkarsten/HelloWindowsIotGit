@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SQLite.Net;
+using SQLite;
 using System.Text;
 using System.Threading.Tasks;
-using SQLite.Net.Attributes;
 
 namespace UwpSqliteDal
 {

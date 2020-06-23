@@ -40,7 +40,7 @@ namespace MSGraph
         // Below are the clientId (Application Id) of your app registration and the tenant information. 
         // You have to replace:
         // - the content of ClientID with the Application Id for your app registration
-        // - Te content of Tenant by the information about the accounts allowed to sign-in in your application:
+        // - The content of Tenant by the information about the accounts allowed to sign-in in your application:
         //   - For Work or School account in your org, use your tenant ID, or domain
         //   - for any Work or School accounts, use organizations
         //   - for any Work or School accounts, or Microsoft personal account, use common
@@ -48,13 +48,13 @@ namespace MSGraph
 
         private static string ClientId = "cba8344a-8cbb-41be-a414-4da940902ad7";//"0b8b0665-bc13-4fdc-bd72-e0227b9fc011";
         private static string Tenant = "common";
-        public static PublicClientApplication PublicClientApp { get; } = new PublicClientApplication(ClientId, $"https://login.microsoftonline.com/{Tenant}");
+        //public static PublicClientApplication PublicClientApp { get; } = new PublicClientApplication(ClientId, $"https://login.microsoftonline.com/{Tenant}"); -> Obsolete
+        public static IPublicClientApplication PublicClientApp = PublicClientApplicationBuilder.Create(ClientId).WithAuthority(AzureCloudInstance.AzurePublic, Tenant).Build();
         public static string TokenForUser = null;
         public static DateTimeOffset Expiration;
         public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read","Tasks.Read" };
 
         //private TraceWriter logger = null;
-
 
         public GraphService(string accessToken)
         {
@@ -92,7 +92,7 @@ namespace MSGraph
         {
             IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync();
             IAccount firstAccount = accounts.FirstOrDefault();
-            return  await PublicClientApp.AcquireTokenSilentAsync(Scopes, firstAccount);
+            return  await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync();
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace MSGraph
             AuthenticationResult authResult;
             try
             {
-                authResult = await PublicClientApp.AcquireTokenSilentAsync(Scopes, firstAccount);
+                authResult = await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync(); 
                 TokenForUser = authResult.AccessToken;
             }
 
@@ -143,7 +143,10 @@ namespace MSGraph
 
                 try
                 {
-                    authResult = await PublicClientApp.AcquireTokenAsync(Scopes);
+                    authResult = await PublicClientApp.AcquireTokenInteractive(Scopes)
+                    .WithAccount(accounts.FirstOrDefault())
+                    .WithPrompt(Prompt.SelectAccount)
+                    .ExecuteAsync();
                 }
                 catch (MsalException msalex)
                 {
@@ -155,7 +158,10 @@ namespace MSGraph
             {
                 if (TokenForUser == null || Expiration <= DateTimeOffset.UtcNow.AddMinutes(5))
                 {
-                    authResult = await PublicClientApp.AcquireTokenAsync(Scopes);
+                    authResult = await PublicClientApp.AcquireTokenInteractive(Scopes)
+                    .WithAccount(accounts.FirstOrDefault())
+                    .WithPrompt(Prompt.SelectAccount)
+                    .ExecuteAsync();
 
                     TokenForUser = authResult.AccessToken;
                     Expiration = authResult.ExpiresOn;

@@ -55,27 +55,37 @@ namespace HelloWindowsIot
         #region login out
         private async void LogIn()
         {
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
+           
             AuthenticationResult authResult = await GraphService.GetAuthResult();
 
+            MyUsername = "";
             if (authResult != null)
             {
-                MyUsername = "Hello " + authResult.Account.Username + " you signed in succesfully!" + Environment.NewLine;
+                //MyUsername += $"Username: {authResult.Account.Username}" + Environment.NewLine;
+                //MyUsername += $"Token Expires: {authResult.ExpiresOn.ToLocalTime()}" + Environment.NewLine;
+
+            } else
+            {
+                var accessToken = await GraphService.GetTokenForUserAsync();
+                var graphService = new GraphService(accessToken);
+                authResult = await GraphService.GetAuthResult();
             }
 
+            MyUsername = "Hello " + authResult.Account.Username + " you signed in succesfully!" + Environment.NewLine;
 
-                //ResultText.Text = string.Empty;
-                //TokenInfoText.Text = string.Empty;
 
-                //if (authResult != null)
-                //{
-                //    ResultText.Text = await GraphService.GetHttpContentWithToken(graphAPIEndpoint, authResult.AccessToken);
-                //    DisplayBasicTokenInfo(authResult);
-                //    this.SignOutButton.Visibility = Visibility.Visible;
-                //}
 
-            }
+            //ResultText.Text = string.Empty;
+            //TokenInfoText.Text = string.Empty;
+
+            //if (authResult != null)
+            //{
+            //    ResultText.Text = await GraphService.GetHttpContentWithToken(graphAPIEndpoint, authResult.AccessToken);
+            //    DisplayBasicTokenInfo(authResult);
+            //    this.SignOutButton.Visibility = Visibility.Visible;
+            //}
+
+        }
         private async void LogOut()
         {
             if (await GraphService.SignOut() == true)

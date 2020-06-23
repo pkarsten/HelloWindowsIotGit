@@ -7,10 +7,8 @@ using System.IO;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using SQLite;
-using SQLite.Net.Platform.WinRT;
 using System.Diagnostics;
 using Windows.ApplicationModel.Background;
-using SQLite.Net;
 using AppSettings;
 using MSGraph.Response;
 using MSGraph;
@@ -24,6 +22,7 @@ namespace UwpSqliteDal
     public static class Dal
     {
         private static string dbPath = string.Empty;
+        private static object collisionLock = new object();
 
         #region Database Connection and Create
         /// <summary>
@@ -46,9 +45,10 @@ namespace UwpSqliteDal
         {
             get
             {
-                return new SQLiteConnection(new SQLitePlatformWinRT(), DbPath);
+                return new SQLiteConnection(DbPath);
             }
         }
+
 
         /// <summary>
         /// Creates DB and Tables if not existent
@@ -97,7 +97,7 @@ namespace UwpSqliteDal
         {
             PicFilter pfic;
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 pfic = (from p in db.Table<PicFilter>() select p).FirstOrDefault();
 
@@ -119,7 +119,7 @@ namespace UwpSqliteDal
             PicFilter picfilterconfig = new PicFilter();
             try
             {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     picfilterconfig = (from p in db.Table<PicFilter>() where p.Id == 1 select p).FirstOrDefault();
                 }
@@ -140,7 +140,7 @@ namespace UwpSqliteDal
         {
             try
             {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     db.Update(set);
                     SaveLogEntry(LogType.Info, "PicFilter  Config Updated");
@@ -161,7 +161,7 @@ namespace UwpSqliteDal
         {
             Setup sconfig;
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 sconfig = (from p in db.Table<Setup>() select p).FirstOrDefault();
 
@@ -183,7 +183,7 @@ namespace UwpSqliteDal
             Setup sconfig = new Setup();
             try
             {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     sconfig = (from p in db.Table<Setup>() where p.Id == 1 select p).FirstOrDefault();
                 }
@@ -206,7 +206,7 @@ namespace UwpSqliteDal
         {
             try
             {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     db.Update(set);
                     SaveLogEntry(LogType.Info, "Setup Config Updated");
@@ -226,7 +226,7 @@ namespace UwpSqliteDal
         {
             try
             {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     Setup sconfig = await GetSetup();
                     sconfig.EnableLogging = enable;
@@ -270,7 +270,7 @@ namespace UwpSqliteDal
             IList<LogEntry> logs;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 logs = (from p in db.Table<LogEntry>()
                         select p).OrderByDescending(d => d.Id).ToList();
@@ -283,7 +283,7 @@ namespace UwpSqliteDal
             IList<LogEntry> logs;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 logs = (from p in db.Table<LogEntry>()
                         select p).OrderByDescending(d => d.Id).Take(x).ToList();
@@ -297,7 +297,7 @@ namespace UwpSqliteDal
             try
             {
                 // Create a new connection
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     // SQL Syntax:
                     db.Execute("DELETE FROM LogEntry");
@@ -335,7 +335,7 @@ namespace UwpSqliteDal
                     lentry.Description = logDescription;
                     lentry.LogEntryDate = DateTime.Now.ToString();
                     // Create a new connection
-                    using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                    using (var db = new SQLiteConnection(DbPath))
                     {
                         // New
                         //db.Insert(lentry);
@@ -358,7 +358,7 @@ namespace UwpSqliteDal
             try
             {
                 // Create a new connection
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     // New
                     db.Insert(new Message()
@@ -379,7 +379,7 @@ namespace UwpSqliteDal
         {
             IList<Message> messages;
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 messages = (from p in db.Table<Message>()
                             select p).OrderByDescending(d => d.Id).ToList();
@@ -393,7 +393,7 @@ namespace UwpSqliteDal
         public static void DeletePicture(FavoritePic pic)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
@@ -412,7 +412,7 @@ namespace UwpSqliteDal
         public static async Task DeleteAllPictures()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
@@ -428,7 +428,7 @@ namespace UwpSqliteDal
 
         public static async Task DelIndefinablePics()
         {
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 //TODO: db.Execute("DELETE FROM FavoritePic WHERE Status = ?","");
             }
@@ -440,7 +440,7 @@ namespace UwpSqliteDal
         public static async Task UpdateAllPicStatus()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 db.Execute("UPDATE FavoritePic SET Status=?", "");
                 Dal.SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
@@ -453,7 +453,7 @@ namespace UwpSqliteDal
             IList<FavoritePic> models;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
@@ -468,7 +468,7 @@ namespace UwpSqliteDal
         public static async Task<FavoritePic> GetRandomPicture()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 var m = (from p in db.Table<FavoritePic>()
                          select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive == true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
@@ -485,7 +485,7 @@ namespace UwpSqliteDal
             try
             {
                 // Create a new connection
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     var viewedPics = (from p in db.Table<FavoritePic>()
                                       select p).Where(v => v.Viewed == false).ToList();
@@ -512,7 +512,7 @@ namespace UwpSqliteDal
         public static FavoritePic GetPictureById(int Id)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
@@ -526,7 +526,7 @@ namespace UwpSqliteDal
         public static FavoritePic GetPictureByOneDriveId(string id)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 FavoritePic m = (from p in db.Table<FavoritePic>()
                                  where p.OneDriveId == id
@@ -538,17 +538,20 @@ namespace UwpSqliteDal
         public static async Task SavePicture(FavoritePic pic)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
-                if (pic.Id == 0)
+                lock (collisionLock)
                 {
-                    // New
-                    db.Insert(pic);
-                }
-                else
-                {
-                    // Update
-                    db.Update(pic);
+                    if (pic.Id == 0)
+                    {
+                        // New
+                        db.Insert(pic);
+                    }
+                    else
+                    {
+                        // Update
+                        db.Update(pic);
+                    }
                 }
             }
         }
@@ -561,24 +564,39 @@ namespace UwpSqliteDal
         public static async Task SaveCalendarEvent(CalendarEvent ce)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
-                if (ce.Id == 0)
+                lock (collisionLock)
                 {
-                    // New
-                    db.Insert(ce);
-                }
-                else
-                {
-                    // Update
-                    db.Update(ce);
+                    if (ce.Id == 0)
+                    {
+                        // New
+                        try
+                        {
+                            db.Insert(ce);
+                        }
+                        catch (SQLiteException sqex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("sex " + sqex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex.Message);
+                        }
+
+                    }
+                    else
+                    {
+                        // Update
+                        db.Update(ce);
+                    }
                 }
             }
         }
         public static async Task DeleteAllCalendarEvents()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // Activate Tracing
                 //db.TraceListener = new DebugTraceListener();
@@ -592,7 +610,7 @@ namespace UwpSqliteDal
             IList<CalendarEvent> models;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
 
                 models = (from p in db.Table<CalendarEvent>()
@@ -606,7 +624,7 @@ namespace UwpSqliteDal
             IList<CalendarEvent> models;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 models = (from p in db.Table<CalendarEvent>()
                           select p).Where(c => c.TodayEvent == false && c.IgnoreEvent == false).OrderBy(u => u.StartDateTime).ToList();
@@ -619,7 +637,7 @@ namespace UwpSqliteDal
         public static async Task SavePurchTask(PurchTask obj)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 if (obj.Id == 0)
                 {
@@ -636,7 +654,7 @@ namespace UwpSqliteDal
         public static async Task DeletePurchTask()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 // SQL Syntax:
                 db.Execute("DELETE FROM PurchTask");
@@ -647,7 +665,7 @@ namespace UwpSqliteDal
             IList<PurchTask> taskList;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
 
                 taskList = (from p in db.Table<PurchTask>() select p).ToList();
@@ -662,7 +680,7 @@ namespace UwpSqliteDal
         {
             int pics=0;
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 pics = (from p in db.Table<FavoritePic>() select p).Count();
             }
@@ -672,7 +690,7 @@ namespace UwpSqliteDal
         public static async Task<int> CountPicsInTable(bool viewed) 
         {
             int pics = 0;
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath)){
+            using (var db = new SQLiteConnection(DbPath)){
                 
                 if (viewed == true)
                     pics = (from p in db.Table<FavoritePic>() select p).Where(v => v.Viewed == true).Count();
@@ -690,7 +708,7 @@ namespace UwpSqliteDal
             try
             {
                 // Create a new connection
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     // SQL Syntax:
                     db.Execute("DELETE FROM TaskStatus");
@@ -709,7 +727,7 @@ namespace UwpSqliteDal
         public static BGTask GetTaskStatusByTaskName(string tName)
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 BGTask t = (from p in db.Table<BGTask>()
                             where p.TaskName == tName
@@ -729,7 +747,7 @@ namespace UwpSqliteDal
             try
             {
                 // Create a new connection
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+                using (var db = new SQLiteConnection(DbPath))
                 {
                     // New
                     if (GetTaskStatusByTaskName(ts.TaskName) != null)
@@ -768,7 +786,7 @@ namespace UwpSqliteDal
             IList<BGTask> mlist;
 
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
 
                 mlist = (from p in db.Table<BGTask>()
@@ -785,7 +803,7 @@ namespace UwpSqliteDal
         public static FavoritePic GetRandomInfoItemResponse()
         {
             // Create a new connection
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), DbPath))
+            using (var db = new SQLiteConnection(DbPath))
             {
                 var m = (from p in db.Table<FavoritePic>()
                          select p).Where(v => v.Viewed == false && v.DownloadedFromOneDrive == true).OrderBy(x => Guid.NewGuid()).FirstOrDefault();

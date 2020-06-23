@@ -190,7 +190,7 @@ namespace RWPBGTasks
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(" FP _ Exception ");
+                            System.Diagnostics.Debug.WriteLine(" FP _ Exception " );
                             await Dal.SaveLogEntry(LogType.Error, ex.Message);
                         }
                         finally

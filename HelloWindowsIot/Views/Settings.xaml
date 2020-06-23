@@ -59,7 +59,7 @@
                     <TextBlock Text="Picturefolder for DiaShow:" Margin="0,0,0,0" FontFamily="Segoe UI"></TextBlock>
                     
                     <TextBox x:Name="OneDriveFolderPathText"
-                         PlaceholderText="Enter a OneDrive path without leading '/'"
+                         PlaceholderText="Enter a OneDrive path with leading '/' e.g. Bilder/WindowsIotAppPics"
                          Style="{StaticResource TextBoxStyle}"
                             Text="{x:Bind ViewModel.SetupSettings.OneDrivePictureFolder, Mode=TwoWay}" />
                         <Button Content="Load Images From Path now"

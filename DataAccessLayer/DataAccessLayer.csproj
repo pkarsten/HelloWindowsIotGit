@@ -135,6 +135,7 @@
     <Compile Include="Models\TaskStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BGTasksSettings.cs" />
+    <Compile Include="TaskExtension.cs" />
     <EmbeddedResource Include="Properties\DataAccessLayer.rd.xml" />
   </ItemGroup>
   <ItemGroup>

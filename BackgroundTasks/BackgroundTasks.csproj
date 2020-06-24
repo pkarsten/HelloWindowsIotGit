@@ -122,7 +122,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskConfiguration.cs" />
-    <Compile Include="Tasks\CreateMessage.cs" />
     <Compile Include="Tasks\GetGraphData.cs" />
     <Compile Include="Tasks\GetImagesList.cs" />
     <EmbeddedResource Include="Properties\BackgroundTasks.rd.xml" />

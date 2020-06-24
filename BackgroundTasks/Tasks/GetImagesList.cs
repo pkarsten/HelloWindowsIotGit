@@ -32,7 +32,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await Dal.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -58,7 +58,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    await Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace RWPBGTasks
             }
             catch (Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task GetImageListFromOneDrive " + ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task GetImageListFromOneDrive " + ex.Message);
             }
 
             finally
@@ -97,7 +97,7 @@ namespace RWPBGTasks
             //
             _cancelRequested = true;
             _cancelReason = reason;
-            Dal.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
+            HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
         }
         #endregion
 
@@ -107,7 +107,7 @@ namespace RWPBGTasks
         //
         private async Task LoadImageListFromOneDrive()
         {
-            await Dal.SaveLogEntry(LogType.Info, "Entry in LoadImageListFromOneDrive()");
+            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Entry in LoadImageListFromOneDrive()");
 
             if ((_cancelRequested == false) && (_progress < 100))
             {
@@ -124,7 +124,7 @@ namespace RWPBGTasks
 
                 try
                 {
-                    var s = await Dal.GetSetup();
+                    var s = await HelloWindowsIotDataBase.GetSetup();
                     folder = await graphService.GetPhotosAndImagesFromFolder(s.OneDrivePictureFolder);
                     children = await graphService.PopulateChildren(folder);
 
@@ -153,7 +153,7 @@ namespace RWPBGTasks
                             xyz =0;
                             int totalFiles = children.Count;
                             int filesProcessed = 0;
-                            //await Dal.DeleteAllPictures();
+//                            await HelloWindowsIotDataBase.DeleteAllPictures();
                             foreach (var iri in children)
                             {
                                 if (iri.Image != null)
@@ -162,7 +162,7 @@ namespace RWPBGTasks
                                     filesProcessed++;
                                     _progress = (uint)((double)filesProcessed / totalFiles * 100);
                                     _taskInstance.Progress = _progress; ///=> !!!!!!!!
-                                    var dbPic = Dal.GetPictureByOneDriveId(iri.Id);
+                                    var dbPic = HelloWindowsIotDataBase.GetPictureByOneDriveId(iri.Id);
                                     if (dbPic == null)
                                     {
                                         var fp = new FavoritePic();
@@ -173,16 +173,18 @@ namespace RWPBGTasks
                                         fp.Name = iri.Name;
                                         fp.OneDriveId = iri.Id;
                                         fp.Status = "UpToDate";
-                                        await Dal.SavePicture(fp);
+                                        System.Diagnostics.Debug.WriteLine("New Pic in DB : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
+                                        await HelloWindowsIotDataBase.SavePicture(fp);
                                     }
                                     else
                                     {
                                         var fp = dbPic;
                                         fp.Status = "UpToDate";
-                                        await Dal.SavePicture(fp);
+                                        System.Diagnostics.Debug.WriteLine("Pic Update in DB PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
+                                        await HelloWindowsIotDataBase.SavePicture(fp);
                                     }
                                     xyz += 1;
-                                    System.Diagnostics.Debug.WriteLine("PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
+                                    
                                 }
                                 
                             }
@@ -190,12 +192,12 @@ namespace RWPBGTasks
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(" FP _ Exception " );
-                            await Dal.SaveLogEntry(LogType.Error, ex.Message);
+                            System.Diagnostics.Debug.WriteLine("Exception in LoadImageListFromOneDrive: " + ex.Message );
+                            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, ex.Message);
                         }
                         finally
                         {
-                            await Dal.DelIndefinablePics();
+                            HelloWindowsIotDataBase.DelIndefinablePics();
                         }
                     }
                 }
@@ -207,7 +209,7 @@ namespace RWPBGTasks
             }
              catch (Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
             }
             finally
             {
@@ -219,11 +221,11 @@ namespace RWPBGTasks
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
                 //TODO: ??//ERROR =>System.NullReferenceException ?? 
-                //BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                //BGTask ts = HelloWindowsIotDataBase.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                 //ts.LastTimeRun = DateTime.Now.ToString();
                 //ts.AdditionalStatus = settings.Values[key].ToString();
-                //Dal.UpdateTaskStatus(ts);
-                await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                //HelloWindowsIotDataBase.UpdateTaskStatus(ts);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

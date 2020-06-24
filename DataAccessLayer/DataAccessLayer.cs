@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -316,7 +316,7 @@ namespace UwpSqliteDal
         public static async Task SaveLogEntry(LogType ltype, string logDescription)
         {
 
-            /*// 
+            // 
             // CHeck when Must Save Log Entry 
             //
             Setup n = await GetSetup();
@@ -347,7 +347,7 @@ namespace UwpSqliteDal
                     //SaveLogEntry(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                     System.Diagnostics.Debug.WriteLine(LogType.Error, "Exception in SaveLogEntry() " + ex.Message);
                 }
-            }*/
+            }
             
         }
         #endregion
@@ -443,7 +443,7 @@ namespace UwpSqliteDal
             using (var db = new SQLiteConnection(DbPath))
             {
                 db.Execute("UPDATE FavoritePic SET Status=?", "");
-                Dal.SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
 
             }
         }
@@ -956,3 +956,4 @@ namespace UwpSqliteDal
 
     }
 }
+*/

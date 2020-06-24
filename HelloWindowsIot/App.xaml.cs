@@ -28,6 +28,19 @@ namespace HelloWindowsIot
     /// </summary>
     sealed partial class App : Application
     {
+        static HelloWindowsIotDataBase database;
+        public static HelloWindowsIotDataBase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new HelloWindowsIotDataBase();
+                }
+                return database;
+            }
+        }
+
         /// <summary>
         /// Initialisiert das Singletonanwendungsobjekt. Dies ist die erste Zeile von erstelltem Code
         /// und daher das logische Äquivalent von main() bzw. WinMain()....
@@ -44,8 +57,8 @@ namespace HelloWindowsIot
         /// <returns>The AppShell of the app.</returns>
         private async Task Initialize()
         {
-            Dal.CreateDatabase();
-            Dal.DeleteAllLogEntries();
+            //HelloWindowsIotDataBase.CreateDatabase();
+            App.Database.DeleteAllLogEntries();
             BackgroundTaskConfig.UnregisterALlTasks();
             await BackgroundTaskConfig.RegisterNeededTasks();
         }
@@ -110,7 +123,7 @@ namespace HelloWindowsIot
                 // Sicherstellen, dass das aktuelle Fenster aktiv ist
                 Window.Current.Activate();
 
-                //TODO:Dal.SaveLogEntry(LogType.Info, "Application Launched");
+                //TODO:HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Application Launched");
             }
         }
 

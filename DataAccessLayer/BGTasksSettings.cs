@@ -12,10 +12,6 @@ namespace AppSettings
     {
         #region Background Tasks
         /// <summary>
-        /// Name for the CreateMessage Background Task 
-        /// </summary>
-        public const string CreateMessageTaskName = "CreateMessageTask";
-        /// <summary>
         /// Name for the Load Images From OneDrive Background Task 
         /// </summary>
         public const string LoadImagesFromOneDriveTaskName = "LoadImagesFromOneDriveTask";
@@ -26,7 +22,7 @@ namespace AppSettings
         public const string LoadGraphDataTaskName = "LoadGraphDataTask";
 
         /// <summary>
-        /// List where we put the Backgroundstask for register wenn the App Runs, the CreateMessageTask is more for testing/debugging purposes
+        /// List where we put the Backgroundstask for register wenn the App Runs
         /// </summary>
         public static List<BGTaskModel> ListBgTasks { get; set; } = new List<BGTaskModel>
         {
@@ -38,16 +34,6 @@ namespace AppSettings
         public static ObservableCollection<CalendarEventItem> NextEvents { get; set; } = new ObservableCollection<CalendarEventItem>();
         public static ObservableCollection<CalendarEventItem> TodayEvents { get; set; } = new ObservableCollection<CalendarEventItem>();
 
-        public static List<string> TaskList { get; } = new List<string>
-            {
-                BGTasksSettings.CreateMessageTaskName,
-                BGTasksSettings.LoadImagesFromOneDriveTaskName
-            };
-
-        
-
-
-        // new BGTaskModel{Name =Settings.CreateMessageTaskName,EntryPoint="RWPBGTasks.CreateMessage",Registered=false},
 
         public static bool RegisterAllBackgroundTasks { get; } = true;
         public static bool RegisterSystemTriggerBackgroundTasks { get; } = false;

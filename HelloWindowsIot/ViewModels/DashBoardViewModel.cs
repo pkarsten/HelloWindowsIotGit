@@ -152,12 +152,12 @@ namespace HelloWindowsIot
             }
             catch(Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exception: in OnCompletedGetGraphData: " + ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception: in OnCompletedGetGraphData: " + ex.Message);
             }
             finally
             {
                 
-                await Dal.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
             }
         }
 
@@ -240,7 +240,7 @@ namespace HelloWindowsIot
                     }
                 }
 
-                var s = await Dal.GetSetup();
+                var s = await HelloWindowsIotDataBase.GetSetup();
                 await CheckClockStatus(s);
 
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
@@ -250,7 +250,7 @@ namespace HelloWindowsIot
             }
             catch(Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, ex.Message);
             }
             finally
             {
@@ -298,7 +298,7 @@ namespace HelloWindowsIot
         #region Calendar Events
         private async Task LoadCalendarEvents()
         {
-            var t = Dal.GetNextEvents().ToObservableCollection();
+            var t = HelloWindowsIotDataBase.GetNextEvents().ToObservableCollection();
             if (t != null)
             {
                 nextcalendarEvents = t;
@@ -309,7 +309,7 @@ namespace HelloWindowsIot
                 nextcalendarEvents = null;
             }
 
-            var t1 = Dal.GetTodayEvents().ToObservableCollection();
+            var t1 = HelloWindowsIotDataBase.GetTodayEvents().ToObservableCollection();
             if (t1.Count > 0)
             {
                 todayEvents = t1;
@@ -328,7 +328,7 @@ namespace HelloWindowsIot
         #region ToDoTasks
         private async Task LoadPurchTask()
         {
-            var pt = Dal.GetToDoTasks().ToObservableCollection(); ;
+            var pt = HelloWindowsIotDataBase.GetToDoTasks().ToObservableCollection(); ;
             if (pt != null)
             {
                 purchtasks = pt;
@@ -340,9 +340,10 @@ namespace HelloWindowsIot
         private async Task LoadDatabaseInfos()
         {
             System.Diagnostics.Debug.WriteLine("Load Database Infos");
-            _infoM.TotalPicsinDB = "Total Bilder: " + await Dal.CountPicsInTable();
-            _infoM.ViewedPics = "Bereits angezeigt: " + await Dal.CountPicsInTable(true);
-            _infoM.NonViewedPics  = "Fehlen noch" + await Dal.CountPicsInTable(false);
+            System.Diagnostics.Trace.WriteLine("Load Database Infos");
+            _infoM.TotalPicsinDB = "Total Bilder: " + await HelloWindowsIotDataBase.CountPicsInTable();
+            _infoM.ViewedPics = "Bereits angezeigt: " + await HelloWindowsIotDataBase.CountPicsInTable(true);
+            _infoM.NonViewedPics  = "Fehlen noch" + await HelloWindowsIotDataBase.CountPicsInTable(false);
             UpdateUI();
         }
         #endregion

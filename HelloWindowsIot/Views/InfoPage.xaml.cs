@@ -44,7 +44,7 @@ namespace HelloWindowsIot
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await Dal.SaveLogEntry(LogType.Info, "Navigated To InfoPage");
+            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Navigated To InfoPage");
             await ViewModel.LoadData();
         }
         #endregion

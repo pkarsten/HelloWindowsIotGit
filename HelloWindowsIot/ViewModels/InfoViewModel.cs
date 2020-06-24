@@ -140,7 +140,7 @@ namespace HelloWindowsIot
 
             body += "Last 100 Logs :" + Environment.NewLine;
             body += "---------------" + Environment.NewLine;
-            foreach (LogEntry le in Dal.GetLatestXLogs(100))
+            foreach (LogEntry le in HelloWindowsIotDataBase.GetLatestXLogs(100))
             {
                 body += le.LogEntryDate + " " + le.LogType + " " + le.Description + Environment.NewLine;
             }
@@ -204,7 +204,7 @@ namespace HelloWindowsIot
                     using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
                     {
                         //dataWriter.WriteString("DataWriter has methods to write to various types, such as DataTimeOffset.");
-                        foreach (LogEntry le in Dal.GetAllLogs())
+                        foreach (LogEntry le in HelloWindowsIotDataBase.GetAllLogs())
                         {
                             dataWriter.WriteString(le.LogEntryDate + " " + le.LogType + " " + le.Description + Environment.NewLine);
                         }
@@ -220,7 +220,7 @@ namespace HelloWindowsIot
             catch (Exception ex)
 
             {
-                Dal.SaveLogEntry(LogType.Exception, "Exception in createLogFile " + ex.Message);
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Exception, "Exception in createLogFile " + ex.Message);
                 return null;
             }
         }

@@ -30,7 +30,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await Dal.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -56,7 +56,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    await Dal.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace RWPBGTasks
             }
             catch (Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exception in Run() Task LoadCalendarEventsAndTasks " + ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task LoadCalendarEventsAndTasks " + ex.Message);
             }
 
             finally
@@ -95,7 +95,7 @@ namespace RWPBGTasks
             //
             _cancelRequested = true;
             _cancelReason = reason;
-            Dal.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
+            HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
         }
         #endregion
 
@@ -105,7 +105,7 @@ namespace RWPBGTasks
         //
         private async Task LoadCalendarEventsAndTasks()
         {
-            await Dal.SaveLogEntry(LogType.Info, "Entry in LoadCalendarEventsAndTasks()");
+            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Entry in LoadCalendarEventsAndTasks()");
 
             if ((_cancelRequested == false) && (_progress < 100))
             {
@@ -118,10 +118,10 @@ namespace RWPBGTasks
 
                 try
                 {
-                    var s = await Dal.GetSetup();
+                    var s = await HelloWindowsIotDataBase.GetSetup();
                     if (s.EnableCalendarAddon)
                     {
-                        await Dal.DeleteAllCalendarEvents();
+                        await HelloWindowsIotDataBase.DeleteAllCalendarEvents();
                         //Graphservice for get Calendar Events
                         //if (s.EnableTodayEvents)
                         //{
@@ -136,7 +136,7 @@ namespace RWPBGTasks
                         //        // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
                         //        ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
 
-                        //        await Dal.SaveCalendarEvent(ce);
+                        //        await HelloWindowsIotDataBase.SaveCalendarEvent(ce);
                         //    }
                         //    //Settings.TodayEvents = myeventstoday.ToObservableCollection();
                         //}
@@ -148,8 +148,9 @@ namespace RWPBGTasks
                             {
                                 var ce = new CalendarEvent();
                                 //TODO: It seems that sqliteDB all the time saves datetime  as UTC , 
+                                //Perhaps add language localisation settings ? 
                                 // no way to save it to localtime or other Format? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(2); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 , or viceversa? 
                                 ce.Subject = o.Subject;
                                 if (ce.StartDateTime.Day == DateTime.Now.Day)
                                     ce.TodayEvent = true;
@@ -180,7 +181,7 @@ namespace RWPBGTasks
                                 //ce.StartDateTime = new DateTime(locDT.Year,locDT.Month,locDT.Day, locDT.Hour,locDT.Minute,locDT.Second);
 //                                ce.StartDateTime = new DateTime(2019, 4, 16, 22, 22, 22);
 
-                                await Dal.SaveCalendarEvent(ce);
+                                await HelloWindowsIotDataBase.SaveCalendarEvent(ce);
                             }
                         }
                         
@@ -188,7 +189,7 @@ namespace RWPBGTasks
 
                     if (s.EnablePurchaseTask)
                     {
-                        await Dal.DeletePurchTask();
+                        await HelloWindowsIotDataBase.DeletePurchTask();
                         //Graph Service for get Tasks
                         //var mypurchtask = await graphService.GetPurchaseTask(); //PKA160819a Comment Out
                         var mypurchtask = await graphService.GetTasksFromToDoTaskList(s.ToDoTaskListID); //PKA160819a 
@@ -200,7 +201,7 @@ namespace RWPBGTasks
                                 var pt = new PurchTask();
                                 pt.Subject = p.Subject;
                                 pt.BodyText = p.TaskBody.Content;
-                                await Dal.SavePurchTask(pt);
+                                await HelloWindowsIotDataBase.SavePurchTask(pt);
                             }
                         }
                     }
@@ -208,13 +209,13 @@ namespace RWPBGTasks
                 }
                 catch (Exception ex)
                 {
-                    await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
                 }
                 _progress = 100;
             }
             catch (Exception ex)
             {
-                await Dal.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
             }
             finally
             {
@@ -226,11 +227,11 @@ namespace RWPBGTasks
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
                 //TODO: ??//ERROR =>System.NullReferenceException ?? 
-                //BGTask ts = Dal.GetTaskStatusByTaskName(_taskInstance.Task.Name);
+                //BGTask ts = HelloWindowsIotDataBase.GetTaskStatusByTaskName(_taskInstance.Task.Name);
                 //ts.LastTimeRun = DateTime.Now.ToString();
                 //ts.AdditionalStatus = settings.Values[key].ToString();
-                //Dal.UpdateTaskStatus(ts);
-                await Dal.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                //HelloWindowsIotDataBase.UpdateTaskStatus(ts);
+                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

@@ -145,7 +145,7 @@ namespace HelloWindowsIot
                 {
                     //IsBusy = true; // => StackOverflowException 
                     await Task.Delay(2000);//TODO: Simulate Loading
-                    await Dal.UpdateSetup(this.SetupSettings);
+                    await HelloWindowsIotDataBase.UpdateSetup(this.SetupSettings);
                 }
                 catch (Exception ex)
                 {
@@ -177,8 +177,8 @@ namespace HelloWindowsIot
                 }
                     System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
                 //await Task.Delay(2000);//TODO: Simulate Loading
-                SetupSettings = await Dal.GetSetup();
-                IList<TaskFolder> myfolderlist = await Dal.GetTaskFolderFromGraph();
+                SetupSettings = await HelloWindowsIotDataBase.GetSetup();
+                IList<TaskFolder> myfolderlist = await HelloWindowsIotDataBase.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.ToDoTaskListID);
                 this.OnPropertyChanged("MyOutlookTaskFolders");
@@ -216,7 +216,7 @@ namespace HelloWindowsIot
             if (MyBgTask != null)
             {
 
-                await Dal.DeleteAllPictures();
+                await HelloWindowsIotDataBase.DeleteAllPictures();
                 BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
 
                 ApplicationTrigger trigger3 = new ApplicationTrigger();
@@ -291,7 +291,7 @@ namespace HelloWindowsIot
                 //Register Backgroundtask 
                 var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
                                                                            BGTasksSettings.LoadImagesFromOneDriveTaskName,
-                                                                            await Dal.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
+                                                                            await HelloWindowsIotDataBase.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
                                                                            null);
             }
             _taskProgress = "List Loaded";
@@ -308,7 +308,7 @@ namespace HelloWindowsIot
             try {
                     if (SelectedTaskFolder.Id != "")
                     {
-                        IList<TaskResponse> tasksinFolder = await Dal.GetTasksInFolder(SelectedTaskFolder.Id);
+                        IList<TaskResponse> tasksinFolder = await HelloWindowsIotDataBase.GetTasksInFolder(SelectedTaskFolder.Id);
                         System.Diagnostics.Debug.WriteLine("Must load tasks for folder : " + SelectedTaskFolder.Name);
                         taskList = tasksinFolder.ToObservableCollection();
                         

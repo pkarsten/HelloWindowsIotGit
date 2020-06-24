@@ -34,7 +34,7 @@ namespace HelloWindowsIot
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Dal.SaveLogEntry(LogType.Info, "Navigated To LogsPage");
+            HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Navigated To LogsPage");
             await InitializeData(50);
         }
 
@@ -64,7 +64,7 @@ namespace HelloWindowsIot
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception InitializeData " + ex.Message);
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception InitializeData " + ex.Message);
             }
             finally
             {
@@ -79,17 +79,17 @@ namespace HelloWindowsIot
             {
                 // run the query
 #if DEBUG
-                Dal.SaveLogEntry(LogType.Info, "Try Loading Log List ");
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Try Loading Log List ");
 #endif
                 if (logsToLoad > 0)
-                    logList = await Task.Run(() => Dal.GetLatestXLogs(logsToLoad).ToObservableCollection());
+                    logList = await Task.Run(() => HelloWindowsIotDataBase.GetLatestXLogs(logsToLoad).ToObservableCollection());
                 else
-                    logList = await Task.Run(() => Dal.GetAllLogs().ToObservableCollection());
+                    logList = await Task.Run(() => HelloWindowsIotDataBase.GetAllLogs().ToObservableCollection());
                 return true;
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception loading logs " + ex.Message);
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception loading logs " + ex.Message);
                 return false;
             }
         }
@@ -98,11 +98,11 @@ namespace HelloWindowsIot
         {
             try
             {
-                await Task.Run(() => Dal.DeleteAllLogEntries());
+                await Task.Run(() => App.Database.DeleteAllLogEntries());
             }
             catch (Exception ex)
             {
-                Dal.SaveLogEntry(LogType.Error, "Exception InitializeData " + ex.Message);
+                HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception InitializeData " + ex.Message);
             }
             finally
             {

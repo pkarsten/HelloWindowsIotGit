@@ -37,7 +37,7 @@ namespace HelloWindowsIot
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await Dal.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
+            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
             await ViewModel.LoadData();
         }
         #endregion

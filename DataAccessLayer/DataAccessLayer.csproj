@@ -122,7 +122,6 @@
   <ItemGroup>
     <Compile Include="BaseDatabase.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DataAccessLayer.cs" />
     <Compile Include="Helper\ListExtensions.cs" />
     <Compile Include="Models\CalendarEvent.cs" />
     <Compile Include="Models\FavoritePic.cs" />

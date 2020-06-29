@@ -12,21 +12,42 @@ using MSGraph;
 
 namespace UwpSqliteDal
 {
-    public class HelloWindowsIotDataBase
+    public class DAL
     {
+
+        #region fields
+        static DAL database;
+        static SQLiteAsyncConnection Database => lazyInitializer.Value;
+        static bool initialized = false;
+        #endregion;
+        
+        #region Properties
+        public static DAL AppDataBase
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new DAL();
+                    System.Diagnostics.Debug.WriteLine("Create New Database !?!?!? ");
+                }
+                return database;
+            }
+        }
+
         static readonly Lazy<SQLiteAsyncConnection> lazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
         {
             return new SQLiteAsyncConnection(Configuration.DatabasePath, Configuration.Flags);
         });
+        #endregion
 
-        static SQLiteAsyncConnection Database => lazyInitializer.Value;
-        static bool initialized = false;
-
-        public HelloWindowsIotDataBase()
+        #region Constructor
+        public DAL()
         {
             InitializeAsync().SafeFireAndForget(false);
             Database.EnableWriteAheadLoggingAsync();
         }
+        #endregion
 
         async Task InitializeAsync()
         {
@@ -79,7 +100,7 @@ namespace UwpSqliteDal
                     initialized = true;
                 }
                 
-                CheckSetupData();
+                await CheckSetupData();
                 CheckPicFilterData();
             }
         }
@@ -88,18 +109,15 @@ namespace UwpSqliteDal
         /// <summary>
         /// Check if must save initial Setup Data
         /// </summary>
-        private static void CheckSetupData()
+        public async Task CheckSetupData()
         {
-            Setup sconfig;
-
-
-            sconfig = Database.Table<Setup>().FirstOrDefaultAsync().Result;
+            Setup sconfig = Database.Table<Setup>().FirstOrDefaultAsync().Result;
             
             //Save Initial Setup Data if Table hasn't entry 
             if (sconfig == null)
             {
                 Setup initSetup = Configuration.InitialSetupConfig;
-                Database.InsertAsync(initSetup);
+                await Database.InsertAsync(initSetup);
             }
         }
 
@@ -107,7 +125,7 @@ namespace UwpSqliteDal
         /// Get Current Setup COnfig saved in Database
         /// </summary>
         /// <returns></returns>
-        public static async Task<Setup> GetSetup()
+        public async Task<Setup> GetSetup()
         {
             Setup sconfig = new Setup();
             try
@@ -117,10 +135,8 @@ namespace UwpSqliteDal
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "GetSetup() Exception: " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "GetSetup() Exception: " + ex.Message);
             }
-            //TODO: Sample
-            //sconfig.TaskFolder = "AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAbyBQIUAAAA=";
             return sconfig;
         }
 
@@ -128,16 +144,16 @@ namespace UwpSqliteDal
         /// Update Setup Config Data in Table 
         /// </summary>
         /// <param name="set"></param>
-        public static async Task UpdateSetup(Setup set)
+        public async Task UpdateSetup(Setup set)
         {
             try
             {
                 await Database.UpdateAsync(set);
-                SaveLogEntry(LogType.Info, "Setup Config Updated");
+                await SaveLogEntry(LogType.Info, "Setup Config Updated");
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "UpdateSetup() Exception: " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "UpdateSetup() Exception: " + ex.Message);
             }
         }
 
@@ -153,20 +169,20 @@ namespace UwpSqliteDal
                 sconfig.EnableLogging = enable;
                 
                 if (enable == false)
-                        SaveLogEntry(LogType.Info, "Disable Logging");
+                        await SaveLogEntry(LogType.Info, "Disable Logging");
                     
                 await Database.UpdateAsync(sconfig);
                     
                 if (enable == true)
-                        SaveLogEntry(LogType.Info, "Enable logging ");
+                        await SaveLogEntry(LogType.Info, "Enable logging ");
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "UpdateSetup() Exception: " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "UpdateSetup() Exception: " + ex.Message);
             }
         }
 
-        public static async Task<TimeTrigger> GetTimeIntervalForTask(string taskname)
+        public async Task<TimeTrigger> GetTimeIntervalForTask(string taskname)
         {
             Setup s = await GetSetup();
             uint minutesForTrigger = 15;
@@ -211,7 +227,7 @@ namespace UwpSqliteDal
         /// Get Current Pic Filter Config saved in Database
         /// </summary>
         /// <returns></returns>
-        public PicFilter GetPicFilter()
+        public async Task<PicFilter> GetPicFilter()
         {
             PicFilter picfilterconfig = new PicFilter();
             try
@@ -221,7 +237,7 @@ namespace UwpSqliteDal
             }
             catch (Exception ex)
             {
-                SaveLogEntry(LogType.Exception, "PicFilter() Exception: " + ex.Message);
+                await SaveLogEntry(LogType.Exception, "PicFilter() Exception: " + ex.Message);
             }
             return picfilterconfig;
         }
@@ -245,7 +261,7 @@ namespace UwpSqliteDal
         #endregion
 
         #region pictures
-        public static async void DeletePicture(FavoritePic pic)
+        public async void DeletePicture(FavoritePic pic)
         {
                 System.Diagnostics.Debug.WriteLine(" ");
                 System.Diagnostics.Debug.WriteLine("DELETE DeletePicture(FavoritePic pic)");
@@ -254,7 +270,7 @@ namespace UwpSqliteDal
                 await Database.QueryAsync<FavoritePic>("DELETE FROM FavoritePic WHERE Id = ?",pic.Id);
         }
 
-        public static async Task DeleteAllPictures()
+        public  async Task DeleteAllPictures()
         {
             System.Diagnostics.Debug.WriteLine(" ");
             System.Diagnostics.Debug.WriteLine("DELETE DeleteAllPictures");
@@ -265,13 +281,13 @@ namespace UwpSqliteDal
             await Database.DeleteAllAsync<FavoritePic>();
         }
 
-        public static void DelIndefinablePics()
+        public void DelIndefinablePics()
         {
             //TODO: db.Execute("DELETE FROM FavoritePic WHERE Status = ?","");
             UpdateAllPicStatus();
         }
 
-        public static void UpdateAllPicStatus()
+        public void UpdateAllPicStatus()
         {
                 Database.QueryAsync<FavoritePic>("UPDATE FavoritePic SET Status=?", "");
                 SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
@@ -315,7 +331,7 @@ namespace UwpSqliteDal
 
         }
 
-        public static FavoritePic GetPictureById(int Id)
+        public FavoritePic GetPictureById(int Id)
         {
             FavoritePic m = null;
             try
@@ -328,14 +344,14 @@ namespace UwpSqliteDal
             return m;
         }
 
-        public static FavoritePic GetPictureByOneDriveId(string id)
+        public FavoritePic GetPictureByOneDriveId(string id)
         {
             FavoritePic m = Database.Table<FavoritePic>().Where(i => i.OneDriveId == id).FirstOrDefaultAsync().Result;
 
             return m;
         }
 
-        public static async Task SavePicture(FavoritePic pic)
+        public async Task SavePicture(FavoritePic pic)
         {
                     if (pic.Id == 0)
                     {
@@ -354,7 +370,7 @@ namespace UwpSqliteDal
         #endregion
 
         #region CalendarEvents
-        public static async Task SaveCalendarEvent(CalendarEvent ce)
+        public async Task SaveCalendarEvent(CalendarEvent ce)
         {
                     if (ce.Id == 0)
                     {
@@ -379,11 +395,11 @@ namespace UwpSqliteDal
                         await Database.UpdateAsync(ce);
                     }
         }
-        public static async Task DeleteAllCalendarEvents()
+        public async Task DeleteAllCalendarEvents()
         {
             await Database.DeleteAllAsync<CalendarEvent>();
         }
-        public static IList<CalendarEvent> GetTodayEvents()
+        public IList<CalendarEvent> GetTodayEvents()
         {
             IList<CalendarEvent> models;
 
@@ -392,7 +408,7 @@ namespace UwpSqliteDal
 
             return models;
         }
-        public static IList<CalendarEvent> GetNextEvents()
+        public IList<CalendarEvent> GetNextEvents()
         {
             IList<CalendarEvent> models =null;
 
@@ -410,7 +426,7 @@ namespace UwpSqliteDal
         #endregion
 
         #region PurchTask
-        public static async Task SavePurchTask(PurchTask obj)
+        public async Task SavePurchTask(PurchTask obj)
         {
                 if (obj.Id == 0)
                 {
@@ -423,11 +439,11 @@ namespace UwpSqliteDal
                     await Database.UpdateAsync(obj);
                 }
         }
-        public static async Task DeletePurchTask()
+        public async Task DeletePurchTask()
         {
             await Database.DeleteAllAsync<PurchTask>();
         }
-        public static IList<PurchTask> GetToDoTasks()
+        public IList<PurchTask> GetToDoTasks()
         {
             IList<PurchTask> taskList = null;
 
@@ -438,7 +454,7 @@ namespace UwpSqliteDal
         #endregion
 
         #region DatabaseInfos
-        public static async Task<int> CountPicsInTable()
+        public async Task<int> CountPicsInTable()
         {
             int pics = 0;
 
@@ -446,7 +462,7 @@ namespace UwpSqliteDal
             return pics;
         }
 
-        public static Task<int> CountPicsInTable(bool viewed)
+        public Task<int> CountPicsInTable(bool viewed)
         {
             if (viewed == true)
                 return  Database.Table<FavoritePic>().Where(v => v.Viewed == true).CountAsync();
@@ -472,14 +488,14 @@ namespace UwpSqliteDal
             }
         }
 
-        public static BGTask GetTaskStatusByTaskName(string tName)
+        public BGTask GetTaskStatusByTaskName(string tName)
         {
             BGTask t = Database.Table<BGTask>().Where(p => p.TaskName == tName).FirstOrDefaultAsync().Result;
 
                 return t;
         }
 
-        public static string GetTimeFromLastRun(string name)
+        public string GetTimeFromLastRun(string name)
         {
             var ts = GetTaskStatusByTaskName(name);
             return ts.LastTimeRun;
@@ -511,14 +527,14 @@ namespace UwpSqliteDal
             }
         }
 
-        public static BGTask SetCurrentRegistrationStatus(string taskname, bool registered)
+        public BGTask SetCurrentRegistrationStatus(string taskname, bool registered)
         {
             BGTask ts = GetTaskStatusByTaskName(taskname);
             ts.CurrentRegisteredStatus = registered;
             return ts;
         }
 
-        public static IList<BGTask> GetAllTaskStatus()
+        public IList<BGTask> GetAllTaskStatus()
         {
             IList<BGTask> mlist;
 
@@ -540,73 +556,8 @@ namespace UwpSqliteDal
                 return m;
         }
 
-        public async Task LoadImagesFromOneDriveInDBTable(string folderPath)
-        {
-            Exception error = null;
-            ItemInfoResponse folder = null;
-            ItemInfoResponse rootfolder = null;
-            IList<ItemInfoResponse> children = null;
 
-            //// Initialize Graph client
-            var accessToken = await GraphService.GetTokenForUserAsync();
-            var graphService = new GraphService(accessToken);
-
-            try
-            {
-                //rootfolder = await graphService.GetAppRoot();
-                //folder = await graphService.GetPhotosAndImagesFromFolder("/Bilder/Karneval2019");
-                folder = await graphService.GetPhotosAndImagesFromFolder(folderPath);
-                children = await graphService.PopulateChildren(folder);
-            }
-            catch (Exception ex)
-            {
-                error = ex;
-            }
-
-            if (error != null)
-            {
-                SaveLogEntry(LogType.Error, error.Message);
-                return;
-            }
-
-            try
-            {
-
-                //https://gunnarpeipman.com/csharp/foreach/
-                ///TODO: Null Exception here when Children is null 
-                foreach (ItemInfoResponse iir in children.ToList())
-                {
-                    if (iir.Image != null)
-                    {
-                        System.Diagnostics.Debug.WriteLine("PhotoName: " + iir.Name + "Id: " + iir.Id);
-                        //iri = iir;
-                    }
-                    else
-                    {
-                        children.Remove(iir);
-                    }
-                }
-                //DeleteAllPictures();
-                foreach (var iri in children)
-                {
-                    var fp = new FavoritePic();
-
-                    fp.DownloadedFromOneDrive = true;
-                    fp.Viewed = false;
-                    fp.DownloadUrl = iri.DownloadUrl;
-                    fp.Name = iri.Name;
-                    fp.OneDriveId = iri.Id;
-                    SavePicture(fp);
-                }
-            }
-            catch (Exception ex)
-            {
-                SaveLogEntry(LogType.Error, error.Message);
-            }
-
-        }
-
-        public static async Task<IList<TaskFolder>> GetTaskFolderFromGraph()
+        public async Task<IList<TaskFolder>> GetTaskFolderFromGraph()
         {
 
             Exception error = null;
@@ -643,7 +594,7 @@ namespace UwpSqliteDal
         /// Gets a List of Tasks from MS Graph in given TaskFolder
         /// </summary>
         /// <returns></returns>
-        public static async Task<IList<TaskResponse>> GetTasksInFolder(string taskfolderId)
+        public async Task<IList<TaskResponse>> GetTasksInFolder(string taskfolderId)
         {
 
             Exception error = null;
@@ -679,14 +630,14 @@ namespace UwpSqliteDal
         #endregion
 
         #region logEntries
-        public static IList<LogEntry> GetAllLogs()
+        public IList<LogEntry> GetAllLogs()
         {
             IList<LogEntry> logs;
 
             logs = Database.Table<LogEntry>().OrderByDescending(d => d.Id).ToListAsync().Result;
             return logs;
         }
-        public static IList<LogEntry> GetLatestXLogs(int x)
+        public IList<LogEntry> GetLatestXLogs(int x)
         {
             IList<LogEntry> logs;
 
@@ -711,7 +662,7 @@ namespace UwpSqliteDal
             }
         }
 
-        public static async Task SaveLogEntry(LogType ltype, string logDescription)
+        public async Task SaveLogEntry(LogType ltype, string logDescription)
         {
 
             // 

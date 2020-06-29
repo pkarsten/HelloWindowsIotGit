@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UwpSqliteDal;
-using UwpSqLiteDal;
 using Windows.ApplicationModel.Background;
 using Windows.Storage;
 
@@ -30,7 +29,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -56,7 +55,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -70,7 +69,7 @@ namespace RWPBGTasks
             }
             catch (Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task LoadCalendarEventsAndTasks " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task LoadCalendarEventsAndTasks " + ex.Message);
             }
 
             finally
@@ -88,14 +87,14 @@ namespace RWPBGTasks
         //
         // Handles background task cancellation.
         //
-        private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
+        private async void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             //
             // Indicate that the background task is canceled.
             //
             _cancelRequested = true;
             _cancelReason = reason;
-            HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
+            await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
         }
         #endregion
 
@@ -105,7 +104,7 @@ namespace RWPBGTasks
         //
         private async Task LoadCalendarEventsAndTasks()
         {
-            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Entry in LoadCalendarEventsAndTasks()");
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Entry in LoadCalendarEventsAndTasks()");
 
             if ((_cancelRequested == false) && (_progress < 100))
             {
@@ -118,28 +117,14 @@ namespace RWPBGTasks
 
                 try
                 {
-                    var s = await HelloWindowsIotDataBase.GetSetup();
+                    var s = await DAL.AppDataBase.GetSetup();
                     if (s.EnableCalendarAddon)
                     {
-                        await HelloWindowsIotDataBase.DeleteAllCalendarEvents();
-                        //Graphservice for get Calendar Events
-                        //if (s.EnableTodayEvents)
-                        //{
-                        //    IList<CalendarEventItem> myeventstoday = await graphService.GetTodayCalendarEvents();
-                        //    foreach(var o in myeventstoday)
-                        //    {
-                        //        var ce = new CalendarEvent();
-                        //        ce.Subject = o.Subject;
-                        //        ce.TodayEvent = true;
-                        //        ce.IsAllDay = o.IsAllDay;
-                        //        //TODO: It seems that sqlite all the time saves datetime  as UTC , 
-                        //        // no way save it to localtime or other FOrmat? So add here 4 Houts for my timezone 
-                        //        ce.StartDateTime = o.StartDateTime.dateTime.AddHours(4);
+                        await DAL.AppDataBase.DeleteAllCalendarEvents();
+                        //
+                        // Graphservice for get Calendar Events
+                        //
 
-                        //        await HelloWindowsIotDataBase.SaveCalendarEvent(ce);
-                        //    }
-                        //    //Settings.TodayEvents = myeventstoday.ToObservableCollection();
-                        //}
                         if (s.EnableCalendarNextEvents)
                         {
                             IList<CalendarEventItem> nextevents = await graphService.GetCalendarEvents(s.NextEventDays);
@@ -159,9 +144,9 @@ namespace RWPBGTasks
 
                                 ce.IsAllDay = o.IsAllDay;
 
-                                //TODO: more test for this here, perhaps there are Events that we would see , then don't ignore them 
+                                // TODO: more test for this here, perhaps there are Events that we would see , then don't ignore them 
                                 // Problem is when StartTime is between 0:00-02:00 , example: exists an IsAllDay Event on 10.04.19 LocalTime (Begins 0:00, Ends at 11.04.19 0:00)
-                                //when the day changes (Localtime) on 0:00 Uhr, then it will list this event as Today Event (because it ends on 11.04) ...
+                                // when the day changes (Localtime) on 0:00 Uhr, then it will list this event as Today Event (because it ends on 11.04) ...
                                 if (ce.StartDateTime.Day+1 == DateTime.Now.Day)
                                 {
                                     if (ce.IsAllDay)
@@ -169,19 +154,17 @@ namespace RWPBGTasks
                                         ce.IgnoreEvent = true;
                                     }
                                 }
-                                
-                               
+                              
                                 //ce.StartDateTime.ToLocalTime();
                                 //string us = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", o.StartDateTime.dateTime);
                                 //System.Diagnostics.Debug.WriteLine("UTC Time: " + us + " " + o.Subject);
                                 //DateTime locDT = o.StartDateTime.dateTime.ToLocalTime();
                                 //string strutcStart = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", locDT);
                                 //System.Diagnostics.Debug.WriteLine("Loc Time: " + strutcStart + " " + o.Subject);
-
                                 //ce.StartDateTime = new DateTime(locDT.Year,locDT.Month,locDT.Day, locDT.Hour,locDT.Minute,locDT.Second);
-//                                ce.StartDateTime = new DateTime(2019, 4, 16, 22, 22, 22);
+                                //ce.StartDateTime = new DateTime(2019, 4, 16, 22, 22, 22);
 
-                                await HelloWindowsIotDataBase.SaveCalendarEvent(ce);
+                                await DAL.AppDataBase.SaveCalendarEvent(ce);
                             }
                         }
                         
@@ -189,10 +172,9 @@ namespace RWPBGTasks
 
                     if (s.EnablePurchaseTask)
                     {
-                        await HelloWindowsIotDataBase.DeletePurchTask();
+                        await DAL.AppDataBase.DeletePurchTask();
                         //Graph Service for get Tasks
-                        //var mypurchtask = await graphService.GetPurchaseTask(); //PKA160819a Comment Out
-                        var mypurchtask = await graphService.GetTasksFromToDoTaskList(s.ToDoTaskListID); //PKA160819a 
+                        var mypurchtask = await graphService.GetTasksFromToDoTaskList(s.ToDoTaskListID);
 
                         if (mypurchtask != null)
                         {
@@ -201,21 +183,20 @@ namespace RWPBGTasks
                                 var pt = new PurchTask();
                                 pt.Subject = p.Subject;
                                 pt.BodyText = p.TaskBody.Content;
-                                await HelloWindowsIotDataBase.SavePurchTask(pt);
+                                await DAL.AppDataBase.SavePurchTask(pt);
                             }
                         }
                     }
-                    //Settings.DashBoardImage = bitmapimage;
                 }
                 catch (Exception ex)
                 {
-                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                    await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
                 }
                 _progress = 100;
             }
             catch (Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
             }
             finally
             {
@@ -226,12 +207,7 @@ namespace RWPBGTasks
                 // Write to LocalSettings to indicate that this background task ran.
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                //TODO: ??//ERROR =>System.NullReferenceException ?? 
-                //BGTask ts = HelloWindowsIotDataBase.GetTaskStatusByTaskName(_taskInstance.Task.Name);
-                //ts.LastTimeRun = DateTime.Now.ToString();
-                //ts.AdditionalStatus = settings.Values[key].ToString();
-                //HelloWindowsIotDataBase.UpdateTaskStatus(ts);
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

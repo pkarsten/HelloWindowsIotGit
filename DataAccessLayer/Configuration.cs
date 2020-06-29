@@ -6,7 +6,9 @@ namespace UwpSqliteDal
 {
 
     /// <summary>
-    /// Configuration for Windows Runtime Component not accessible from extern 
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /// Configuration for Windows Runtime Component not accessible from extern
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /// </summary>
     public sealed class Configuration
     {
@@ -18,6 +20,13 @@ namespace UwpSqliteDal
             IntervalForDiashow =10,
             IntervalForLoadPictures = 60,
             IntervalForLoadCalendarAndTasksInterval = 15,
+            EnableCalendarAddon = false,
+            EnableCalendarNextEvents =false,
+            EnablePictureAddOn = false,
+            EnableClock = true,
+            EnablePurchaseTask = false,
+            EnableTodayEvents =false,
+
         };
         public static PicFilter InitialPicFilterConfig { get; } = new PicFilter
         {
@@ -25,8 +34,6 @@ namespace UwpSqliteDal
             CommonFolderQuery = "GroupByRating",
             VirtualFolder = ""
         };
-
-        public const string DatabaseFilename = "TodoSQLite.db3";
 
         public const SQLite.SQLiteOpenFlags Flags =
             // open the database in read/write mode

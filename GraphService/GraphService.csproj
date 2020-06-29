@@ -106,7 +106,6 @@
   <ItemGroup>
     <Compile Include="GraphService.cs" />
     <Compile Include="Helpers\DisplayHelper.cs" />
-    <Compile Include="Helpers\LongExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\LinkKind.cs" />
     <Compile Include="Request\RequestLinkInfo.cs" />

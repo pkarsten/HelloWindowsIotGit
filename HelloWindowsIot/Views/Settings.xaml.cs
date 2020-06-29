@@ -11,7 +11,6 @@ using Windows.Storage;
 using System.Collections.ObjectModel;
 using AppSettings;
 using RWPBGTasks;
-using UwpSqLiteDal;
 using MSGraph.Response;
 
 namespace HelloWindowsIot
@@ -37,7 +36,7 @@ namespace HelloWindowsIot
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Navigated To SettingsPage");
             await ViewModel.LoadData();
         }
         #endregion

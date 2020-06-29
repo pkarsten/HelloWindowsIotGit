@@ -24,7 +24,7 @@ namespace HelloWindowsIot
             try
             {
                 BitmapImage bitmapimage = new BitmapImage();
-                if (await App.Database.CountAllPictures() == 0)
+                if (await DAL.AppDataBase.CountAllPictures() == 0)
                 {
                     // Check if Backgroundtask is running
                     var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == BGTasksSettings.LoadImagesFromOneDriveTaskName).FirstOrDefault();
@@ -35,8 +35,8 @@ namespace HelloWindowsIot
 
                     if (MyBgTask != null)
                     {
-                        await HelloWindowsIotDataBase.DeleteAllPictures();
-                        BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
+                        await DAL.AppDataBase.DeleteAllPictures();
+                        BackgroundTaskConfig.UnregisterBackgroundTaskByName(BGTasksSettings.LoadImagesFromOneDriveTaskName);
 
                         ApplicationTrigger trigger3 = new ApplicationTrigger();
                         System.Diagnostics.Debug.WriteLine("Call RegisterBackgroundTask on Setttings ViewModel LoadPictures");
@@ -62,7 +62,7 @@ namespace HelloWindowsIot
                 else
                 {
                     // Get Random ItemInfoResponse from Table 
-                    var item = App.Database.GetRandomInfoItemResponse();
+                    var item = DAL.AppDataBase.GetRandomInfoItemResponse();
 
                     
 
@@ -81,7 +81,7 @@ namespace HelloWindowsIot
 
                         if (foundFile == null)
                         {
-                            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, $"Image Not found Id: {item.OneDriveId}");
+                            await DAL.AppDataBase.SaveLogEntry(LogType.Error, $"Image Not found Id: {item.OneDriveId}");
                         }
                         else
                         {
@@ -94,14 +94,14 @@ namespace HelloWindowsIot
 
                         if (contentStream == null)
                         {
-                            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, $"Content Stream not found: {foundFile.Name}");
+                            await DAL.AppDataBase.SaveLogEntry(LogType.Error, $"Content Stream not found: {foundFile.Name}");
                         }
                     }
                     catch (Exception ex)
                     {
                         error = ex;
-                        await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, error.Message);
-                        HelloWindowsIotDataBase.DeletePicture(item);
+                        await DAL.AppDataBase.SaveLogEntry(LogType.Error, error.Message);
+                        DAL.AppDataBase.DeletePicture(item);
                         return null;
                     }
 
@@ -124,19 +124,19 @@ namespace HelloWindowsIot
                     }
 
                     item.Viewed = true;
-                    await HelloWindowsIotDataBase.SavePicture(item);
+                    await DAL.AppDataBase.SavePicture(item);
                 }
                 return bitmapimage;
             }
             catch (Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in StreamImageFromOneDrive(): " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception  in StreamImageFromOneDrive(): " + ex.Message);
                 return null;
             }
             finally
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Dashboard Picture Changed at: " + DateTime.Now);
-                App.Database.CheckForViewedPictures();
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Dashboard Picture Changed at: " + DateTime.Now);
+                DAL.AppDataBase.CheckForViewedPictures();
             } 
 
         }
@@ -175,11 +175,11 @@ namespace HelloWindowsIot
             if (Settings.LoadPictureListManually == true)
             {
                 //Unregister App Trigger 
-                BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
+                BackgroundTaskConfig.UnregisterBackgroundTaskByName(BGTasksSettings.LoadImagesFromOneDriveTaskName);
                 //Register Backgroundtask 
                 var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
                                                                            BGTasksSettings.LoadImagesFromOneDriveTaskName,
-                                                                            await HelloWindowsIotDataBase.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
+                                                                            await DAL.AppDataBase.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
                                                                            null);
             }
             System.Diagnostics.Debug.WriteLine("OnCompleted Picturesloaded");

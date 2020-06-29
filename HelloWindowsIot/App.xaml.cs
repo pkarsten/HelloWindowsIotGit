@@ -28,19 +28,6 @@ namespace HelloWindowsIot
     /// </summary>
     sealed partial class App : Application
     {
-        static HelloWindowsIotDataBase database;
-        public static HelloWindowsIotDataBase Database
-        {
-            get
-            {
-                if (database == null)
-                {
-                    database = new HelloWindowsIotDataBase();
-                }
-                return database;
-            }
-        }
-
         /// <summary>
         /// Initialisiert das Singletonanwendungsobjekt. Dies ist die erste Zeile von erstelltem Code
         /// und daher das logische Äquivalent von main() bzw. WinMain()....
@@ -57,9 +44,8 @@ namespace HelloWindowsIot
         /// <returns>The AppShell of the app.</returns>
         private async Task Initialize()
         {
-            //HelloWindowsIotDataBase.CreateDatabase();
-            App.Database.DeleteAllLogEntries();
-            BackgroundTaskConfig.UnregisterALlTasks();
+            await DAL.AppDataBase.CheckSetupData();
+            await BackgroundTaskConfig.UnRegisterAllTasks();
             await BackgroundTaskConfig.RegisterNeededTasks();
         }
 
@@ -101,8 +87,6 @@ namespace HelloWindowsIot
 
             if (e.PrelaunchActivated == false)
             {
-                //TODO: Check if Settings are Ok for Run the App, other else run the SettingsPage and say what it's wrong
-
                 if (rootFrame.Content == null)
                 {
                     // Wenn der Navigationsstapel nicht wiederhergestellt wird, zur ersten Seite navigieren
@@ -111,7 +95,10 @@ namespace HelloWindowsIot
                     var accessToken = await GraphService.GetTokenForUserAsync();
 
                     if (accessToken != null)
+                    {
+                        //TODO: Check if Settings are Ok for Run the App, then run DashBoard, other else run the SettingsPage and say what it's wrong
                         rootFrame.Navigate(typeof(DashBoard), e.Arguments);
+                    }
                     else
                         rootFrame.Navigate(typeof(InfoPage), e.Arguments);
                 }
@@ -123,7 +110,7 @@ namespace HelloWindowsIot
                 // Sicherstellen, dass das aktuelle Fenster aktiv ist
                 Window.Current.Activate();
 
-                //TODO:HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Application Launched");
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Application Launched");
             }
         }
 
@@ -144,11 +131,11 @@ namespace HelloWindowsIot
         /// </summary>
         /// <param name="sender">Die Quelle der Anhalteanforderung.</param>
         /// <param name="e">Details zur Anhalteanforderung.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
-            BackgroundTaskConfig.UnregisterALlTasks();
+            await BackgroundTaskConfig.UnRegisterAllTasks();
             deferral.Complete();
         }
     }

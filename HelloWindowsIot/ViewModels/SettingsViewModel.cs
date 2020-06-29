@@ -145,7 +145,7 @@ namespace HelloWindowsIot
                 {
                     //IsBusy = true; // => StackOverflowException 
                     await Task.Delay(2000);//TODO: Simulate Loading
-                    await HelloWindowsIotDataBase.UpdateSetup(this.SetupSettings);
+                    await DAL.AppDataBase.UpdateSetup(this.SetupSettings);
                 }
                 catch (Exception ex)
                 {
@@ -177,8 +177,8 @@ namespace HelloWindowsIot
                 }
                     System.Diagnostics.Debug.WriteLine("Get Settings From Dal ");
                 //await Task.Delay(2000);//TODO: Simulate Loading
-                SetupSettings = await HelloWindowsIotDataBase.GetSetup();
-                IList<TaskFolder> myfolderlist = await HelloWindowsIotDataBase.GetTaskFolderFromGraph();
+                SetupSettings = await DAL.AppDataBase.GetSetup();
+                IList<TaskFolder> myfolderlist = await DAL.AppDataBase.GetTaskFolderFromGraph();
                 taskfolder = myfolderlist.ToObservableCollection();
                 selectedTaskFolder = myfolderlist.FirstOrDefault(t => t.Id == setupSettings.ToDoTaskListID);
                 this.OnPropertyChanged("MyOutlookTaskFolders");
@@ -216,8 +216,8 @@ namespace HelloWindowsIot
             if (MyBgTask != null)
             {
 
-                await HelloWindowsIotDataBase.DeleteAllPictures();
-                BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
+                await DAL.AppDataBase.DeleteAllPictures();
+                BackgroundTaskConfig.UnregisterBackgroundTaskByName(BGTasksSettings.LoadImagesFromOneDriveTaskName);
 
                 ApplicationTrigger trigger3 = new ApplicationTrigger();
                 System.Diagnostics.Debug.WriteLine("Call RegisterBackgroundTask on Setttings ViewModel LoadPictures");
@@ -287,11 +287,11 @@ namespace HelloWindowsIot
             if (Settings.LoadPictureListManually == true)
             {
                 //Unregister App Trigger 
-                BackgroundTaskConfig.UnregisterBackgroundTasks(BGTasksSettings.LoadImagesFromOneDriveTaskName);
+                BackgroundTaskConfig.UnregisterBackgroundTaskByName(BGTasksSettings.LoadImagesFromOneDriveTaskName);
                 //Register Backgroundtask 
                 var apptask = await BackgroundTaskConfig.RegisterBackgroundTask(MyBgTask.EntryPoint,
                                                                            BGTasksSettings.LoadImagesFromOneDriveTaskName,
-                                                                            await HelloWindowsIotDataBase.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
+                                                                            await DAL.AppDataBase.GetTimeIntervalForTask(BGTasksSettings.LoadImagesFromOneDriveTaskName),
                                                                            null);
             }
             _taskProgress = "List Loaded";
@@ -308,7 +308,7 @@ namespace HelloWindowsIot
             try {
                     if (SelectedTaskFolder.Id != "")
                     {
-                        IList<TaskResponse> tasksinFolder = await HelloWindowsIotDataBase.GetTasksInFolder(SelectedTaskFolder.Id);
+                        IList<TaskResponse> tasksinFolder = await DAL.AppDataBase.GetTasksInFolder(SelectedTaskFolder.Id);
                         System.Diagnostics.Debug.WriteLine("Must load tasks for folder : " + SelectedTaskFolder.Name);
                         taskList = tasksinFolder.ToObservableCollection();
                         

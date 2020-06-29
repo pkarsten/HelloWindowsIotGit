@@ -21,15 +21,12 @@ namespace MSGraph
         //Hello Graph
         private static readonly string graphEndpoint = "https://graph.microsoft.com/";
         private static readonly string graphVersion = "beta/me";//"v1.0/me"; //beta
-        
+
 
         private readonly string accessToken = string.Empty;
         private HttpClient httpClient = null;
         private readonly JsonSerializerSettings jsonSettings =
             new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-
-        // Hot examples:
-        //https://csharp.hotexamples.com/examples/-/Microsoft.Graph/-/php-microsoft.graph-class-examples.html
 
         //This sample app implements Azure functions designed to be invoked via Microsoft Flow to provision a Microsoft Team when a new flight is added to a master list in SharePoint.The sample uses Microsoft Graph to do the following provisioning tasks:
         //https://github.com/microsoftgraph/contoso-airlines-azure-functions-sample/tree/master/create-flight-team
@@ -41,18 +38,18 @@ namespace MSGraph
         // You have to replace:
         // - the content of ClientID with the Application Id for your app registration
         // - The content of Tenant by the information about the accounts allowed to sign-in in your application:
-        //   - For Work or School account in your org, use your tenant ID, or domain
-        //   - for any Work or School accounts, use organizations
-        //   - for any Work or School accounts, or Microsoft personal account, use common
-        //   - for Microsoft Personal account, use consumers
+        //  - For Work or School account in your org, use your tenant ID, or domain
+        //  - for any Work or School accounts, use organizations
+        //  - for any Work or School accounts, or Microsoft personal account, use common
+        //  - for Microsoft Personal account, use consumers
 
-        private static string ClientId = "cba8344a-8cbb-41be-a414-4da940902ad7";//"0b8b0665-bc13-4fdc-bd72-e0227b9fc011";
+        private static string ClientId = "cba8344a-8cbb-41be-a414-4da940902ad7";
         private static string Tenant = "common";
         //public static PublicClientApplication PublicClientApp { get; } = new PublicClientApplication(ClientId, $"https://login.microsoftonline.com/{Tenant}"); -> Obsolete
         public static IPublicClientApplication PublicClientApp = PublicClientApplicationBuilder.Create(ClientId).WithAuthority(AzureCloudInstance.AzurePublic, Tenant).Build();
         public static string TokenForUser = null;
         public static DateTimeOffset Expiration;
-        public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read","Tasks.Read" };
+        public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read", "Tasks.Read" };
 
         //private TraceWriter logger = null;
 
@@ -80,7 +77,7 @@ namespace MSGraph
             {
 
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                    return false;
+                return false;
             }
         }
 
@@ -92,7 +89,7 @@ namespace MSGraph
         {
             IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync();
             IAccount firstAccount = accounts.FirstOrDefault();
-            return  await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync();
+            return await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync();
         }
 
         /// <summary>
@@ -132,7 +129,7 @@ namespace MSGraph
             AuthenticationResult authResult;
             try
             {
-                authResult = await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync(); 
+                authResult = await PublicClientApp.AcquireTokenSilent(Scopes, firstAccount).ExecuteAsync();
                 TokenForUser = authResult.AccessToken;
             }
 
@@ -187,7 +184,7 @@ namespace MSGraph
 
             //Special folder private const string RequestSpecialFolder = "/drive/special/{0}";
             var response = await MakeGraphCall(HttpMethod.Get, $"/drive/special/{kind}");
-            var sf= JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
+            var sf = JsonConvert.DeserializeObject<ItemInfoResponse>(await response.Content.ReadAsStringAsync());
             return sf;
 
         }
@@ -207,7 +204,7 @@ namespace MSGraph
             try
             {
                 List<ItemInfoResponse> myList = new List<ItemInfoResponse>();
-                string nextLink =null;
+                string nextLink = null;
                 var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image,name"); //get only the id's add "?select=id" at end  
                 var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
                 nextLink = l.NextLink;
@@ -322,7 +319,7 @@ namespace MSGraph
         //        string strUtcEnd = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", utcendDT);
         //        System.Diagnostics.Debug.WriteLine("UTC Start Time: " + strutcStart+ " End " + strUtcEnd);
 
-                
+
         //        var response = await MakeGraphCall(HttpMethod.Get, $"/calendarView?startdatetime={strutcStart}&enddatetime={strUtcEnd}&select=subject,start,end,isallday");
         //        var calendarevents = JsonConvert.DeserializeObject<ParseCalendarEventResponse>(await response.Content.ReadAsStringAsync());
         //        return calendarevents.Value;
@@ -352,7 +349,7 @@ namespace MSGraph
             return JsonConvert.DeserializeObject<ItemInfoResponse>(json);
         }
 
-        public async Task<Stream> RefreshAndDownloadContent(ItemInfoResponse model,bool refreshFirst)
+        public async Task<Stream> RefreshAndDownloadContent(ItemInfoResponse model, bool refreshFirst)
         {
             //var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{model.DownloadUrl}");
             //var stream = await response.Content.ReadAsStreamAsync();
@@ -375,7 +372,7 @@ namespace MSGraph
                 string nextLink = null;
                 var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders");
                 var taskfolders = JsonConvert.DeserializeObject<ParseTaskFolderResponse>(await response.Content.ReadAsStringAsync());
-                
+
                 nextLink = taskfolders.NextLink;
                 myTaskFolders.AddRange(taskfolders.Value);
                 System.Diagnostics.Debug.WriteLine("NEXT taskfolder LINK : " + nextLink);
@@ -670,7 +667,7 @@ namespace MSGraph
                 payload = JsonConvert.SerializeObject(body, jsonSettings);
             }
 
-            if(nextdatalink =="")
+            if (nextdatalink == "")
                 System.Diagnostics.Debug.WriteLine("Graph Request URL :" + graphEndpoint + useversion + uri + "");
             else
                 System.Diagnostics.Debug.WriteLine("Graph Request URL :" + nextdatalink + "");

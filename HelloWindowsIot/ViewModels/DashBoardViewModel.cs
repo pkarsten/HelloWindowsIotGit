@@ -14,7 +14,6 @@ using Windows.ApplicationModel.Background;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
-using UwpSqLiteDal;
 using HelloWindowsIot.Models;
 
 namespace HelloWindowsIot
@@ -152,12 +151,12 @@ namespace HelloWindowsIot
             }
             catch(Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception: in OnCompletedGetGraphData: " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception: in OnCompletedGetGraphData: " + ex.Message);
             }
             finally
             {
                 
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "OnCompleted Load Graph Data");
             }
         }
 
@@ -240,7 +239,7 @@ namespace HelloWindowsIot
                     }
                 }
 
-                var s = await HelloWindowsIotDataBase.GetSetup();
+                var s = await DAL.AppDataBase.GetSetup();
                 await CheckClockStatus(s);
 
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
@@ -250,7 +249,7 @@ namespace HelloWindowsIot
             }
             catch(Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, ex.Message);
             }
             finally
             {
@@ -298,7 +297,7 @@ namespace HelloWindowsIot
         #region Calendar Events
         private async Task LoadCalendarEvents()
         {
-            var t = HelloWindowsIotDataBase.GetNextEvents().ToObservableCollection();
+            var t = DAL.AppDataBase.GetNextEvents().ToObservableCollection();
             if (t != null)
             {
                 nextcalendarEvents = t;
@@ -309,7 +308,7 @@ namespace HelloWindowsIot
                 nextcalendarEvents = null;
             }
 
-            var t1 = HelloWindowsIotDataBase.GetTodayEvents().ToObservableCollection();
+            var t1 = DAL.AppDataBase.GetTodayEvents().ToObservableCollection();
             if (t1.Count > 0)
             {
                 todayEvents = t1;
@@ -328,7 +327,7 @@ namespace HelloWindowsIot
         #region ToDoTasks
         private async Task LoadPurchTask()
         {
-            var pt = HelloWindowsIotDataBase.GetToDoTasks().ToObservableCollection(); ;
+            var pt = DAL.AppDataBase.GetToDoTasks().ToObservableCollection(); ;
             if (pt != null)
             {
                 purchtasks = pt;
@@ -341,9 +340,9 @@ namespace HelloWindowsIot
         {
             System.Diagnostics.Debug.WriteLine("Load Database Infos");
             System.Diagnostics.Trace.WriteLine("Load Database Infos");
-            _infoM.TotalPicsinDB = "Total Bilder: " + await HelloWindowsIotDataBase.CountPicsInTable();
-            _infoM.ViewedPics = "Bereits angezeigt: " + await HelloWindowsIotDataBase.CountPicsInTable(true);
-            _infoM.NonViewedPics  = "Fehlen noch" + await HelloWindowsIotDataBase.CountPicsInTable(false);
+            _infoM.TotalPicsinDB = "Total Bilder: " + await DAL.AppDataBase.CountPicsInTable();
+            _infoM.ViewedPics = "Bereits angezeigt: " + await DAL.AppDataBase.CountPicsInTable(true);
+            _infoM.NonViewedPics  = "Fehlen noch" + await DAL.AppDataBase.CountPicsInTable(false);
             UpdateUI();
         }
         #endregion

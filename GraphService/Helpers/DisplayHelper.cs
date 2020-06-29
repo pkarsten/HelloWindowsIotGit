@@ -6,8 +6,18 @@ using MSGraph.Response;
 
 namespace MSGraph.Helpers
 {
+    /// <summary>
+    /// This Class is for Visualise the Response from Graph 
+    /// </summary>
     public static class DisplayHelper
     {
+        /// <summary>
+        /// Show COntent of ItemInfoResponse
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="item"></param>
+        /// <param name="children"></param>
+        /// <param name="showDialog"></param>
         public static void ShowContent(
             string title,
             ItemInfoResponse item,
@@ -91,6 +101,29 @@ namespace MSGraph.Helpers
                     // with PopulateChildren
                 }
             }
+        }
+    }
+
+    public static class LongExtensions
+    {
+        public static string ConvertSize(this long sizeInBytes)
+        {
+            if (sizeInBytes > 1024 * 1024 * 1024)
+            {
+                return $"{((sizeInBytes / 1024.0) / 1024.0 / 1024):N2} GB";
+            }
+
+            if (sizeInBytes > 1024 * 1024)
+            {
+                return $"{((sizeInBytes / 1024.0) / 1024.0):N2} MB";
+            }
+
+            if (sizeInBytes > 1024)
+            {
+                return $"{(sizeInBytes / 1024.0):N2} kB";
+            }
+
+            return $"{sizeInBytes} bytes";
         }
     }
 }

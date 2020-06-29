@@ -38,14 +38,14 @@ namespace RWPBGTasks
         /// <param name="condition">An optional conditional event that must be true for the task to fire.</param>
         private static async Task<BackgroundTaskRegistration> InternalRegisterBackgroundTaskAsync(String taskEntryPoint, String name, IBackgroundTrigger trigger, IBackgroundCondition condition)
         {
-            HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Register BackgroundTask " + name);
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Register BackgroundTask " + name);
             BackgroundExecutionManager.RemoveAccess();
 
             var hasAccess = await BackgroundExecutionManager.RequestAccessAsync();
 
             if (hasAccess == BackgroundAccessStatus.DeniedByUser)
             {
-                HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "BackgroundAccessStatus.Denied " + name);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "BackgroundAccessStatus.Denied " + name);
                 return null;
             }
 
@@ -62,11 +62,11 @@ namespace RWPBGTasks
                 // be canceled.
                 //
                 builder.CancelOnConditionLoss = true;
-                HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "CancelOnConditionLoss " + name);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "CancelOnConditionLoss " + name);
             }
 
             BackgroundTaskRegistration task = builder.Register();
-            HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background Task " + name + " Registered " + " at " + DateTime.Now);
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background Task " + name + " Registered " + " at " + DateTime.Now);
             return task;
         }
 
@@ -74,7 +74,7 @@ namespace RWPBGTasks
         /// Unregister background tasks with specified name.
         /// </summary>
         /// <param name="name">Name of the background task to unregister.</param>
-        public static void UnregisterBackgroundTasks(String name)
+        public static async void UnregisterBackgroundTaskByName(String name)
         {
             //
             // Loop through all background tasks and unregister any with SampleBackgroundTaskName or
@@ -85,21 +85,34 @@ namespace RWPBGTasks
                 if (cur.Value.Name == name)
                 {
                     cur.Value.Unregister(true);
-                    HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Unregister " + name);
+                    await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Unregister " + name);
                 }
             }
         }
 
-        public static void UnregisterALlTasks()
+        public static IAsyncOperation<bool> UnRegisterAllTasks()
+        {
+            return InternalUnRegisterAllTasks().AsAsyncOperation();
+        }
+        private static async Task<bool> InternalUnRegisterAllTasks()
         {
             foreach (var cur in BackgroundTaskRegistration.AllTasks)
             {
                 cur.Value.Unregister(true);
-                HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Unregister (All) => " + cur.Value.Name);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Unregister (All) => " + cur.Value.Name);
             }
+            return true;
         }
+            /*public static async void UnregisterALlTasks()
+            {
+                foreach (var cur in BackgroundTaskRegistration.AllTasks)
+                {
+                    cur.Value.Unregister(true);
+                    await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Unregister (All) => " + cur.Value.Name);
+                }
+            }*/
 
-        public static IAsyncOperation<bool> RegisterNeededTasks()
+            public static IAsyncOperation<bool> RegisterNeededTasks()
         {
             return InternalRegisterNeededTasks().AsAsyncOperation();
         }
@@ -111,7 +124,7 @@ namespace RWPBGTasks
                 {
                     var task = await RegisterBackgroundTask(b.EntryPoint,
                                                                     b.Name,
-                                                                    await HelloWindowsIotDataBase.GetTimeIntervalForTask(b.Name),
+                                                                    await DAL.AppDataBase.GetTimeIntervalForTask(b.Name),
                                                                     null);
                 }
             }
@@ -170,7 +183,7 @@ namespace RWPBGTasks
             var ts = BGTasksSettings.ListBgTasks.Where(g => g.Name == name).FirstOrDefault();
             if (ts.Name == name)
             {
-                HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, name + "requires Background access");
+                DAL.AppDataBase.SaveLogEntry(LogType.Info, name + "requires Background access");
                 return true;
             }
             else

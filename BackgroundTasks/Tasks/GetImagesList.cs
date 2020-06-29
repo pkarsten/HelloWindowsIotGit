@@ -32,7 +32,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -58,7 +58,7 @@ namespace RWPBGTasks
                 if (BackgroundWorkCost.CurrentBackgroundWorkCost != BackgroundWorkCostValue.Low)
                 {
                     //Do less things if Backgroundcost is high or medium
-                    await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
+                    await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background Cost " + BackgroundWorkCost.CurrentBackgroundWorkCost + "in " + taskInstance.Task.Name);
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace RWPBGTasks
             }
             catch (Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task GetImageListFromOneDrive " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception in Run() Task GetImageListFromOneDrive " + ex.Message);
             }
 
             finally
@@ -90,14 +90,14 @@ namespace RWPBGTasks
         //
         // Handles background task cancellation.
         //
-        private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
+        private async void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             //
             // Indicate that the background task is canceled.
             //
             _cancelRequested = true;
             _cancelReason = reason;
-            HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
+            await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Background " + sender.Task.Name + " Cancel Requested... ");
         }
         #endregion
 
@@ -107,7 +107,7 @@ namespace RWPBGTasks
         //
         private async Task LoadImageListFromOneDrive()
         {
-            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Entry in LoadImageListFromOneDrive()");
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Entry in LoadImageListFromOneDrive()");
 
             if ((_cancelRequested == false) && (_progress < 100))
             {
@@ -124,7 +124,7 @@ namespace RWPBGTasks
 
                 try
                 {
-                    var s = await HelloWindowsIotDataBase.GetSetup();
+                    var s = await DAL.AppDataBase.GetSetup();
                     folder = await graphService.GetPhotosAndImagesFromFolder(s.OneDrivePictureFolder);
                     children = await graphService.PopulateChildren(folder);
 
@@ -162,7 +162,7 @@ namespace RWPBGTasks
                                     filesProcessed++;
                                     _progress = (uint)((double)filesProcessed / totalFiles * 100);
                                     _taskInstance.Progress = _progress; ///=> !!!!!!!!
-                                    var dbPic = HelloWindowsIotDataBase.GetPictureByOneDriveId(iri.Id);
+                                    var dbPic = DAL.AppDataBase.GetPictureByOneDriveId(iri.Id);
                                     if (dbPic == null)
                                     {
                                         var fp = new FavoritePic();
@@ -174,14 +174,14 @@ namespace RWPBGTasks
                                         fp.OneDriveId = iri.Id;
                                         fp.Status = "UpToDate";
                                         System.Diagnostics.Debug.WriteLine("New Pic in DB : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
-                                        await HelloWindowsIotDataBase.SavePicture(fp);
+                                        await DAL.AppDataBase.SavePicture(fp);
                                     }
                                     else
                                     {
                                         var fp = dbPic;
                                         fp.Status = "UpToDate";
                                         System.Diagnostics.Debug.WriteLine("Pic Update in DB PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
-                                        await HelloWindowsIotDataBase.SavePicture(fp);
+                                        await DAL.AppDataBase.SavePicture(fp);
                                     }
                                     xyz += 1;
                                     
@@ -193,11 +193,11 @@ namespace RWPBGTasks
                         catch (Exception ex)
                         {
                             System.Diagnostics.Debug.WriteLine("Exception in LoadImageListFromOneDrive: " + ex.Message );
-                            await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, ex.Message);
+                            await DAL.AppDataBase.SaveLogEntry(LogType.Error, ex.Message);
                         }
                         finally
                         {
-                            HelloWindowsIotDataBase.DelIndefinablePics();
+                            DAL.AppDataBase.DelIndefinablePics();
                         }
                     }
                 }
@@ -209,7 +209,7 @@ namespace RWPBGTasks
             }
              catch (Exception ex)
             {
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Error, "Exception  in LoadImageListFromOneDrive() " + ex.Message);
             }
             finally
             {
@@ -220,12 +220,7 @@ namespace RWPBGTasks
                 // Write to LocalSettings to indicate that this background task ran.
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                //TODO: ??//ERROR =>System.NullReferenceException ?? 
-                //BGTask ts = HelloWindowsIotDataBase.GetTaskStatusByTaskName(_taskInstance.Task.Name);
-                //ts.LastTimeRun = DateTime.Now.ToString();
-                //ts.AdditionalStatus = settings.Values[key].ToString();
-                //HelloWindowsIotDataBase.UpdateTaskStatus(ts);
-                await HelloWindowsIotDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

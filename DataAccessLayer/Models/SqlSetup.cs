@@ -7,7 +7,7 @@ namespace UwpSqliteDal
     /// <summary>
     /// Represents Setup Entry in Table  
     /// </summary>
-    public sealed class Setup
+    public sealed class SqlSetup
     {
         /// <summary>
         /// Gets or sets the identifier.

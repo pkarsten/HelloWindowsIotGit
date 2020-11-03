@@ -13,7 +13,7 @@ namespace UwpSqliteDal
     public sealed class Configuration
     {
         public static string DatabaseName { get; } = "HelloWindowsIotDB.Sqlite";
-        public static Setup InitialSetupConfig { get; } = new Setup
+        public static SqlSetup InitialSetupConfig { get; } = new SqlSetup
         {
             Id = 1,
             EnableLogging = false,

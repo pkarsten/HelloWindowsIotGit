@@ -78,7 +78,7 @@
         </DataTemplate>
         <!-- This DataTemplate provides the UI for the Event data that appears in the list. This UI appears 
              where the ContentPresenter is shown in the ListViewItem control template above. -->
-        <DataTemplate x:Key="TaskTemplate" x:DataType="loc1:PurchTask">
+        <DataTemplate x:Key="TaskTemplate" x:DataType="loc1:ToDoTask">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -93,7 +93,7 @@
         </DataTemplate>
 
     </Page.Resources>
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -112,7 +112,7 @@
                 <Border Grid.Row="0" HorizontalAlignment="Right" Margin="0,20,0,0" Background="SteelBlue" Opacity="0.9" CornerRadius="10" Width="{x:Bind EventsView.Width}">
                     <StackPanel  Grid.Row="0" Orientation="Horizontal">
                         <Button Background="SteelBlue" Click="Button_Click" Opacity="0.3">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE774;"/>
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
                         </Button>
                         <!--<uc:ClockControl CurrentTime="{x:Bind ViewModel.CurrentTime}" EnableClock="{x:Bind ViewModel.EnableClock}" Visibility="{x:Bind ViewModel.EnableClock, Converter={StaticResource BoolToVisibility}}" />-->
                         <TextBlock Text="{x:Bind ViewModel.CurrentTime, Converter={StaticResource TimeStringFormatConverter},Mode=OneWay}"  FontSize="36" FontFamily="Cambria"/>
@@ -148,9 +148,9 @@
                 <Border Grid.Row="3" HorizontalAlignment="Right" Margin="0,20,0,0" Background="SteelBlue" Opacity="0.9" CornerRadius="10" Width="{x:Bind EventsView.Width}">
                     <StackPanel Grid.Row="3" Orientation="Vertical" Margin="0,10,0,0">
                         <!--<uc:PurchaseTaskControl  PurchTaskSubject="{x:Bind ViewModel.PurchTaskSubject,Mode=OneWay}" PurchTaskHtml="{x:Bind ViewModel.PurchTaskContent,Mode=OneWay}"></uc:PurchaseTaskControl>-->
-                        <TextBlock Text="Einkaufen"  Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="3"></TextBlock>
+                        <TextBlock Text="{x:Bind ViewModel.TaskListTitel,Mode=OneWay}"  Padding="5,0,0,0" FontSize="20" FontFamily="Segoe UI" Grid.Row="3"></TextBlock>
                         <ListView x:Name="ToDoTasksView" Margin="0,0,0,0" Width="277" HorizontalAlignment="Right"
-            ItemsSource="{x:Bind Path=ViewModel.PurchTasks, Mode=OneWay}" 
+            ItemsSource="{x:Bind Path=ViewModel.ToDoTasks, Mode=OneWay}" 
             ItemTemplate="{StaticResource TaskTemplate}" 
             ItemContainerStyle="{StaticResource PurchTaskItemStyle}"/>
                     </StackPanel>
@@ -168,5 +168,12 @@
                 </Border>                
             </Grid>
         </Border>
+        <Grid x:Name="DescriptionGrid"  Visibility="{x:Bind ViewModel.HasDescription, Mode=OneWay, Converter={StaticResource BooleanToVisibility}}" VerticalAlignment="Bottom" Grid.Row="1" Background="SteelBlue" Opacity="0.9">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="PicDescription" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalTextAlignment="Center" Text="{x:Bind ViewModel.DashImageDescription,Mode=OneWay}" FontSize="25" FontFamily="Segoe UI"></TextBlock>
+        </Grid>
     </Grid>
 </Page>

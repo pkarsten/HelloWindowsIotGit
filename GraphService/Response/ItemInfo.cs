@@ -65,6 +65,12 @@ namespace MSGraph.Response
             set;
         }
 
+        public string Description
+        {
+            get;
+            set;
+        }
+
         [JsonIgnore]
         public string ParentId
         {
@@ -102,8 +108,10 @@ namespace MSGraph.Response
             Kind = info.Kind;
             LastModifiedDateTime = info.LastModifiedDateTime;
             Name = info.Name;
+            Description = info.Description;
             SizeInBytes = info.SizeInBytes;
             WebUrl = info.WebUrl;
+            
         }
     }
 }

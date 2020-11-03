@@ -51,7 +51,6 @@ namespace MSGraph
         public static DateTimeOffset Expiration;
         public static string[] Scopes = { "user.read", "Files.Read", "Calendars.Read", "Tasks.Read" };
 
-        //private TraceWriter logger = null;
 
         public GraphService(string accessToken)
         {
@@ -205,7 +204,8 @@ namespace MSGraph
             {
                 List<ItemInfoResponse> myList = new List<ItemInfoResponse>();
                 string nextLink = null;
-                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image,name"); //get only the id's add "?select=id" at end  
+                //TODO: Move propertys to configuration
+                var response = await MakeGraphCall(HttpMethod.Get, $"/drive/items/{info.Id}/children?select=id,image,name,description"); //get only the id's add "?select=id" at end  
                 var l = JsonConvert.DeserializeObject<ParseChildrenResponse>(await response.Content.ReadAsStringAsync());
                 nextLink = l.NextLink;
                 myList.AddRange(l.Value);
@@ -424,18 +424,14 @@ namespace MSGraph
             }
         }
 
-        public async Task<TaskResponse> GetPurchaseTask()
+        public async Task<TaskResponse> GetTaskHeader(string taskfolderId)
         {
-            //Get Task (Einkaufen) https://graph.microsoft.com/beta/me/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')
+            //Get Task h ttps://graph.microsoft.com/beta/me/outlook/taskFolders/AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoALgAAA9AbFx3CcYdHmhKEe93jcbkBAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAAA=
 
             try
             {
-                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/tasks('AQMkADAwATM3ZmYAZS05NzcANS05NzE4LTAwAi0wMAoARgAAA9AbFx3CcYdHmhKEe93jcbkHAEzk4EU4PLJIn8ZZnZVUnYgAAAHppBIAAABM5OBFODyySJ-GWZ2VVJ2IAAGzZf5vAAAA')");
-                //var json = await response.Content.ReadAsStringAsync();
-                var purchtask = JsonConvert.DeserializeObject<TaskResponse>(await response.Content.ReadAsStringAsync());
-                return purchtask;
-
-
+                var response = await MakeGraphCall(HttpMethod.Get, $"/outlook/taskFolders/{taskfolderId}/");
+                return JsonConvert.DeserializeObject<TaskResponse>(await response.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
             {
@@ -671,6 +667,8 @@ namespace MSGraph
                 System.Diagnostics.Debug.WriteLine("Graph Request URL :" + graphEndpoint + useversion + uri + "");
             else
                 System.Diagnostics.Debug.WriteLine("Graph Request URL :" + nextdatalink + "");
+
+            //TODO: save log? 
 
             //if (logger != null)
             //{

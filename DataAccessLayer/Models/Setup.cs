@@ -55,6 +55,8 @@ namespace UwpSqliteDal
         /// </summary>
         public string ToDoTaskListID { get; set; }
 
+        public string ToDoTaskListName { get; set; }
+
         /// <summary>
         /// Gets or sets the ID which represents the Purchase Task 
         /// </summary>

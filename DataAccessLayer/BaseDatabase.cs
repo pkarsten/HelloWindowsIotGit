@@ -82,11 +82,6 @@ namespace UwpSqliteDal
                     initialized = true;
                 }
 
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Message).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Message)).ConfigureAwait(false);
-                    initialized = true;
-                }
 
                 if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(CalendarEvent).Name))
                 {
@@ -94,9 +89,9 @@ namespace UwpSqliteDal
                     initialized = true;
                 }
 
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(PurchTask).Name))
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(ToDoTask).Name))
                 {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(PurchTask)).ConfigureAwait(false);
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(ToDoTask)).ConfigureAwait(false);
                     initialized = true;
                 }
                 
@@ -287,10 +282,10 @@ namespace UwpSqliteDal
             UpdateAllPicStatus();
         }
 
-        public void UpdateAllPicStatus()
+        public async void UpdateAllPicStatus()
         {
                 Database.QueryAsync<FavoritePic>("UPDATE FavoritePic SET Status=?", "");
-                SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
+                await SaveLogEntry(LogType.Info, "Set Favorite Pics status = empty");
 
         }
 
@@ -425,8 +420,8 @@ namespace UwpSqliteDal
         }
         #endregion
 
-        #region PurchTask
-        public async Task SavePurchTask(PurchTask obj)
+        #region ToDoTask
+        public async Task SaveToDoTask(ToDoTask obj)
         {
                 if (obj.Id == 0)
                 {
@@ -439,16 +434,14 @@ namespace UwpSqliteDal
                     await Database.UpdateAsync(obj);
                 }
         }
-        public async Task DeletePurchTask()
+        public async Task DeleteToDoTask()
         {
-            await Database.DeleteAllAsync<PurchTask>();
+            await Database.DeleteAllAsync<ToDoTask>();
         }
-        public IList<PurchTask> GetToDoTasks()
+        public IList<ToDoTask> GetToDoTasks()
         {
-            IList<PurchTask> taskList = null;
-
-
-            taskList = Database.Table<PurchTask>().ToListAsync().Result;
+            IList<ToDoTask> taskList = null;
+            taskList = Database.Table<ToDoTask>().ToListAsync().Result;
             return taskList;
         }
         #endregion
@@ -589,6 +582,7 @@ namespace UwpSqliteDal
 
             return folders;
         }
+
 
         /// <summary>
         /// Gets a List of Tasks from MS Graph in given TaskFolder

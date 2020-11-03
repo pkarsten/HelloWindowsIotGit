@@ -29,13 +29,15 @@ namespace HelloWindowsIot
         private string _taskProgress;
         private bool _enableClock;
         private BitmapImage dashimage;
+        private string dashdescription;
         private DispatcherTimer _dtimer = new DispatcherTimer(); //For Clock 
         private ObservableCollection<CalendarEvent> todayEvents = new ObservableCollection<CalendarEvent>();
         private ObservableCollection<CalendarEvent> nextcalendarEvents = new ObservableCollection<CalendarEvent>();
-        private ObservableCollection<PurchTask> purchtasks =new ObservableCollection<PurchTask>();
+        private ObservableCollection<ToDoTask> todotasks =new ObservableCollection<ToDoTask>();
         private InfoModel _infoM = new InfoModel();
         private string purchtaskcontent = "";
         private string purchtasksubject ="";
+        private string tasklisttitel;
         #endregion
 
         #region Properties
@@ -52,6 +54,24 @@ namespace HelloWindowsIot
             get { return this.dashimage; }
             set { this.SetProperty(ref this.dashimage, value); }
         }
+
+        public string DashImageDescription
+        {
+            get { return this.dashdescription; }
+            set { this.SetProperty(ref this.dashdescription, value); }
+        }
+        public string TaskListTitel
+        {
+            get { return this.tasklisttitel; }
+            set { this.SetProperty(ref this.tasklisttitel, value); }
+        }
+        public bool HasDescription
+        {
+            get
+            {
+                return string.IsNullOrEmpty(this.dashdescription);
+            }
+        }
         public ObservableCollection<CalendarEvent> NextCalendarEvents
         {
             get { return this.nextcalendarEvents; }
@@ -62,12 +82,12 @@ namespace HelloWindowsIot
             get { return this.todayEvents; }
             set { this.SetProperty(ref this.todayEvents, value); }
         }
-        public ObservableCollection<PurchTask> PurchTasks
+        public ObservableCollection<ToDoTask> ToDoTasks
         {
-            get { return this.purchtasks; }
+            get { return this.todotasks; }
             set
             {
-                this.SetProperty(ref this.purchtasks, value);
+                this.SetProperty(ref this.todotasks, value);
             }
         }
 
@@ -76,12 +96,12 @@ namespace HelloWindowsIot
             get { return this._infoM; }
             set { this.SetProperty(ref this._infoM, value); }
         }
-        public string PurchTaskContent
+        public string ToDoTaskContent
         {
             get { return this.purchtaskcontent; }
             set { this.SetProperty(ref this.purchtaskcontent, value); }
         }
-        public string PurchTaskSubject
+        public string ToDoTaskSubject
         {
             get { return this.purchtasksubject; }
             set { this.SetProperty(ref this.purchtasksubject, value); }
@@ -168,13 +188,16 @@ namespace HelloWindowsIot
                     System.Diagnostics.Debug.WriteLine("UpdateUI()");
                     this.OnPropertyChanged("TodayCalendarEvents");
                     this.OnPropertyChanged("NextCalendarEvents");
-                    this.OnPropertyChanged("PurchTasks");
-                    this.OnPropertyChanged("PurchTaskContent");
-                    this.OnPropertyChanged("PurchTaskSubject");
+                    this.OnPropertyChanged("ToDoTasks");
+                    this.OnPropertyChanged("ToDoTaskContent");
+                    this.OnPropertyChanged("TaskListTitel");
+                    this.OnPropertyChanged("ToDoTaskSubject");
                     this.OnPropertyChanged("EnableCLock");
                     this.OnPropertyChanged("CurrentTime");
                     this.OnPropertyChanged("HideTodayEvents");
                     this.OnPropertyChanged("InfoM");
+                    this.OnPropertyChanged("DashImageDescription");
+                    this.OnPropertyChanged("HasDescription");
                 }
                 , CoreDispatcherPriority.Normal);
         }
@@ -191,7 +214,10 @@ namespace HelloWindowsIot
                     {
                         var getimage = await HelperFunc.StreamImageFromOneDrive();
                         if (getimage != null)
-                            DashImage = getimage;
+                        {
+                            DashImage = getimage.Photo;
+                            DashImageDescription = getimage.Description;
+                        }
                     }
                     , CoreDispatcherPriority.High);
             }
@@ -245,6 +271,7 @@ namespace HelloWindowsIot
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
+                UpdateUI();
 
             }
             catch(Exception ex)
@@ -327,10 +354,13 @@ namespace HelloWindowsIot
         #region ToDoTasks
         private async Task LoadPurchTask()
         {
+            var s = DAL.AppDataBase.GetSetup().Result;
+            tasklisttitel = s.ToDoTaskListName;
+
             var pt = DAL.AppDataBase.GetToDoTasks().ToObservableCollection(); ;
             if (pt != null)
             {
-                purchtasks = pt;
+                todotasks = pt;
             }
         }
         #endregion
@@ -338,11 +368,10 @@ namespace HelloWindowsIot
         #region DataBaseInfos
         private async Task LoadDatabaseInfos()
         {
-            System.Diagnostics.Debug.WriteLine("Load Database Infos");
-            System.Diagnostics.Trace.WriteLine("Load Database Infos");
+            await DAL.AppDataBase.SaveLogEntry(LogType.AppInfo, "Load Database Infos");
             _infoM.TotalPicsinDB = "Total Bilder: " + await DAL.AppDataBase.CountPicsInTable();
             _infoM.ViewedPics = "Bereits angezeigt: " + await DAL.AppDataBase.CountPicsInTable(true);
-            _infoM.NonViewedPics  = "Fehlen noch" + await DAL.AppDataBase.CountPicsInTable(false);
+            _infoM.NonViewedPics  = "Fehlen noch: " + await DAL.AppDataBase.CountPicsInTable(false);
             UpdateUI();
         }
         #endregion

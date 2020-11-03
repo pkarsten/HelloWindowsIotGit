@@ -25,6 +25,9 @@ namespace MSGraph.Response
         [JsonProperty("Id")]
         public string Id { get; set; }
 
+        [JsonProperty("Name")]
+        public string Name { get; set; }
+
         [JsonProperty("body")]
         public TaskBodyResponse TaskBody
         {

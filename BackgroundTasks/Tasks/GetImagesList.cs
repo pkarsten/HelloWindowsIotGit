@@ -171,6 +171,7 @@ namespace RWPBGTasks
                                         fp.Name = iri.Name;
                                         fp.DownloadUrl = iri.DownloadUrl;
                                         fp.Name = iri.Name;
+                                        fp.Description = iri.Description;
                                         fp.OneDriveId = iri.Id;
                                         fp.Status = "UpToDate";
                                         System.Diagnostics.Debug.WriteLine("New Pic in DB : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
@@ -180,7 +181,8 @@ namespace RWPBGTasks
                                     {
                                         var fp = dbPic;
                                         fp.Status = "UpToDate";
-                                        System.Diagnostics.Debug.WriteLine("Pic Update in DB PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id);
+                                        fp.Description = iri.Description;
+                                        System.Diagnostics.Debug.WriteLine("Pic Update in DB PhotoName : " + xyz + " - " + iri.Name + "Id: " + iri.Id + "Desc: " + iri.Description);
                                         await DAL.AppDataBase.SavePicture(fp);
                                     }
                                     xyz += 1;

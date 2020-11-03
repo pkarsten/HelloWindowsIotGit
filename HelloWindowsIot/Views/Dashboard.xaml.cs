@@ -52,7 +52,6 @@ namespace HelloWindowsIot
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-                var dashboarddata = await SampleDashBoardData.GetSampleDashBoardDataAsync();
                 await ViewModel.LoadData();
         }
 

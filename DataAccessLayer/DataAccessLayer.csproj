@@ -126,10 +126,9 @@
     <Compile Include="Models\CalendarEvent.cs" />
     <Compile Include="Models\FavoritePic.cs" />
     <Compile Include="Models\LogEntry.cs" />
-    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\OutlookTaskFolder.cs" />
     <Compile Include="Models\PicFilter.cs" />
-    <Compile Include="Models\PurchTask.cs" />
+    <Compile Include="Models\ToDoTask.cs" />
     <Compile Include="Models\Setup.cs" />
     <Compile Include="Models\TaskStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -152,7 +151,7 @@
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.UWP.2015, Version=3.32.3">
+    <SDKReference Include="SQLite.UWP.2015, Version=3.33.0">
       <Name>SQLite for Universal Windows Platform</Name>
     </SDKReference>
   </ItemGroup>

@@ -145,6 +145,7 @@ namespace HelloWindowsIot
                 {
                     //IsBusy = true; // => StackOverflowException 
                     await Task.Delay(2000);//TODO: Simulate Loading
+                    this.SetupSettings.ToDoTaskListName = SelectedTaskFolder.Name;
                     await DAL.AppDataBase.UpdateSetup(this.SetupSettings);
                 }
                 catch (Exception ex)

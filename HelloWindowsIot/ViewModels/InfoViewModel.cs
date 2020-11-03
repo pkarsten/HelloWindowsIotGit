@@ -49,7 +49,8 @@ namespace HelloWindowsIot
         public async Task LoadData()
         {
             MyAppVersion = "Version: " + AppInfos.ApplicationVersion;
-            MyAppName = AppInfos.ApplicationName; ;
+            MyAppName = AppInfos.ApplicationName;
+            LogIn();
         }
 
         #region login out
@@ -59,12 +60,7 @@ namespace HelloWindowsIot
             AuthenticationResult authResult = await GraphService.GetAuthResult();
 
             MyUsername = "";
-            if (authResult != null)
-            {
-                //MyUsername += $"Username: {authResult.Account.Username}" + Environment.NewLine;
-                //MyUsername += $"Token Expires: {authResult.ExpiresOn.ToLocalTime()}" + Environment.NewLine;
-
-            } else
+            if (authResult == null)
             {
                 var accessToken = await GraphService.GetTokenForUserAsync();
                 var graphService = new GraphService(accessToken);

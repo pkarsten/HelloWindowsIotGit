@@ -19,10 +19,11 @@ namespace HelloWindowsIot
     public class HelperFunc
     {
         public static BGTaskModel MyBgTask { get; set; }
-        public static async Task<BitmapImage> StreamImageFromOneDrive()
+        public static async Task<DashBoardImage> StreamImageFromOneDrive()
         {
             try
             {
+                DashBoardImage dbi = new DashBoardImage();
                 BitmapImage bitmapimage = new BitmapImage();
                 if (await DAL.AppDataBase.CountAllPictures() == 0)
                 {
@@ -124,9 +125,11 @@ namespace HelloWindowsIot
                     }
 
                     item.Viewed = true;
+                    dbi.Description = item.Description;
                     await DAL.AppDataBase.SavePicture(item);
                 }
-                return bitmapimage;
+                dbi.Photo = bitmapimage;
+                return dbi;
             }
             catch (Exception ex)
             {

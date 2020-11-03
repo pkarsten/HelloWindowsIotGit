@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UwpSqliteDal
 {
-    public sealed class PurchTask
+    public sealed class ToDoTask
     {
         /// <summary>
         /// Gets or sets the identifier.

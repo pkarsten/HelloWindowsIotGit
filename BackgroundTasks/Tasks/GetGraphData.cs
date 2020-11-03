@@ -135,7 +135,7 @@ namespace RWPBGTasks
                                 //TODO: It seems that sqliteDB all the time saves datetime  as UTC , 
                                 //Perhaps add language localisation settings ? 
                                 // no way to save it to localtime or other Format? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(2); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 , or viceversa? 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(1); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 , or viceversa? 
                                 ce.Subject = o.Subject;
                                 if (ce.StartDateTime.Day == DateTime.Now.Day)
                                     ce.TodayEvent = true;
@@ -172,7 +172,7 @@ namespace RWPBGTasks
 
                     if (s.EnablePurchaseTask)
                     {
-                        await DAL.AppDataBase.DeletePurchTask();
+                        await DAL.AppDataBase.DeleteToDoTask();
                         //Graph Service for get Tasks
                         var mypurchtask = await graphService.GetTasksFromToDoTaskList(s.ToDoTaskListID);
 
@@ -180,10 +180,10 @@ namespace RWPBGTasks
                         {
                             foreach (TaskResponse p in mypurchtask)
                             {
-                                var pt = new PurchTask();
+                                var pt = new ToDoTask();
                                 pt.Subject = p.Subject;
                                 pt.BodyText = p.TaskBody.Content;
-                                await DAL.AppDataBase.SavePurchTask(pt);
+                                await DAL.AppDataBase.SaveToDoTask(pt);
                             }
                         }
                     }

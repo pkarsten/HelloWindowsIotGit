@@ -285,7 +285,7 @@ namespace HelloWindowsIot
         }
 
         #region Clock
-        private async Task CheckClockStatus(SqlSetup setup)
+        private async Task CheckClockStatus(Setup setup)
         {
             if (setup.EnableClock == true)
             {

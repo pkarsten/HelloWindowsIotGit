@@ -53,11 +53,7 @@ namespace UwpSqliteDal
         {
             if (!initialized)
             {
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(SqlSetup).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(SqlSetup)).ConfigureAwait(true);
-                    initialized = true;
-                }
+               
                 if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(FavoritePic).Name))
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(FavoritePic)).ConfigureAwait(false);
@@ -73,6 +69,11 @@ namespace UwpSqliteDal
                 if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(BGTask).Name))
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(BGTask)).ConfigureAwait(false);
+                    initialized = true;
+                }
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Setup).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Setup)).ConfigureAwait(false);
                     initialized = true;
                 }
                 if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(PicFilter).Name))
@@ -105,12 +106,12 @@ namespace UwpSqliteDal
         /// </summary>
         public async Task CheckSetupData()
         {
-            SqlSetup sconfig = Database.Table<SqlSetup>().FirstOrDefaultAsync().Result;
+            Setup sconfig = Database.Table<Setup>().FirstOrDefaultAsync().Result;
             
             //Save Initial Setup Data if Table hasn't entry 
             if (sconfig == null)
             {
-                SqlSetup initSetup = Configuration.InitialSetupConfig;
+                Setup initSetup = Configuration.InitialSetupConfig;
                 await Database.InsertAsync(initSetup);
             }
         }
@@ -119,12 +120,12 @@ namespace UwpSqliteDal
         /// Get Current Setup COnfig saved in Database
         /// </summary>
         /// <returns></returns>
-        public async Task<SqlSetup> GetSetup()
+        public async Task<Setup> GetSetup()
         {
-            SqlSetup sconfig = new SqlSetup();
+            Setup sconfig = new Setup();
             try
             {
-                sconfig = Database.Table<SqlSetup>().FirstOrDefaultAsync().Result;
+                sconfig = Database.Table<Setup>().FirstOrDefaultAsync().Result;
 
             }
             catch (Exception ex)
@@ -138,7 +139,7 @@ namespace UwpSqliteDal
         /// Update Setup Config Data in Table 
         /// </summary>
         /// <param name="set"></param>
-        public async Task UpdateSetup(SqlSetup set)
+        public async Task UpdateSetup(Setup set)
         {
             try
             {
@@ -159,7 +160,7 @@ namespace UwpSqliteDal
         {
             try
             {
-                SqlSetup sconfig = await GetSetup();
+                Setup sconfig = await GetSetup();
                 sconfig.EnableLogging = enable;
                 
                 if (enable == false)
@@ -178,7 +179,7 @@ namespace UwpSqliteDal
 
         public async Task<TimeTrigger> GetTimeIntervalForTask(string taskname)
         {
-            SqlSetup s = await GetSetup();
+            Setup s = await GetSetup();
             uint minutesForTrigger = 15;
 
             switch (taskname)
@@ -661,7 +662,7 @@ namespace UwpSqliteDal
             // 
             // CHeck when Must Save Log Entry 
             //
-            SqlSetup n = Database.Table<SqlSetup>().FirstOrDefaultAsync().Result;
+            Setup n = Database.Table<Setup>().FirstOrDefaultAsync().Result;
 
 #if DEBUG
             n.EnableLogging = true;

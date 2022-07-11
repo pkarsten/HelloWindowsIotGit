@@ -28,7 +28,7 @@ namespace HelloWindowsIot
         private ObservableCollection<TaskResponse> taskList = new ObservableCollection<TaskResponse>();
         private TaskResponse selectedPurchaseTask;
         private bool canExecute;
-        private SqlSetup setupSettings;
+        private Setup setupSettings;
         private bool _isBusy;
         private string _taskResult;
         private string _taskProgress;
@@ -45,7 +45,7 @@ namespace HelloWindowsIot
         }
         public BGTaskModel MyBgTask {get;set;}
 
-        public SqlSetup SetupSettings
+        public Setup SetupSettings
         {
             get { return this.setupSettings; }
             set { this.SetProperty(ref this.setupSettings, value);}

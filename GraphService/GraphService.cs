@@ -257,7 +257,7 @@ namespace MSGraph
             //https://graph.microsoft.com/v1.0/me/calendarView?startdatetime=2019-02-12&enddatetime=2019-02-19&$select=subject,Start,End
             try
             {
-                DateTime startDT = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                DateTime startDT = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0); 
                 DateTime endDT = startDT.AddDays(nextXDays);
                 string strStarDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", startDT);
                 string strEndDT = String.Format("{0:yyyy-MM-ddTHH:mm:ss}", endDT);

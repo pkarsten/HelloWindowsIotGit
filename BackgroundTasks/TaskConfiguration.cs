@@ -66,7 +66,7 @@ namespace RWPBGTasks
             }
 
             BackgroundTaskRegistration task = builder.Register();
-            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background Task " + name + " Registered " + " at " + DateTime.Now);
+            await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background Task " + name + " Registered " + " at " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset));
             return task;
         }
 

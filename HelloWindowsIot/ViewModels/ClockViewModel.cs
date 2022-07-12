@@ -6,7 +6,7 @@ namespace HelloWindowsIot
     public class ClockViewModel: BindableBase
     {
         private DispatcherTimer _timer = new DispatcherTimer();
-        public DateTime CurrentTime { get { return DateTime.Now; } }
+        public DateTime CurrentTime { get { return DateTime.UtcNow; } }
         public ClockViewModel()
         {
             _timer.Tick += Timer_Tick;

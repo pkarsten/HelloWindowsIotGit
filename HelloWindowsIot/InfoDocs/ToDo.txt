@@ -6,4 +6,7 @@
 - Logging Options Errors, Warnings, Debug...
 - Remove PurchTask second Option for choose Task , Rename PurchTasks FUnctions, Settings (TO DO Task) 
 - Restart Possibility at Night? Settings? 
-
+- If changes takes on the database, e.g. add a column, then app restart doesn't notice of this changes., 
+  then App needs deinstall and install again settings will be lost , can we change this ? 
+- Add TimeZone? Or Offset for Summer/Winter time in settings 
+- When new app installation, Sql errors because database no exist, check if exist, create it if not 

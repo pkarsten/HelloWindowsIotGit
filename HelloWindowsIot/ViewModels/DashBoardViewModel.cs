@@ -38,10 +38,19 @@ namespace HelloWindowsIot
         private string purchtaskcontent = "";
         private string purchtasksubject ="";
         private string tasklisttitel;
+        private double _myoffset;
         #endregion
 
         #region Properties
-        public DateTime CurrentTime { get { return DateTime.Now; } }
+        private DateTime _currentTime = DateTime.UtcNow;
+        public DateTime CurrentTime { 
+            
+            get 
+            {
+                DateTime mydt = DateTime.UtcNow.AddHours(_myoffset);
+                return mydt;
+            }
+        } 
         public bool EnableClock
         {
             get { return this._enableClock; }
@@ -115,6 +124,16 @@ namespace HelloWindowsIot
             {
                 this.SetProperty(ref this.hideTodayEvents, value);
                 System.Diagnostics.Debug.WriteLine("Hide today " + value +  " ~ " + this.hideTodayEvents);
+            }
+        }
+
+        private bool showTasks;
+        public bool ShowTasks
+        {
+            get { return showTasks; }
+            set
+            {
+                this.SetProperty(ref this.showTasks, value);
             }
         }
         #endregion
@@ -198,6 +217,7 @@ namespace HelloWindowsIot
                     this.OnPropertyChanged("InfoM");
                     this.OnPropertyChanged("DashImageDescription");
                     this.OnPropertyChanged("HasDescription");
+                    this.OnPropertyChanged("ShowTasks");
                 }
                 , CoreDispatcherPriority.Normal);
         }
@@ -266,11 +286,21 @@ namespace HelloWindowsIot
                 }
 
                 var s = await DAL.AppDataBase.GetSetup();
+                if(s != null)
+                {
+                    _myoffset = s.EventsOffset;
+                }
+                else
+                {
+                    _myoffset = Configuration.InitialSetupConfig.EventsOffset;
+                }
+                
                 await CheckClockStatus(s);
 
                 if (s.IntervalForDiashow < 60) { s.IntervalForDiashow = 60; };
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
+                ShowTasks = !s.EnablePurchaseTask;
                 UpdateUI();
 
             }

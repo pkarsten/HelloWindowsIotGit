@@ -88,6 +88,13 @@ namespace UwpSqliteDal
         /// get or sets if calendar today events hould be seen on Dashboard 
         /// </summary>
         public bool EnableTodayEvents { get; set; }
+
+        /// <summary>
+        /// get or sets offset in hours for event times seen on Dashboard 
+        /// </summary>
+        public double EventsOffset { get; set; }
+
+
         #endregion
 
         #region Clock

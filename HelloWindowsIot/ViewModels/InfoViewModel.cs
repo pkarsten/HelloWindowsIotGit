@@ -69,8 +69,6 @@ namespace HelloWindowsIot
 
             MyUsername = "Hello " + authResult.Account.Username + " you signed in succesfully!" + Environment.NewLine;
 
-
-
             //ResultText.Text = string.Empty;
             //TokenInfoText.Text = string.Empty;
 

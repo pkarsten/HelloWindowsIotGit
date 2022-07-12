@@ -26,6 +26,7 @@ namespace UwpSqliteDal
             EnableClock = true,
             EnablePurchaseTask = false,
             EnableTodayEvents =false,
+            EventsOffset =+2,
 
         };
         public static PicFilter InitialPicFilterConfig { get; } = new PicFilter

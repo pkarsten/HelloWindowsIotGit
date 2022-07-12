@@ -29,7 +29,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset));
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -135,9 +135,11 @@ namespace RWPBGTasks
                                 //TODO: It seems that sqliteDB all the time saves datetime  as UTC , 
                                 //Perhaps add language localisation settings ? 
                                 // no way to save it to localtime or other Format? So add here 4 Houts for my timezone 
-                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(1); //Winter Time in Düsseldorf Add 2, Summer Time Add 4 , or viceversa? 
+                                //Winter Time in Düsseldorf Add 1, Summer Time Add 2 , or viceversa? 
+                                ce.StartDateTime = o.StartDateTime.dateTime.AddHours(s.EventsOffset); 
+                                //TODO: Summertime ? Get here UTC Date ? TODO: Time zone in setup choose? 
                                 ce.Subject = o.Subject;
-                                if (ce.StartDateTime.Day == DateTime.Now.Day)
+                                if (ce.StartDateTime.Day ==  DateTime.UtcNow.Day)
                                     ce.TodayEvent = true;
                                 else
                                     ce.TodayEvent = false;
@@ -147,7 +149,7 @@ namespace RWPBGTasks
                                 // TODO: more test for this here, perhaps there are Events that we would see , then don't ignore them 
                                 // Problem is when StartTime is between 0:00-02:00 , example: exists an IsAllDay Event on 10.04.19 LocalTime (Begins 0:00, Ends at 11.04.19 0:00)
                                 // when the day changes (Localtime) on 0:00 Uhr, then it will list this event as Today Event (because it ends on 11.04) ...
-                                if (ce.StartDateTime.Day+1 == DateTime.Now.Day)
+                                if (ce.StartDateTime.Day+1 == DateTime.UtcNow.Day)
                                 {
                                     if (ce.IsAllDay)
                                     {
@@ -207,7 +209,7 @@ namespace RWPBGTasks
                 // Write to LocalSettings to indicate that this background task ran.
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset) + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

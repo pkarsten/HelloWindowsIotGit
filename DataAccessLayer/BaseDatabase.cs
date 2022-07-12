@@ -49,7 +49,7 @@ namespace UwpSqliteDal
         }
         #endregion
 
-        async Task InitializeAsync()
+        public async Task InitializeAsync()
         {
             if (!initialized)
             {
@@ -106,11 +106,10 @@ namespace UwpSqliteDal
         /// </summary>
         public async Task CheckSetupData()
         {
-            Setup sconfig = Database.Table<Setup>().FirstOrDefaultAsync().Result;
-            
-            //Save Initial Setup Data if Table hasn't entry 
-            if (sconfig == null)
+
+            if (Database.Table<Setup>().FirstOrDefaultAsync().Result == null) 
             {
+                //Save Initial Setup Data if Table hasn't entry 
                 Setup initSetup = Configuration.InitialSetupConfig;
                 await Database.InsertAsync(initSetup);
             }
@@ -676,7 +675,7 @@ namespace UwpSqliteDal
                     LogEntry lentry = new LogEntry();
                     lentry.LogType = ltype.ToString();
                     lentry.Description = logDescription;
-                    lentry.LogEntryDate = DateTime.Now.ToString();
+                    lentry.LogEntryDate = DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset).ToString();
                     // Create a new connection
                     
                         // New

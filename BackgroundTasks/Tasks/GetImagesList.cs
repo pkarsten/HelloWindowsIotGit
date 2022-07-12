@@ -32,7 +32,7 @@ namespace RWPBGTasks
         {
             try
             {
-                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.Now);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + taskInstance.Task.Name + " Starting..." + " at " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset));
 
                 //
                 // Get the deferral object from the task instance, and take a reference to the taskInstance;
@@ -222,7 +222,7 @@ namespace RWPBGTasks
                 // Write to LocalSettings to indicate that this background task ran.
                 //
                 settings.Values[key] = (_progress < 100) ? "Canceled with reason: " + _cancelReason.ToString() : "Completed";
-                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.Now + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Background " + _taskInstance.Task.Name + " is Finished at " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset) + "Additional Status is " + _taskInstance.Task.Name + settings.Values[key]);
             }
         }
         #endregion

@@ -138,7 +138,7 @@ namespace HelloWindowsIot
             }
             finally
             {
-                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Dashboard Picture Changed at: " + DateTime.Now);
+                await DAL.AppDataBase.SaveLogEntry(LogType.Info, "Dashboard Picture Changed at: " + DateTime.UtcNow.AddHours(Configuration.InitialSetupConfig.EventsOffset));
                 DAL.AppDataBase.CheckForViewedPictures();
             } 
 

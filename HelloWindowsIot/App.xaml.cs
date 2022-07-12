@@ -45,7 +45,7 @@ namespace HelloWindowsIot
         private async Task Initialize()
         {
 
-            await DAL.AppDataBase.CheckSetupData();
+            await DAL.AppDataBase.InitializeAsync();
             await BackgroundTaskConfig.UnRegisterAllTasks();
             await BackgroundTaskConfig.RegisterNeededTasks();
         }

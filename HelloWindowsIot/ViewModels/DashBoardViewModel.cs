@@ -136,6 +136,34 @@ namespace HelloWindowsIot
                 this.SetProperty(ref this.showTasks, value);
             }
         }
+
+        private bool showTodayEvents;
+        public bool ShowTodayEvents
+        {
+            get { return showTodayEvents; }
+            set
+            {
+                this.SetProperty(ref this.showTodayEvents, value);
+            }
+        }
+        private bool showNextEvents;
+        public bool ShowNextEvents
+        {
+            get { return showNextEvents; }
+            set
+            {
+                this.SetProperty(ref this.showNextEvents, value);
+            }
+        }
+        private bool showCalendarAddOn;
+        public bool ShowCalendarAddOn
+        {
+            get { return showCalendarAddOn; }
+            set
+            {
+                this.SetProperty(ref this.showCalendarAddOn, value);
+            }
+        }
         #endregion
 
         #region constructor
@@ -301,6 +329,9 @@ namespace HelloWindowsIot
 
                 Helpers.StartTimer(0, s.IntervalForDiashow, async () => await this.UpdateDashBoardImageAsync());
                 ShowTasks = !s.EnablePurchaseTask;
+                ShowTodayEvents = !s.EnableTodayEvents;
+                ShowNextEvents = !s.EnableCalendarNextEvents;
+                ShowCalendarAddOn = !s.EnableCalendarAddon;
                 UpdateUI();
 
             }
